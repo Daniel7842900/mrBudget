@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="../build/styles.css" rel="stylesheet" />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div>
+      <%- include('../../partial/nav/index'); %>
+      <header class="bg-green-500">
+        <div
+          class="
+            flex
+            items-center
+            justify-between
+            max-w-7xl
+            mx-auto
+            py-4
+            px-4
+            sm:px-6
+            lg:px-8
+            bg-green-500
+            border-b-2 border-white border-solid
+          "
+        >
+          <h1 class="text-lg leading-6 font-semibold text-white">New Budget</h1>
+        </div>
+      </header>
+      <main class="bg-green-500 h-screen">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 bg-green-500">
+          <!-- Content -->
+          <div class="px-4 py-4 sm:px-0">
+            <div
+              class="
+                border-4 border-dashed border-gray-200
+                rounded-lg
+                h-96
+                bg-white
+                h-auto
+              "
+            >
+              <div class="w-auto my-4 mx-14 text-center">
+                <label for="datepicker" class="text-lg">Date</label>
+                <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
+                  <input
+                    type="text"
+                    id="datepicker"
+                    class="
+                      border-2 border-solid border-gray-200
+                      text-center
+                      w-full
+                      mt-2
+                      rounded-md
+                    "
+                  />
+                </div>
+              </div>
+              <!-- Income input section -->
+              <div class="w-auto my-4 mx-14 text-center">
+                <label for="income" class="text-lg">Income</label>
+                <div class="w-auto m-auto md:w-6/12 lg:w-6/12 relative">
+                  <div
+                    class="
+                      absolute
+                      inset-y-0
+                      left-0
+                      pl-3
+                      flex
+                      items-center
+                      pointer-events-none
+                    "
+                  >
+                    <span class="text-gray-500 sm:text-sm"> $ </span>
+                  </div>
+                  <input
+                    type="text"
+                    name="income"
+                    id="income"
+                    class="
+                      border-2 border-solid border-gray-200
+                      text-center
+                      w-full
+                      mt-2
+                      rounded-md
+                      block
+                    "
+                    placeholder="0.00"
+                    aria-describedby="income-currency"
+                  />
+                  <div
+                    class="
+                      absolute
+                      inset-y-0
+                      right-0
+                      pr-3
+                      flex
+                      items-center
+                      pointer-events-none
+                    "
+                  >
+                    <span class="text-gray-500 sm:text-sm" id="income-currency">
+                      CAD
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- Budget input section -->
+              <div class="w-auto my-4 mx-14 text-center">
+                <span class="text-lg">Category & Amount</span>
+              </div>
+              <div
+                class="
+                  w-9/12
+                  m-auto
+                  md:w-5/12
+                  lg:w-5/12
+                  xl:w-5/12
+                  text-center
+                  border-2 border-solid border-gray-200
+                  rounded-md
+                "
+              >
+                <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pt-4 pb-1">
+                  <label for="category">Category</label>
+                  <div class="w-auto m-auto">
+                    <select
+                      name="category"
+                      id="category"
+                      class="
+                        border-2 border-solid border-gray-200
+                        text-center
+                        w-full
+                        mt-2
+                        rounded-md
+                      "
+                    >
+                      <option value="grocery">Grocery</option>
+                      <option value="rent">Rent</option>
+                      <option value="utility">Utility</option>
+                      <option value="dineout">Dine out</option>
+                      <option value="investment">Investment</option>
+                      <option value="saving">Saving</option>
+                      <option value="alcohol">Alcohol</option>
+                      <option value="leisure">Leisure</option>
+                      <option value="insurance">Insurance</option>
+                      <option value="loan">Loan</option>
+                      <option value="streamingservice">
+                        Streaming Service
+                      </option>
+                      <option value="transportation">Transportation</option>
+                      <option value="etc">Etc</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pb-4 pt-1">
+                  <label for="amount">Amount</label>
+                  <div class="mt-1 relative rounded-md shadow-sm">
+                    <div
+                      class="
+                        absolute
+                        inset-y-0
+                        left-0
+                        pl-3
+                        flex
+                        items-center
+                        pointer-events-none
+                      "
+                    >
+                      <span class="text-gray-500 sm:text-sm"> $ </span>
+                    </div>
+                    <input
+                      type="text"
+                      name="amount"
+                      id="amount"
+                      class="
+                        border-2 border-solid border-gray-200
+                        text-center
+                        w-full
+                        mt-2
+                        rounded-md
+                        block
+                      "
+                      placeholder="0.00"
+                      aria-describedby="amount-currency"
+                    />
+                    <div
+                      class="
+                        absolute
+                        inset-y-0
+                        right-0
+                        pr-3
+                        flex
+                        items-center
+                        pointer-events-none
+                      "
+                    >
+                      <span
+                        class="text-gray-500 sm:text-sm"
+                        id="amount-currency"
+                      >
+                        CAD
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Add button for an item -->
+                <div class="text-right mr-1 mb-1">
+                  <button
+                    class="
+                      inline-flex
+                      justify-center
+                      py-2
+                      px-4
+                      border border-transparent
+                      shadow-sm
+                      text-sm
+                      font-medium
+                      rounded-md
+                      text-white
+                      bg-blue-500
+                      hover:bg-blue-700
+                      focus:outline-none
+                      focus:ring-2
+                      focus:ring-offset-2
+                      focus:ring-indigo-500
+                    "
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+              <!-- Summary Section -->
+              <div class="w-auto my-4 mx-14 text-center">
+                <span class="text-lg">Summary</span>
+                <div
+                  class="
+                    flex flex-col
+                    w-auto
+                    md:w-6/12
+                    lg:w-6/12
+                    m-auto
+                    border-2 border-gray-200
+                    mt-2
+                    rounded-md
+                  "
+                >
+                  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div class="py-2 align-middle min-w-full sm:px-6 lg:px-8">
+                      <div
+                        class="
+                          shadow
+                          overflow-hidden
+                          border-b border-gray-200
+                          sm:rounded-lg
+                        "
+                      >
+                        <table
+                          class="
+                            min-w-full
+                            divide-y divide-gray-200
+                            text-center
+                          "
+                        >
+                          <thead class="bg-gray-50">
+                            <tr>
+                              <th
+                                scope="col"
+                                class="
+                                  px-6
+                                  py-3
+                                  text-xs
+                                  font-medium
+                                  text-gray-500
+                                  uppercase
+                                  tracking-wider
+                                "
+                              >
+                                Item
+                              </th>
+                              <th
+                                scope="col"
+                                class="
+                                  px-6
+                                  py-3
+                                  text-xs
+                                  font-medium
+                                  text-gray-500
+                                  uppercase
+                                  tracking-wider
+                                "
+                              >
+                                Amount
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                              <td
+                                class="
+                                  px-6
+                                  py-4
+                                  whitespace-nowrap
+                                  text-sm
+                                  font-medium
+                                  text-gray-900
+                                "
+                              >
+                                Rent
+                              </td>
+                              <td
+                                class="
+                                  px-6
+                                  py-4
+                                  whitespace-nowrap
+                                  text-sm text-gray-500
+                                "
+                              >
+                                $900
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /End replace -->
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/datepicker.js"></script>
+    <script src="/navJs/nav.js"></script>
+  </body>
+</html>

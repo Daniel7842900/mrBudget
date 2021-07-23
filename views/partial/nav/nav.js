@@ -6,4 +6,12 @@ $(document).ready(function () {
       $("#user-menu").addClass("hidden");
     }
   });
+
+  $("#mobile-menu-btn").click(function (e) {
+    if ($("#mobile-menu").hasClass("hidden")) {
+      $("#mobile-menu").removeClass("hidden");
+    } else {
+      $("#mobile-menu").addClass("hidden");
+    }
+  });
 });

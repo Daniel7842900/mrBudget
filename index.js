@@ -81,6 +81,10 @@ app.get("/budget", function (req, res) {
   res.render("pages/budget");
 });
 
+app.get("/budget/new", function (req, res) {
+  res.render("pages/budget/create");
+});
+
 app.get("/expense", function (req, res) {
   res.render("pages/expense");
 });
