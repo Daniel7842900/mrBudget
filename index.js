@@ -81,8 +81,12 @@ app.get("/budget", function (req, res) {
   res.render("pages/budget");
 });
 
+// let list = require("./public/js/createList.js");
+let list = [];
 app.get("/budget/new", function (req, res) {
-  res.render("pages/budget/create");
+  res.render("pages/budget/create", {
+    list: list,
+  });
 });
 
 app.get("/expense", function (req, res) {
