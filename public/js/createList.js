@@ -1,6 +1,6 @@
 $(document).ready(function () {
   let list = [];
-  $("#addBtn").click(function (e) {
+  $("#add_btn").click(function (e) {
     // Create a js object for category & amount
     let obj = {};
     obj.category = $("#category").children("option:selected").text();
