@@ -4,7 +4,26 @@ $(document).ready(function () {
     // Create a js object for category & amount
     let obj = {};
     obj.category = $("#category").children("option:selected").text();
-    obj.amount = $("#amount").val();
+    let amount = $("#amount").val();
+
+    // Change the text to number
+    amount = parseFloat(amount);
+
+    // Round the number until 2 decimals
+    amount = Math.round(amount * 100) / 100;
+
+    obj.amount = amount;
+
+    if (obj.amount === 0 || isNaN(obj.amount) === true) {
+      // Reset the values after adding
+      $("#amount").val("");
+
+      // Prevent onClick event
+      e.preventDefault();
+      return false;
+    }
+
+    // console.log(obj);
 
     // Push the object into the list
     list.push(obj);
