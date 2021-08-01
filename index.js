@@ -69,11 +69,11 @@ require("./routes/auth.js")(app, passport);
 require("./passport/passport.js")(passport, db.users);
 
 app.get("/dashboard", function (req, res) {
-  console.log("we are at dashboard!");
+  // console.log("we are at dashboard!");
   // res.sendFile(__dirname + "/views/pages/dashboard/index.html");
-  console.log("Cookies: ", req.cookies);
-  console.log("session: ", req.session);
-  console.log("passport: ", req.session.passport);
+  // console.log("Cookies: ", req.cookies);
+  // console.log("session: ", req.session);
+  // console.log("passport: ", req.session.passport);
   res.render("pages/dashboard");
 });
 
@@ -81,12 +81,8 @@ app.get("/budget", function (req, res) {
   res.render("pages/budget");
 });
 
-// let list = require("./public/js/createList.js");
-let list = [];
 app.get("/budget/new", function (req, res) {
-  res.render("pages/budget/create", {
-    list: list,
-  });
+  res.render("pages/budget/create");
 });
 
 app.get("/expense", function (req, res) {

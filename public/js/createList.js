@@ -1,8 +1,13 @@
 $(document).ready(function () {
   let list = [];
+  let idx = 0;
+
+  // Onclick event for adding an object
+  //to the list
   $("#add_btn").click(function (e) {
     // Create a js object for category & amount
     let obj = {};
+    obj.idx = idx;
     obj.category = $("#category").children("option:selected").text();
     let amount = $("#amount").val();
 
@@ -32,6 +37,12 @@ $(document).ready(function () {
     $("#category option:first").prop("selected", true);
     $("#amount").val("");
 
+    // Increment the index
+    idx++;
+
+    console.log("add list");
+    console.log(list);
+
     // Render table rows using the list that contains js objects.
     //this is done in client-side because we can't pass the list
     //to server-side.
@@ -60,6 +71,35 @@ $(document).ready(function () {
         >
           $ <%= obj.amount %>
         </td>
+        <td
+          class="
+            px-6
+            py-4
+            whitespace-nowrap
+            text-sm text-gray-500
+          "
+        >
+          <button
+            class="
+              inline-flex
+              justify-center
+              py-2
+              px-4
+              border border-transparent
+              shadow-sm
+              text-sm
+              font-medium
+              rounded-md
+              text-white
+              bg-red-500
+              hover:bg-red-700
+              remove_btn
+            "
+            id="remove_btn_<%= obj.idx %>"
+          >
+            X
+          </button>
+        </td>
       </tr>
       <% });%>`,
       { list: list }
@@ -71,5 +111,91 @@ $(document).ready(function () {
     $.get("/budget/new", function () {
       $("#summary_data").html(html);
     });
+  });
+
+  // Onclick event for removing an object
+  //from the list
+  $("#summary_data").on("click", ".remove_btn", function () {
+    if (list.length !== 0) {
+      let rIdx = parseInt($(this).attr("id").split("_")[2]);
+
+      if (rIdx > -1) {
+        // Remove the object at index "rIdx"
+        list.splice(rIdx, 1);
+
+        // Decrement idx inside of objects by 1
+        list.forEach((obj) => {
+          if (rIdx < obj.idx) {
+            obj.idx--;
+          }
+        });
+
+        // Decrement idx for future adding
+        idx--;
+
+        html = ejs.render(
+          `<% list.forEach(function(obj) { %>
+          <tr>
+            <td
+              class="
+                px-6
+                py-4
+                whitespace-nowrap
+                text-sm
+                font-medium
+                text-gray-900
+              "
+            >
+              <%= obj.category %>
+            </td>
+            <td
+              class="
+                px-6
+                py-4
+                whitespace-nowrap
+                text-sm text-gray-500
+              "
+            >
+              $ <%= obj.amount %>
+            </td>
+            <td
+              class="
+                px-6
+                py-4
+                whitespace-nowrap
+                text-sm text-gray-500
+              "
+            >
+              <button
+                class="
+                  inline-flex
+                  justify-center
+                  py-2
+                  px-4
+                  border border-transparent
+                  shadow-sm
+                  text-sm
+                  font-medium
+                  rounded-md
+                  text-white
+                  bg-red-500
+                  hover:bg-red-700
+                  remove_btn
+                "
+                id="remove_btn_<%= obj.idx %>"
+              >
+                X
+              </button>
+            </td>
+          </tr>
+          <% });%>`,
+          { list: list }
+        );
+
+        $.get("/budget/new", function () {
+          $("#summary_data").html(html);
+        });
+      }
+    }
   });
 });

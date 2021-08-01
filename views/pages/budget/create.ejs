@@ -25,7 +25,7 @@
     />
     <script src="/js/ejs.min.js"></script>
   </head>
-  <body>
+  <body class="bg-green-500">
     <div>
       <%- include('../../partial/nav/index'); %>
       <header class="bg-green-500">
@@ -45,6 +45,11 @@
           "
         >
           <h1 class="text-lg leading-6 font-semibold text-white">New Budget</h1>
+          <a href="/budget">
+            <button class="text-2xl text-white">
+              <i class="fas fa-times"></i>
+            </button>
+          </a>
         </div>
       </header>
       <main class="bg-green-500 h-screen">
@@ -280,6 +285,7 @@
                         <table
                           class="
                             min-w-full
+                            table-auto
                             divide-y divide-gray-200
                             border-2 border-gray-200
                             text-center
@@ -314,6 +320,9 @@
                                 "
                               >
                                 Amount
+                              </th>
+                              <th scope="col" class="px-6 py-3 relative">
+                                <span class="sr-only">Remove</span>
                               </th>
                             </tr>
                           </thead>
@@ -364,7 +373,7 @@
     </div>
 
     <script src="/js/datepicker.js"></script>
-    <!-- <script src="/js/createList.js"></script> -->
+    <!-- <script src="/js/removeItem.js"></script> -->
     <script src="/navJs/nav.js"></script>
   </body>
 </html>

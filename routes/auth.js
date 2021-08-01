@@ -10,8 +10,8 @@ module.exports = function (app, passport) {
     // res.sendFile(path.join(__dirname, "../login/index.html"));
     const errFlash = req.flash("error");
     // res.cookie("name", "express");
-    console.log("Cookies: ", req.cookies);
-    console.log("session: ", req.session);
+    // console.log("Cookies: ", req.cookies);
+    // console.log("session: ", req.session);
     // console.log(req);
     let view = "login";
     let isAuth = req.isAuthenticated();

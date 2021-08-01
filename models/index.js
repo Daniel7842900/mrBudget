@@ -21,7 +21,10 @@
 // db.users = require("./users.model.js")(sequelize, Sequelize);
 
 // module.exports = db;
-
+/**
+  This file is in charge of reading all files in the same folder
+  and import them as a sequelize model and add it to our db object.
+ */
 "use strict";
 
 const fs = require("fs");
@@ -33,6 +36,8 @@ const config = require(__dirname + "/../config/config.json")[env];
 const db = {};
 
 let sequelize;
+
+// Set up a connection
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
@@ -46,6 +51,10 @@ if (config.use_env_variable) {
 
 fs.readdirSync(__dirname)
   .filter((file) => {
+    // console.log(file);
+    // console.log(file.indexOf(".") !== 0);
+    // console.log(file !== basename);
+    // console.log(file.slice(-3) === ".js");
     return (
       file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
     );
@@ -57,7 +66,7 @@ fs.readdirSync(__dirname)
     );
     db[model.name] = model;
   });
-
+// console.log(db);
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
