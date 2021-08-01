@@ -8,5 +8,11 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
+  Finance.associate = function (models) {
+    Finance.hasMany(models.item, {
+      foreignKey: "finance_id",
+    });
+  };
+
   return Finance;
 };
