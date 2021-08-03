@@ -5,8 +5,5 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  // one category can have many item
-  // one finance can have many item
-
   return Item;
 };

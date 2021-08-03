@@ -66,7 +66,7 @@ app.use(passport.session());
 require("./routes/auth.js")(app, passport);
 
 // load passport strategies
-require("./passport/passport.js")(passport, db.users);
+require("./passport/passport.js")(passport, db.user);
 
 app.get("/dashboard", function (req, res) {
   // console.log("we are at dashboard!");
@@ -77,13 +77,16 @@ app.get("/dashboard", function (req, res) {
   res.render("pages/dashboard");
 });
 
-app.get("/budget", function (req, res) {
-  res.render("pages/budget");
-});
+require("./routes/budget.js")(app);
+// app.get("/budget", function (req, res) {
+//   res.render("pages/budget");
+// });
 
-app.get("/budget/new", function (req, res) {
-  res.render("pages/budget/create");
-});
+// app.get("/budget/new", function (req, res) {
+//   res.render("pages/budget/create");
+// });
+
+// app.post("/budget/new", function (req, res) {});
 
 app.get("/expense", function (req, res) {
   res.render("pages/expense");

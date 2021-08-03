@@ -5,6 +5,7 @@ $(document).ready(function () {
   // Onclick event for adding an object
   //to the list
   $("#add_btn").click(function (e) {
+    e.preventDefault();
     // Create a js object for category & amount
     let obj = {};
     obj.idx = idx;
@@ -197,5 +198,30 @@ $(document).ready(function () {
         });
       }
     }
+  });
+
+  $("#submit_btn").click(function (e) {
+    e.preventDefault();
+    $.ajax({
+      url: "/budget/new",
+      type: "POST",
+      dataType: "json",
+      data: JSON.stringify({
+        income: $("#income").val(),
+        list: list,
+      }),
+
+      // Here, success is a callback function
+      //after we get a response from server side
+      success: function (res) {
+        // res is response that we get from server side
+        //in our case, from controller
+        console.log(res);
+        window.location.assign("/budget");
+      },
+      error: function () {
+        alert("There is something wrong the request!");
+      },
+    });
   });
 });
