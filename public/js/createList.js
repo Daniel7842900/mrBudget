@@ -201,6 +201,8 @@ $(document).ready(function () {
   });
 
   $("#submit_btn").click(function (e) {
+    let income = $("#income").val();
+
     e.preventDefault();
     $.ajax({
       url: "/budget/new",
@@ -211,16 +213,23 @@ $(document).ready(function () {
         list: list,
       }),
 
+      // contentType json is essential to make server
+      //understand that data is JSON
+      contentType: "application/json",
+
       // Here, success is a callback function
       //after we get a response from server side
       success: function (res) {
-        // res is response that we get from server side
+        // res is data that we get from server side
         //in our case, from controller
-        console.log(res);
         window.location.assign("/budget");
       },
-      error: function () {
-        alert("There is something wrong the request!");
+      error: function (jqXHR, textStatus, errorThrown) {
+        // Redirecting to new budget page again to display
+        //error message.
+        // TODO research if there is any way to display error
+        //message not redirecting
+        window.location.assign("/budget/new");
       },
     });
   });

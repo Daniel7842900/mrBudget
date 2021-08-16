@@ -14,6 +14,9 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
 
+// Controller
+const budgetController = require("./controllers/budget.js");
+
 // Create an Express app
 const app = express();
 
@@ -39,6 +42,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // cookie parser
 app.use(cookieParser());
+
+// use connect-flash for flash messages stored in session
 app.use(flash());
 
 // To solve, its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled. cors
@@ -82,11 +87,9 @@ require("./routes/budget.js")(app);
 //   res.render("pages/budget");
 // });
 
-// app.get("/budget/new", function (req, res) {
-//   res.render("pages/budget/create");
-// });
+app.get("/budget/new", budgetController.create);
 
-// app.post("/budget/new", function (req, res) {});
+app.post("/budget/new", budgetController.store);
 
 app.get("/expense", function (req, res) {
   res.render("pages/expense");
