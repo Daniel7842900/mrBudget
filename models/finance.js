@@ -12,6 +12,8 @@ module.exports = (sequelize, Sequelize) => {
     Finance.hasMany(models.item, {
       foreignKey: "finance_id",
     });
+
+    Finance.belongsTo(models.finance_type);
   };
 
   return Finance;

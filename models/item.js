@@ -5,5 +5,10 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
+  Item.associate = function (models) {
+    Item.belongsTo(models.category);
+    Item.belongsTo(models.finance);
+  };
+
   return Item;
 };

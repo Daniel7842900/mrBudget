@@ -201,7 +201,12 @@ $(document).ready(function () {
   });
 
   $("#submit_btn").click(function (e) {
+    let date = $("#datepicker").val();
     let income = $("#income").val();
+
+    list.forEach((obj) => {
+      obj.category = obj.category.trim();
+    });
 
     e.preventDefault();
     $.ajax({
@@ -209,6 +214,7 @@ $(document).ready(function () {
       type: "POST",
       dataType: "json",
       data: JSON.stringify({
+        date: date,
         income: $("#income").val(),
         list: list,
       }),
@@ -220,16 +226,17 @@ $(document).ready(function () {
       // Here, success is a callback function
       //after we get a response from server side
       success: function (res) {
+        console.log(res);
         // res is data that we get from server side
         //in our case, from controller
-        window.location.assign("/budget");
+        // window.location.assign("/budget");
       },
       error: function (jqXHR, textStatus, errorThrown) {
         // Redirecting to new budget page again to display
         //error message.
         // TODO research if there is any way to display error
         //message not redirecting
-        window.location.assign("/budget/new");
+        // window.location.assign("/budget/new");
       },
     });
   });
