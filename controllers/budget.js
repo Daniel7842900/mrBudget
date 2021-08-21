@@ -125,6 +125,7 @@ exports.store = (req, res) => {
     include: [Item],
   })
     .then((data) => {
+      req.flash("success_message", "New budget is created!");
       res.send(data);
     })
     .catch((err) => {

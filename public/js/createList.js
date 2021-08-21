@@ -215,7 +215,7 @@ $(document).ready(function () {
       dataType: "json",
       data: JSON.stringify({
         date: date,
-        income: $("#income").val(),
+        income: income,
         list: list,
       }),
 
@@ -226,10 +226,16 @@ $(document).ready(function () {
       // Here, success is a callback function
       //after we get a response from server side
       success: function (res) {
-        console.log(res);
         // res is data that we get from server side
         //in our case, from controller
-        // window.location.assign("/budget");
+        console.log(res);
+
+        // Show success toastr message on current page
+        //and redirect after 1 second
+        toastr.options.onHidden = function () {
+          window.location.assign("/budget");
+        };
+        toastr.success("New budget is created!", "Success", { timeOut: 1000 });
       },
       error: function (jqXHR, textStatus, errorThrown) {
         // Redirecting to new budget page again to display
