@@ -78,20 +78,22 @@
               "
             >
               <div class="w-auto my-4 mx-14 text-center">
-                <span class="text-lg">Date</span>
-                <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
-                  <input
-                    type="text"
-                    id="datepicker"
-                    class="
-                      border-2 border-solid border-gray-200
-                      text-center
-                      w-full
-                      mt-2
-                      rounded-lg
-                    "
-                  />
-                </div>
+                <form action="GET">
+                  <label for="datepicker" class="text-lg">Date</label>
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
+                    <input
+                      type="text"
+                      id="datepicker"
+                      class="
+                        border-2 border-solid border-gray-200
+                        text-center
+                        w-full
+                        mt-2
+                        rounded-lg
+                      "
+                    />
+                  </div>
+                </form>
               </div>
               <!-- Income section -->
               <div class="w-auto my-4 mx-14 text-center">
@@ -246,6 +248,7 @@
     </div>
 
     <script src="/js/datepicker.js"></script>
+    <script src="/js/findBudget.js"></script>
     <script src="/navJs/nav.js"></script>
   </body>
 </html>

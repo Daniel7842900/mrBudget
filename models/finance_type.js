@@ -6,9 +6,7 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   FinanceType.associate = function (models) {
-    FinanceType.hasMany(models.finance, {
-      foreignKey: "finance_type_id",
-    });
+    FinanceType.hasMany(models.finance);
   };
 
   return FinanceType;

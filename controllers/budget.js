@@ -3,6 +3,8 @@ const db = require("../models");
 const Finance = db.finance;
 const Item = db.item;
 const moment = require("moment");
+const _ = require("lodash");
+const { toSafeInteger } = require("lodash");
 
 // Create a new Finance and save
 exports.create = (req, res) => {
@@ -20,8 +22,8 @@ exports.store = (req, res) => {
   let startDate = dateArr[0].trim(),
     endDate = dateArr[1].trim();
 
-  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD HH:mm:ss");
-  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD HH:mm:ss");
+  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
+  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
 
   // Validate request
   if (income === null || income === 0) {
@@ -47,59 +49,59 @@ exports.store = (req, res) => {
     delete obj.idx;
     switch (obj.category) {
       case "Income":
-        obj.category_id = 1;
+        obj.categoryId = 1;
         delete obj.category;
         break;
       case "Grocery":
-        obj.category_id = 2;
+        obj.categoryId = 2;
         delete obj.category;
         break;
       case "Rent":
-        obj.category_id = 3;
+        obj.categoryId = 3;
         delete obj.category;
         break;
       case "Utility":
-        obj.category_id = 4;
+        obj.categoryId = 4;
         delete obj.category;
         break;
       case "Dineout":
-        obj.category_id = 5;
+        obj.categoryId = 5;
         delete obj.category;
         break;
       case "Investment":
-        obj.category_id = 6;
+        obj.categoryId = 6;
         delete obj.category;
         break;
       case "Saving":
-        obj.category_id = 7;
+        obj.categoryId = 7;
         delete obj.category;
         break;
       case "Alcohol":
-        obj.category_id = 8;
+        obj.categoryId = 8;
         delete obj.category;
         break;
       case "Leisure":
-        obj.category_id = 9;
+        obj.categoryId = 9;
         delete obj.category;
         break;
       case "Insurance":
-        obj.category_id = 10;
+        obj.categoryId = 10;
         delete obj.category;
         break;
       case "Loan":
-        obj.category_id = 11;
+        obj.categoryId = 11;
         delete obj.category;
         break;
       case "Streaming Service":
-        obj.category_id = 12;
+        obj.categoryId = 12;
         delete obj.category;
         break;
       case "Transportation":
-        obj.category_id = 13;
+        obj.categoryId = 13;
         delete obj.category;
         break;
       case "Etc":
-        obj.category_id = 14;
+        obj.categoryId = 14;
         delete obj.category;
         break;
       default:
@@ -117,7 +119,7 @@ exports.store = (req, res) => {
   const budget = {
     startDate: startDate,
     endDate: endDate,
-    finance_type: 1,
+    financeTypeId: 1,
     items: itemizedList,
   };
 
@@ -144,6 +146,90 @@ exports.store = (req, res) => {
   // return res.status(201).json(req.body);
 };
 
-exports.findAll = (req, res) => {
-  res.render("pages/budget");
+exports.findOne = (req, res) => {
+  console.log(req.query);
+
+  if (_.isEmpty(req.query)) {
+    res.render("pages/budget");
+  } else {
+    let startDate = req.query.start,
+      endDate = req.query.end;
+
+    startDate = moment(startDate, "MM-DD-YYYY").format("YYYY-MM-DD");
+    endDate = moment(endDate, "MM-DD-YYYY").format("YYYY-MM-DD");
+
+    console.log(startDate);
+    console.log(endDate);
+
+    Finance.findOne({
+      where: { startDate: startDate, endDate: endDate },
+    })
+      .then((budget) => {
+        let id = budget.dataValues.id;
+        Item.findAll({
+          where: { financeId: id },
+        })
+          .then((items) => {
+            let itemizedItems = [];
+            items.forEach((element) => {
+              let itemizedItem = {};
+              console.log(element);
+              itemizedItem.amount = element.dataValues.amount;
+              switch (element.dataValues.categoryId) {
+                case 1:
+                  itemizedItem.categoryId = "Income";
+                  break;
+                case 2:
+                  itemizedItem.categoryId = "Grocery";
+                  break;
+                case 3:
+                  itemizedItem.categoryId = "Rent";
+                  break;
+                case 4:
+                  itemizedItem.categoryId = "Utility";
+                  break;
+                case 5:
+                  itemizedItem.categoryId = "Dineout";
+                  break;
+                case 6:
+                  itemizedItem.categoryId = "Investment";
+                  break;
+                case 7:
+                  itemizedItem.categoryId = "Saving";
+                  break;
+                case 8:
+                  itemizedItem.categoryId = "Alcohol";
+                  break;
+                case 9:
+                  itemizedItem.categoryId = "Leisure";
+                  break;
+                case 10:
+                  itemizedItem.categoryId = "Insurance";
+                  break;
+                case 11:
+                  itemizedItem.categoryId = "Loan";
+                  break;
+                case 12:
+                  itemizedItem.categoryId = "Streaming Service";
+                  break;
+                case 13:
+                  itemizedItem.categoryId = "Transportation";
+                  break;
+                case 14:
+                  itemizedItem.categoryId = "Etc";
+                  break;
+                default:
+              }
+              itemizedItems.push(itemizedItem);
+            });
+            res.send(itemizedItems);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
