@@ -12,22 +12,23 @@ $(document).ready(function () {
 
     console.log("/budget?start=" + startDate + "&end=" + endDate);
 
-    // window.location.href = "/budget?start=" + startDate + "&end=" + endDate;
+    window.location.href = "/budget?start=" + startDate + "&end=" + endDate;
 
     // console.log("moved");
 
     // TODO finish the GET ajax call
-    $.ajax({
-      url: "/budget?start=" + startDate + "&end=" + endDate,
-      type: "GET",
-      success: function (data) {
-        console.log(data);
-        // TODO display income & summary with the given data
-        console.log("inside the success");
-      },
-      error: function () {
-        console.log("inside the error");
-      },
-    });
+    // $.ajax({
+    //   url: "/budget?start=" + startDate + "&end=" + endDate,
+    //   type: "GET",
+    //   success: function (data) {
+    //     console.log(data);
+    //     // TODO display income & summary with the given data
+    //     console.log("inside the success");
+
+    //   },
+    //   error: function () {
+    //     console.log("inside the error");
+    //   },
+    // });
   });
 });

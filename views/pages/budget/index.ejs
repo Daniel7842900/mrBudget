@@ -124,7 +124,16 @@
                     placeholder="0.00"
                     aria-describedby="income-currency"
                   >
+                    <% if(itemizedItems.length != 0) { let idx = 0;%> <%
+                    itemizedItems.forEach((obj)=> { %> <% if(obj.category
+                    ==="Income") { %>
+                    <span><%= obj.amount %></span>
+                    <%} %> <% idx++;})%> <% if(itemizedItems.length-1 === idx)
+                    {%>
                     <span>0.00</span>
+                    <%}%> <%} else {%>
+                    <span>0.00</span>
+                    <%}%>
                   </div>
                   <div
                     class="
