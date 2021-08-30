@@ -20,6 +20,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <link
       rel="stylesheet"
       type="text/css"
@@ -56,6 +57,12 @@
             border-b-2 border-white border-solid
           "
         >
+          <!-- Is this the only way to display an error...? -->
+          <% if(error.length > 0) {%>
+          <script>
+            toastr.error(`<%=error%>`);
+          </script>
+          <%}%>
           <h1 class="text-lg leading-6 font-semibold text-white">Budget</h1>
           <a href="/budget/new">
             <button class="text-2xl text-white">
@@ -124,16 +131,16 @@
                     placeholder="0.00"
                     aria-describedby="income-currency"
                   >
-                    <% if(itemizedItems.length != 0) { let idx = 0;%> <%
+                    <% if(itemizedItems.length != 0) { let idx = 0; %> <%
                     itemizedItems.forEach((obj)=> { %> <% if(obj.category
                     ==="Income") { %>
                     <span><%= obj.amount %></span>
-                    <%} %> <% idx++;})%> <% if(itemizedItems.length-1 === idx)
-                    {%>
+                    <%} %> <% idx++;}) %> <% if(itemizedItems.length-1 === idx)
+                    { %>
                     <span>0.00</span>
-                    <%}%> <%} else {%>
+                    <% } %> <% } else { %>
                     <span>0.00</span>
-                    <%}%>
+                    <% } %>
                   </div>
                   <div
                     class="
@@ -218,6 +225,9 @@
                             </tr>
                           </thead>
                           <tbody class="bg-white divide-y divide-gray-200">
+                            <% if(itemizedItems.length != 0) { %> <%
+                            itemizedItems.forEach((obj) => { %> <%
+                            if(obj.category !== "Income") { %>
                             <tr>
                               <td
                                 class="
@@ -229,7 +239,7 @@
                                   text-gray-900
                                 "
                               >
-                                Rent
+                                <%= obj.category %>
                               </td>
                               <td
                                 class="
@@ -239,9 +249,10 @@
                                   text-sm text-gray-500
                                 "
                               >
-                                $900
+                                $<%= obj.amount %>
                               </td>
                             </tr>
+                            <% }%> <% }) %> <% } %>
                           </tbody>
                         </table>
                       </div>
@@ -257,7 +268,7 @@
     </div>
 
     <script src="/js/datepicker.js"></script>
-    <script src="/js/findBudget.js"></script>
     <script src="/navJs/nav.js"></script>
+    <script src="/js/findBudget.js"></script>
   </body>
 </html>

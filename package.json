@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "express-validator": "^6.12.0",
+    "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
@@ -24,6 +25,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "sequelize": "^6.6.4",
+    "toastr": "^2.1.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

@@ -4,7 +4,9 @@ const Finance = db.finance;
 const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
-const { toSafeInteger } = require("lodash");
+const jquery = require("jquery");
+const toastr = require("toastr");
+// const { toSafeInteger } = require("lodash");
 
 // Create a new Finance and save
 exports.create = (req, res) => {
@@ -147,11 +149,14 @@ exports.store = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-  console.log(req.query);
+  // console.log(req.query);
   let itemizedItems = [];
 
   if (_.isEmpty(req.query)) {
-    res.render("pages/budget", { itemizedItems: itemizedItems });
+    res.render("pages/budget", {
+      itemizedItems: itemizedItems,
+      error: req.flash("budget_err"),
+    });
   } else {
     let startDate = req.query.start,
       endDate = req.query.end;
@@ -165,75 +170,82 @@ exports.findOne = (req, res) => {
     Finance.findOne({
       where: { startDate: startDate, endDate: endDate },
     })
-      .then((budget) => {
-        let id = budget.dataValues.id;
-        Item.findAll({
-          where: { financeId: id },
-        })
-          .then((items) => {
-            items.forEach((element) => {
-              let itemizedItem = {};
-              console.log(element);
-              itemizedItem.amount = element.dataValues.amount;
-              switch (element.dataValues.categoryId) {
-                case 1:
-                  itemizedItem.category = "Income";
-                  break;
-                case 2:
-                  itemizedItem.category = "Grocery";
-                  break;
-                case 3:
-                  itemizedItem.category = "Rent";
-                  break;
-                case 4:
-                  itemizedItem.category = "Utility";
-                  break;
-                case 5:
-                  itemizedItem.category = "Dineout";
-                  break;
-                case 6:
-                  itemizedItem.category = "Investment";
-                  break;
-                case 7:
-                  itemizedItem.category = "Saving";
-                  break;
-                case 8:
-                  itemizedItem.category = "Alcohol";
-                  break;
-                case 9:
-                  itemizedItem.category = "Leisure";
-                  break;
-                case 10:
-                  itemizedItem.category = "Insurance";
-                  break;
-                case 11:
-                  itemizedItem.category = "Loan";
-                  break;
-                case 12:
-                  itemizedItem.category = "Streaming Service";
-                  break;
-                case 13:
-                  itemizedItem.category = "Transportation";
-                  break;
-                case 14:
-                  itemizedItem.category = "Etc";
-                  break;
-                default:
-              }
-              itemizedItems.push(itemizedItem);
-            });
-            // res.send(itemizedItems);
-            itemizedItems.forEach((element) => {
-              console.log(element);
-            });
-            res.render("pages/budget", { itemizedItems: itemizedItems });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+      .then((budgetInst) => {
+        // console.log(budgetInst);
+        return budgetInst.get();
+      })
+      .then((budgetData) => {
+        if (budgetData === null) {
+          throw "error";
+        }
+        return Item.findAll({
+          where: { financeId: budgetData.id },
+        });
+      })
+      .then((items) => {
+        // console.log(items);
+        items.forEach((element) => {
+          let itemizedItem = {};
+          // console.log(element);
+          itemizedItem.amount = element.dataValues.amount;
+          switch (element.dataValues.categoryId) {
+            case 1:
+              itemizedItem.category = "Income";
+              break;
+            case 2:
+              itemizedItem.category = "Grocery";
+              break;
+            case 3:
+              itemizedItem.category = "Rent";
+              break;
+            case 4:
+              itemizedItem.category = "Utility";
+              break;
+            case 5:
+              itemizedItem.category = "Dineout";
+              break;
+            case 6:
+              itemizedItem.category = "Investment";
+              break;
+            case 7:
+              itemizedItem.category = "Saving";
+              break;
+            case 8:
+              itemizedItem.category = "Alcohol";
+              break;
+            case 9:
+              itemizedItem.category = "Leisure";
+              break;
+            case 10:
+              itemizedItem.category = "Insurance";
+              break;
+            case 11:
+              itemizedItem.category = "Loan";
+              break;
+            case 12:
+              itemizedItem.category = "Streaming Service";
+              break;
+            case 13:
+              itemizedItem.category = "Transportation";
+              break;
+            case 14:
+              itemizedItem.category = "Etc";
+              break;
+            default:
+          }
+          itemizedItems.push(itemizedItem);
+        });
+        res.render("pages/budget", {
+          itemizedItems: itemizedItems,
+          error: req.flash("budget_err"),
+        });
       })
       .catch((err) => {
-        console.log(err);
+        req.flash("budget_err", "Budget doesn't exist!");
+        res.render("pages/budget", {
+          itemizedItems: itemizedItems,
+          error: req.flash("budget_err"),
+        });
       });
   }
 };
