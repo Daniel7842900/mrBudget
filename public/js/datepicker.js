@@ -1,11 +1,6 @@
-// $("#datepicker").daterangepicker({
-//   locale: {
-//     format: "MMM DD YYYY",
-//   },
-// });
-
 const urlParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlParams.entries());
+
 if (_.isEmpty(params)) {
   $("#datepicker").daterangepicker({
     locale: {
@@ -19,6 +14,7 @@ if (_.isEmpty(params)) {
   start = moment(start, "MM-DD-YYYY").format("MMM DD YYYY");
   end = moment(end, "MM-DD-YYYY").format("MMM DD YYYY");
 
+  // Display the chosen dates inside the input field
   $("#datepicker").daterangepicker({
     startDate: start,
     endDate: end,

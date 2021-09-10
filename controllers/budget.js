@@ -8,13 +8,14 @@ const jquery = require("jquery");
 const toastr = require("toastr");
 // const { toSafeInteger } = require("lodash");
 
-// Create a new Finance and save
+// Controller for displaying a new budget page
 exports.create = (req, res) => {
   res.render("pages/budget/create", {
     err_message: req.flash("err_message"),
   });
 };
 
+// Controller for saving a new budget
 exports.store = (req, res) => {
   let date = req.body.date,
     income = parseFloat(req.body.income),
@@ -148,12 +149,39 @@ exports.store = (req, res) => {
   // return res.status(201).json(req.body);
 };
 
+exports.findAll = (req, res) => {
+  let itemizedItems = [];
+  let budgetsArr = [];
+
+  // TODO it seems like the results don't get passed into the views
+  //when it renders. figure this out.
+  Finance.findAll({
+    where: {
+      financeTypeId: 1,
+    },
+  }).then((budgetInsts) => {
+    console.log("hello");
+    budgetInsts.forEach((budgetInst) => {
+      let budgetData = budgetInst.get();
+      console.log(budgetData);
+      budgetsArr.push(budgetData);
+    });
+    res.render("pages/budget", {
+      budgets: budgetsArr,
+      itemizedItems: itemizedItems,
+      error: req.flash("budget_err"),
+    });
+  });
+};
+
+// Controller for displaying a budget
 exports.findOne = (req, res) => {
   // console.log(req.query);
   let itemizedItems = [];
 
   if (_.isEmpty(req.query)) {
     res.render("pages/budget", {
+      budgets: budgetsArr,
       itemizedItems: itemizedItems,
       error: req.flash("budget_err"),
     });
@@ -236,6 +264,7 @@ exports.findOne = (req, res) => {
           itemizedItems.push(itemizedItem);
         });
         res.render("pages/budget", {
+          budgets: budgetsArr,
           itemizedItems: itemizedItems,
           error: req.flash("budget_err"),
         });
@@ -243,6 +272,7 @@ exports.findOne = (req, res) => {
       .catch((err) => {
         req.flash("budget_err", "Budget doesn't exist!");
         res.render("pages/budget", {
+          budgets: budgetsArr,
           itemizedItems: itemizedItems,
           error: req.flash("budget_err"),
         });

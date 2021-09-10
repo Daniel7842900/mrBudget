@@ -87,9 +87,9 @@ require("./routes/budget.js")(app);
 //   res.render("pages/budget");
 // });
 
-app.get("/budget/new", budgetController.create);
+// app.get("/budget/new", budgetController.create);
 
-app.post("/budget/new", budgetController.store);
+// app.post("/budget/new", budgetController.store);
 
 app.get("/expense", function (req, res) {
   res.render("pages/expense");

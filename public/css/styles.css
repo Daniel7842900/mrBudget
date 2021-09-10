@@ -12,3 +12,17 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
+
+.daterangepicker .calendar-table td.occupied-end {
+  background-color: #dee201;
+  border-color: transparent;
+  color: #000;
+  border-radius: 4px 0 0 4px;
+}
+
+.daterangepicker .calendar-table td.occupied-in-range {
+  background-color: #f8facf;
+  border-color: transparent;
+  color: #000;
+  border-radius: 0;
+}
