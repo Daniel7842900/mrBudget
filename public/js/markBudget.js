@@ -1,59 +1,78 @@
 const budgetJson = JSON.parse(budgetData);
 
 $(document).on("click", "#datepicker", function (e) {
-  console.log("triggered?");
+  markBudget();
+
+  // Mark budgets when prev btn clicked
+  $(".drp-calendar.left").on("click", "th.prev", function (e) {
+    markBudget();
+  });
+
+  // Mark budgets when next btn clicked
+  $(".drp-calendar.right").on("click", "th.next", function (e) {
+    markBudget();
+  });
+
+  // TODO Mark budgets when any dates are clicked
+});
+
+// Mark budgets
+function markBudget() {
+  // Get the DOM elements of month and year from a calendar
   let monYrsDom = $("thead").find("th.month");
   let monYrs = [];
-  let leftMonth, leftYear, rightMonth, rightYear;
+  let leftDates = [];
+  let rightDates = [];
+  let leftFullDates = [];
+  let rightFullDates = [];
+  let leftMonYr, rightMonYr;
 
+  // Store the value of DOM elements of month and year to an array
   monYrsDom.each(function (i, obj) {
     monYrs.push($(this).text());
   });
 
-  leftMonth = monYrs[0].split(" ")[0];
-  leftYear = monYrs[0].split(" ")[1];
-  rightMonth = monYrs[1].split(" ")[0];
-  rightYear = monYrs[1].split(" ")[1];
+  leftMonYr = monYrs[0];
+  rightMonYr = monYrs[1];
 
+  // Get the DOM elements of dates of left calendar
   let leftDatesDom = $("body div.drp-calendar.left")
     .find("td.available")
     .not("td.off");
 
-  let leftDates = [];
-
+  // Get the DOM elements of dates of right calendar
   let rightDatesDom = $("div.drp-calendar.right")
     .find("td.available")
     .not("td.off");
-  let rightDates = [];
 
-  // Left calendar dates
+  // Store the value of DOM elements of left calendar dates to an array
   leftDatesDom.each(function (index) {
     let date = $(this).text();
-    $(this).attr("data-date", date);
+    // $(this).attr("data-date", date);
     leftDates.push(date);
   });
 
-  // Right calendar dates
+  // Store the value of DOM elements of right calendar dates to an array
   rightDatesDom.each(function () {
     rightDates.push($(this).text());
   });
 
-  let leftFullDates = [];
-  let rightFullDates = [];
-
+  // Concatenate month, date, and year of left calendar to one and re-format the date
   leftDates.forEach((day) => {
-    let date = leftMonth.concat(" ", day, " ", leftYear);
-    date = moment(date, "MMM DD YYYY").format("YYYY-MM-DD");
-    // console.log(date);
+    let date = day.concat(" ", leftMonYr);
+    date = moment(date, "DD MMM YYYY").format("YYYY-MM-DD");
     leftFullDates.push(date);
   });
 
+  // Concatenate month, date, and year of right calendar to one and re-format the date
   rightDates.forEach((day) => {
-    let date = rightMonth.concat(" ", day, " ", rightYear);
-    date = moment(date, "MMM DD YYYY").format("YYYY-MM-DD");
+    let date = day.concat(" ", rightMonYr);
+    date = moment(date, "DD MMM YYYY").format("YYYY-MM-DD");
     rightFullDates.push(date);
   });
 
+  // Go through each budget we get from db
+  //TODO find a better way to implement this
   budgetJson.forEach((budget) => {
     let start = budget.startDate;
     let end = budget.endDate;
@@ -62,7 +81,7 @@ $(document).on("click", "#datepicker", function (e) {
     let endMonth = end.split("-")[1];
     let endDate = end.split("-")[2];
 
-    // need to check each dates and if the month and date match.
+    // Check every date of left calendar
     for (let i = 0; i < leftFullDates.length - 1; i++) {
       let leftFullDateMon = leftFullDates[i].split("-")[1];
       let leftFullDateDate = leftFullDates[i].split("-")[2];
@@ -100,118 +119,4 @@ $(document).on("click", "#datepicker", function (e) {
       }
     }
   });
-  leftDatesDom = [];
-  rightDatesDom = [];
-
-  let prev = $("thead").find("th.prev")[0];
-  // var event = jQuery.Event("click");
-  // event.target = prev;
-  // $("body").trigger(event);
-
-  $(document).on("click", prev, function () {
-    console.log("prev triggered");
-    let monYrsDom = $("thead").find("th.month");
-    let monYrs = [];
-    let leftMonth, leftYear, rightMonth, rightYear;
-
-    monYrsDom.each(function (i, obj) {
-      monYrs.push($(this).text());
-    });
-
-    leftMonth = monYrs[0].split(" ")[0];
-    leftYear = monYrs[0].split(" ")[1];
-    rightMonth = monYrs[1].split(" ")[0];
-    rightYear = monYrs[1].split(" ")[1];
-
-    let leftDatesDom = $("body div.drp-calendar.left")
-      .find("td.available")
-      .not("td.off");
-
-    let leftDates = [];
-
-    let rightDatesDom = $("div.drp-calendar.right")
-      .find("td.available")
-      .not("td.off");
-    let rightDates = [];
-
-    // Left calendar dates
-    leftDatesDom.each(function (index) {
-      let date = $(this).text();
-      $(this).attr("data-date", date);
-      leftDates.push(date);
-    });
-
-    // Right calendar dates
-    rightDatesDom.each(function () {
-      rightDates.push($(this).text());
-    });
-
-    let leftFullDates = [];
-    let rightFullDates = [];
-
-    leftDates.forEach((day) => {
-      let date = leftMonth.concat(" ", day, " ", leftYear);
-      date = moment(date, "MMM DD YYYY").format("YYYY-MM-DD");
-      // console.log(date);
-      leftFullDates.push(date);
-    });
-
-    rightDates.forEach((day) => {
-      let date = rightMonth.concat(" ", day, " ", rightYear);
-      date = moment(date, "MMM DD YYYY").format("YYYY-MM-DD");
-      rightFullDates.push(date);
-    });
-
-    budgetJson.forEach((budget) => {
-      let start = budget.startDate;
-      let end = budget.endDate;
-      let startMonth = start.split("-")[1];
-      let startDate = start.split("-")[2];
-      let endMonth = end.split("-")[1];
-      let endDate = end.split("-")[2];
-
-      // need to check each dates and if the month and date match.
-      for (let i = 0; i < leftFullDates.length - 1; i++) {
-        let leftFullDateMon = leftFullDates[i].split("-")[1];
-        let leftFullDateDate = leftFullDates[i].split("-")[2];
-
-        if (leftFullDateMon === startMonth) {
-          if (leftFullDateDate === startDate || leftFullDateDate === endDate) {
-            let occupiedEnd = leftDatesDom.get(i);
-            // $(occupiedEnd).removeClass("available");
-            $(occupiedEnd).addClass("occupied-end");
-          } else if (
-            parseInt(leftFullDateDate, 10) > parseInt(startDate, 10) &&
-            parseInt(leftFullDateDate, 10) < parseInt(endDate, 10)
-          ) {
-            let occupiedInRange = leftDatesDom.get(i);
-            $(occupiedInRange).addClass("occupied-in-range");
-          }
-        }
-      }
-
-      for (let i = 0; i < rightFullDates.length - 1; i++) {
-        let rightFullDateMon = rightFullDates[i].split("-")[1];
-        let rightFullDateDate = rightFullDates[i].split("-")[2];
-        if (rightFullDateMon === startMonth) {
-          if (
-            rightFullDateDate === startDate ||
-            rightFullDateDate === endDate
-          ) {
-            let occupiedEnd = rightDatesDom.get(i);
-            // $(occupiedEnd).removeClass("available");
-            $(occupiedEnd).addClass("occupied-end");
-          } else if (
-            parseInt(rightFullDateDate, 10) > parseInt(startDate, 10) &&
-            parseInt(rightFullDateDate, 10) < parseInt(endDate, 10)
-          ) {
-            let occupiedInRange = rightDatesDom.get(i);
-            $(occupiedInRange).addClass("occupied-in-range");
-          }
-        }
-      }
-    });
-    leftDatesDom = [];
-    rightDatesDom = [];
-  });
-});
+}
