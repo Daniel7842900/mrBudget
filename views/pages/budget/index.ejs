@@ -84,8 +84,23 @@
                 h-auto
               "
             >
+            <!-- Edit and Delete button section -->
+            <% if(itemizedItems.length !== 0) { %>
+              <div class="w-auto my-4 mx-10 text-right">
+                <a href="/budget/edit?start=<%= startDate %>&end=<%= endDate%>">
+                  <button class="text-2xl mx-2 text-yellow-500">
+                    <i class="fas fa-pen"></i>
+                  </button>
+                <a href="">
+                  <button class="text-2xl mx-2 text-red-600">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </a>
+              </div>
+              <% } %>
+              <!-- Date selection section -->
               <div class="w-auto my-4 mx-14 text-center">
-                <form action="GET">
+                <form action="/budget" method="GET">
                   <label for="datepicker" class="text-lg">Date</label>
                   <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
                     <input
@@ -262,7 +277,6 @@
               </div>
             </div>
           </div>
-          <!-- /End replace -->
         </div>
       </main>
     </div>

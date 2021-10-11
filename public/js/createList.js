@@ -1,122 +1,149 @@
 $(document).ready(function () {
   let list = [];
   let idx = 0;
+  let catMap = new Map([
+    ["Grocery", false],
+    ["Rent", false],
+    ["Utility", false],
+    ["Dineout", false],
+    ["Investment", false],
+    ["Saving", false],
+    ["Alcohol", false],
+    ["Leisure", false],
+    ["Insurance", false],
+    ["Loan", false],
+    ["Streaming Service", false],
+    ["Transportation", false],
+    ["Etc", false],
+  ]);
 
   // Onclick event for adding an object
   //to the list
-  $("#add_btn").click(function (e) {
+  $("#add_btn").on("click", function (e) {
     e.preventDefault();
     // Create a js object for category & amount
     let obj = {};
-    obj.idx = idx;
-    obj.category = $("#category").children("option:selected").text();
-    let amount = $("#amount").val();
+    let objCat = $("#category").children("option:selected").text();
+    if (catMap.get(objCat) === false) {
+      let amount = $("#amount").val();
 
-    // Change the text to number
-    amount = parseFloat(amount);
+      // Change the text to number
+      amount = parseFloat(amount);
 
-    // Round the number until 2 decimals
-    amount = Math.round(amount * 100) / 100;
+      // Round the number until 2 decimals
+      amount = Math.round(amount * 100) / 100;
 
-    obj.amount = amount;
+      if (_.isNaN(amount) === true || amount === 0) {
+        // Reset the values after adding
+        $("#amount").val("");
 
-    if (obj.amount === 0 || isNaN(obj.amount) === true) {
-      // Reset the values after adding
-      $("#amount").val("");
+        // Prevent onClick event
+        e.preventDefault();
 
-      // Prevent onClick event
-      e.preventDefault();
-      return false;
-    }
+        toastr.warning("Please enter the amount!", "Warning", {
+          timeOut: 1000,
+        });
+        return false;
+      } else {
+        catMap.set(objCat, true);
 
-    // console.log(obj);
+        obj.category = objCat;
+        obj.idx = idx;
+        obj.amount = amount;
 
-    // Push the object into the list
-    list.push(obj);
+        // Push the object into the list
+        list.push(obj);
 
-    // Reset the values after adding
-    $("#category option:first").prop("selected", true);
-    $("#amount").val("");
+        // Reset the values after adding
+        $("#category option:first").prop("selected", true);
+        $("#amount").val("");
 
-    // Increment the index
-    idx++;
+        // Increment the index
+        idx++;
 
-    console.log("add list");
-    console.log(list);
+        console.log("add list");
+        console.log(list);
 
-    // Render table rows using the list that contains js objects.
-    //this is done in client-side because we can't pass the list
-    //to server-side.
-    html = ejs.render(
-      `<% list.forEach(function(obj) { %>
-      <tr>
-        <td
-          class="
-            px-6
-            py-4
-            whitespace-nowrap
-            text-sm
-            font-medium
-            text-gray-900
-          "
-        >
-          <%= obj.category %>
-        </td>
-        <td
-          class="
-            px-6
-            py-4
-            whitespace-nowrap
-            text-sm text-gray-500
-          "
-        >
-          $ <%= obj.amount %>
-        </td>
-        <td
-          class="
-            px-6
-            py-4
-            whitespace-nowrap
-            text-sm text-gray-500
-          "
-        >
-          <button
+        // Render table rows using the list that contains js objects.
+        //this is done in client-side because we can't pass the list
+        //to server-side.
+        html = ejs.render(
+          `<% list.forEach(function(obj) { %>
+        <tr>
+          <td
             class="
-              inline-flex
-              justify-center
-              py-2
-              px-4
-              border border-transparent
-              shadow-sm
+              px-6
+              py-4
+              whitespace-nowrap
               text-sm
               font-medium
-              rounded-md
-              text-white
-              bg-red-500
-              hover:bg-red-700
-              remove_btn
+              text-gray-900
             "
-            id="remove_btn_<%= obj.idx %>"
           >
-            X
-          </button>
-        </td>
-      </tr>
-      <% });%>`,
-      { list: list }
-    );
+            <%= obj.category %>
+          </td>
+          <td
+            class="
+              px-6
+              py-4
+              whitespace-nowrap
+              text-sm text-gray-500
+            "
+          >
+            $ <%= obj.amount %>
+          </td>
+          <td
+            class="
+              px-6
+              py-4
+              whitespace-nowrap
+              text-sm text-gray-500
+            "
+          >
+            <button
+              class="
+                inline-flex
+                justify-center
+                py-2
+                px-4
+                border border-transparent
+                shadow-sm
+                text-sm
+                font-medium
+                rounded-md
+                text-white
+                bg-red-500
+                hover:bg-red-700
+                remove_btn
+              "
+              id="remove_btn_<%= obj.idx %>"
+            >
+              X
+            </button>
+          </td>
+        </tr>
+        <% });%>`,
+          { list: list }
+        );
 
-    // This is required for re-rendering table body element.
-    //if this is not present, it will now show the list of objects
-    //that we added above.
-    $.get("/budget/new", function () {
-      $("#summary_data").html(html);
-    });
+        // This is required for re-rendering table body element.
+        //if this is not present, it will now show the list of objects
+        //that we added above.
+        $.get("/budget/new", function () {
+          $("#summary_data").html(html);
+        });
+      }
+    } else if (catMap.get(objCat) === true) {
+      toastr.warning("No same category!", "Warning", {
+        timeOut: 1000,
+      });
+    }
   });
 
   // Onclick event for removing an object
   //from the list
-  $("#summary_data").on("click", ".remove_btn", function () {
+  $("#summary_data").on("click", ".remove_btn", function (e) {
+    e.preventDefault();
     if (list.length !== 0) {
       let rIdx = parseInt($(this).attr("id").split("_")[2]);
 
@@ -200,7 +227,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#submit_btn").click(function (e) {
+  $("#submit_btn").on("click", function (e) {
     let date = $("#datepicker").val();
     let income = $("#income").val();
 
@@ -242,6 +269,7 @@ $(document).ready(function () {
         //error message.
         // TODO research if there is any way to display error
         //message not redirecting
+        toastr.error(jqXHR.responseJSON["message"], "Error", { timeOut: 1000 });
         // window.location.assign("/budget/new");
       },
     });

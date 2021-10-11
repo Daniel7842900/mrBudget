@@ -7,7 +7,9 @@ module.exports = (app) => {
 
   router.get("/new", budget.create);
 
-  router.get("/", budget.findAll);
+  router.get("/edit", budget.edit);
+
+  router.post("/edit", budget.update);
 
   router.get("/", budget.findOne);
 

@@ -13,6 +13,7 @@ const auth = require("./validation/authValidation.js");
 const passport = require("passport");
 const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
+const _ = require("lodash");
 
 // Controller
 const budgetController = require("./controllers/budget.js");
@@ -50,6 +51,9 @@ app.use(flash());
 // build is for Tailwind CSS
 app.use("/build", express.static("build"));
 
+// Set lodash in locals in order to use in ejs templates
+app.locals._ = _;
+
 // Create database connection
 const db = require("./models");
 
@@ -83,13 +87,6 @@ app.get("/dashboard", function (req, res) {
 });
 
 require("./routes/budget.js")(app);
-// app.get("/budget", function (req, res) {
-//   res.render("pages/budget");
-// });
-
-// app.get("/budget/new", budgetController.create);
-
-// app.post("/budget/new", budgetController.store);
 
 app.get("/expense", function (req, res) {
   res.render("pages/expense");
