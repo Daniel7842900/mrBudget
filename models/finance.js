@@ -9,7 +9,9 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   Finance.associate = function (models) {
-    Finance.hasMany(models.item);
+    Finance.hasMany(models.item, {
+      onDelete: "CASCADE",
+    });
 
     Finance.belongsTo(models.finance_type);
   };

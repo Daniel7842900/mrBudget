@@ -69,7 +69,6 @@
       <main class="bg-green-500 h-screen">
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 bg-green-500">
           <!-- Content -->
-          <!-- <form action="POST"> -->
           <form action="/budget/new" method="POST">
             <div class="px-4 py-4 sm:px-0">
               <div
@@ -203,14 +202,14 @@
                         <option value="grocery">Grocery</option>
                         <option value="rent">Rent</option>
                         <option value="utility">Utility</option>
-                        <option value="dineout">Dine out</option>
+                        <option value="dine out">Dine out</option>
                         <option value="investment">Investment</option>
                         <option value="saving">Saving</option>
                         <option value="alcohol">Alcohol</option>
                         <option value="leisure">Leisure</option>
                         <option value="insurance">Insurance</option>
                         <option value="loan">Loan</option>
-                        <option value="streamingservice">
+                        <option value="streaming service">
                           Streaming Service
                         </option>
                         <option value="transportation">Transportation</option>
@@ -407,12 +406,14 @@
               </div>
             </div>
           </form>
-          <!-- /End replace -->
         </div>
       </main>
     </div>
-
+    <script>
+      let budgetData = `<%- JSON.stringify(budgets); %>`;
+    </script>
     <script src="/js/datepicker.js"></script>
     <script src="/navJs/nav.js"></script>
+    <script src="/js/markBudget.js"></script>
   </body>
 </html>

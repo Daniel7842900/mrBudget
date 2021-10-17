@@ -11,6 +11,8 @@ module.exports = (app) => {
 
   router.post("/edit", budget.update);
 
+  router.delete("/delete", budget.delete);
+
   router.get("/", budget.findOne);
 
   app.use("/budget", router);

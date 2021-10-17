@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
   $("#datepicker").on("apply.daterangepicker", function (ev, picker) {
     // console.log($(this));
     // console.log($(this).val());

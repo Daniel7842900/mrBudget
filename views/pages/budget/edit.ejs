@@ -374,8 +374,8 @@
                             >
                               <% if(itemizedItems.length != 0) { let idx = 0; %>
                               <% itemizedItems.forEach((obj) => { %> <%
-                              if(obj.category !== "income") { obj.category =
-                              _.startCase(obj.category) %>
+                              if(obj.category !== _.toLower("income")) {
+                              obj.category = _.startCase(obj.category) %>
                               <tr>
                                 <td
                                   class="
@@ -460,7 +460,6 @@
               </div>
             </div>
           </form>
-          <!-- /End replace -->
         </div>
       </main>
     </div>

@@ -1,20 +1,20 @@
-$(document).ready(function () {
+$(function () {
   let list = [];
   let idx = 0;
   let catMap = new Map([
-    ["Grocery", false],
-    ["Rent", false],
-    ["Utility", false],
-    ["Dineout", false],
-    ["Investment", false],
-    ["Saving", false],
-    ["Alcohol", false],
-    ["Leisure", false],
-    ["Insurance", false],
-    ["Loan", false],
-    ["Streaming Service", false],
-    ["Transportation", false],
-    ["Etc", false],
+    [_.toLower("grocery"), false],
+    [_.toLower("rent"), false],
+    [_.toLower("utility"), false],
+    [_.toLower("dine out"), false],
+    [_.toLower("investment"), false],
+    [_.toLower("saving"), false],
+    [_.toLower("alcohol"), false],
+    [_.toLower("leisure"), false],
+    [_.toLower("insurance"), false],
+    [_.toLower("loan"), false],
+    [_.toLower("streaming service"), false],
+    [_.toLower("transportation"), false],
+    [_.toLower("etc"), false],
   ]);
 
   // Onclick event for adding an object
@@ -23,7 +23,9 @@ $(document).ready(function () {
     e.preventDefault();
     // Create a js object for category & amount
     let obj = {};
-    let objCat = $("#category").children("option:selected").text();
+    let objCat = $("#category").children("option:selected").val();
+    objCat = _.toLower(objCat);
+    console.log(objCat);
     if (catMap.get(objCat) === false) {
       let amount = $("#amount").val();
 
@@ -68,7 +70,8 @@ $(document).ready(function () {
         //this is done in client-side because we can't pass the list
         //to server-side.
         html = ejs.render(
-          `<% list.forEach(function(obj) { %>
+          `<% list.forEach(function(obj) {
+            obj.category = _.startCase(obj.category) %>
         <tr>
           <td
             class="
@@ -162,7 +165,8 @@ $(document).ready(function () {
         idx--;
 
         html = ejs.render(
-          `<% list.forEach(function(obj) { %>
+          `<% list.forEach(function(obj) {
+            obj.category = _.startCase(obj.category) %>
           <tr>
             <td
               class="

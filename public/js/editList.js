@@ -1,14 +1,11 @@
-$(document).ready(function () {
+$(function () {
   const urlParams = new URLSearchParams(window.location.search);
   const params = Object.fromEntries(urlParams.entries());
 
-  // let list = [];
   let idx = 0;
   let itemizedItemsJSON = JSON.parse(itemizedItems);
-  // let itemList = [];
   let start = params.start;
   let end = params.end;
-  // let incomeObj = {};
   let catMap = new Map([
     [_.toLower("grocery"), false],
     [_.toLower("rent"), false],
