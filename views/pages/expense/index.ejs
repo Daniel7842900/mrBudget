@@ -14,6 +14,13 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
     ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+      integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <link
       rel="stylesheet"
       type="text/css"
@@ -21,11 +28,17 @@
     />
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+      integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
   </head>
   <body>
-    <!-- This example requires Tailwind CSS v2.0+ -->
     <div>
       <%- include('../../partial/nav/index'); %>
       <header class="bg-green-500">
@@ -45,14 +58,16 @@
           "
         >
           <h1 class="text-lg leading-6 font-semibold text-white">Expense</h1>
-          <button class="text-2xl text-white">
-            <i class="fas fa-plus"></i>
-          </button>
+          <a href="/expense/new">
+            <button class="text-2xl text-white">
+              <i class="fas fa-plus"></i>
+            </button>
+          </a>
         </div>
       </header>
       <main class="bg-green-500 h-screen">
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 bg-green-500">
-          <!-- Replace with your content -->
+          <!-- Content -->
           <div class="px-4 py-4 sm:px-0">
             <div
               class="
@@ -63,23 +78,41 @@
                 h-auto
               "
             >
-              <div class="w-auto my-4 mx-14 text-center">
-                <span class="text-lg">Date</span>
-                <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
-                  <input
-                    type="text"
-                    id="datepicker"
-                    class="
-                      border-2 border-solid border-gray-200
-                      text-center
-                      w-full
-                      mt-2
-                    "
-                  />
-                </div>
+              <!-- Edit and Delete button section -->
+              <% if(itemizedItems.length !== 0) { %>
+              <div class="w-auto my-4 mx-10 text-right">
+                <a
+                  href="/expense/edit?start=<%= startDate %>&end=<%= endDate %>"
+                >
+                  <button class="text-2xl mx-2 text-yellow-500">
+                    <i class="fas fa-pen"></i>
+                  </button>
+                </a>
+                <button class="text-2xl mx-2 text-red-600" id="delete-btn">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </div>
+              <% } %>
+              <!-- Date selection section -->
               <div class="w-auto my-4 mx-14 text-center">
-                <!-- This example requires Tailwind CSS v2.0+ -->
+                <form action="/expense" method="GET">
+                  <label for="datepicker" class="text-lg">Date</label>
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
+                    <input
+                      type="text"
+                      id="datepicker"
+                      class="
+                        border-2 border-solid border-gray-200
+                        text-center
+                        w-full
+                        mt-2
+                      "
+                    />
+                  </div>
+                </form>
+              </div>
+              <!-- Summary Section -->
+              <div class="w-auto my-4 mx-14 text-center">
                 <span class="text-lg">Summary</span>
                 <div
                   class="
@@ -105,6 +138,7 @@
                         <table
                           class="
                             min-w-full
+                            table-auto
                             divide-y divide-gray-200
                             text-center
                           "
@@ -142,6 +176,11 @@
                             </tr>
                           </thead>
                           <tbody class="bg-white divide-y divide-gray-200">
+                            <% if(itemizedItems.length != 0) { %> <%
+                            itemizedItems.forEach((obj) => { %> <%
+                            if(obj.category !== _.toLower("income")) {
+                            obj.category = _.startCase(obj.category);
+                            console.log(obj.category) %>
                             <tr>
                               <td
                                 class="
@@ -153,7 +192,7 @@
                                   text-gray-900
                                 "
                               >
-                                Rent
+                                <%= obj.category %>
                               </td>
                               <td
                                 class="
@@ -163,9 +202,10 @@
                                   text-sm text-gray-500
                                 "
                               >
-                                $900
+                                $<%= obj.amount %>
                               </td>
                             </tr>
+                            <% }%> <% }) %> <% } %>
                           </tbody>
                         </table>
                       </div>
@@ -175,12 +215,15 @@
               </div>
             </div>
           </div>
-          <!-- /End replace -->
         </div>
       </main>
     </div>
-
+    <script>
+      let expenseData = `<%- JSON.stringify(expenses); %>`;
+    </script>
     <script src="/js/datepicker.js"></script>
     <script src="/navJs/nav.js"></script>
+    <script src="/js/findExpense.js"></script>
+    <script src="/js/markExpense.js"></script>
   </body>
 </html>

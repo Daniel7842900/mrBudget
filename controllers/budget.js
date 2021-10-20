@@ -253,6 +253,7 @@ exports.findOne = async (req, res) => {
   }
 };
 
+// Controller for editing a budget
 exports.edit = async (req, res) => {
   let itemizedItems = [];
   let budgetsArr = [];
@@ -340,6 +341,7 @@ exports.edit = async (req, res) => {
     });
 };
 
+// Controller for updating a budget
 exports.update = async (req, res) => {
   let date = req.body.date,
     income = parseFloat(req.body.income),
@@ -523,13 +525,9 @@ exports.update = async (req, res) => {
     });
 };
 
+// Controller for deleting a budget
 exports.delete = async (req, res) => {
-  console.log("this is delete ctrl");
   let date = req.body.date;
-  // income = parseFloat(req.body.income);
-  // list = req.body.list;
-  // let itemPromises = [];
-  // let budgetsArr = [];
 
   let dateArr = date.split("-");
   let startDate = dateArr[0].trim(),

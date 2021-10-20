@@ -88,9 +88,11 @@ app.get("/dashboard", function (req, res) {
 
 require("./routes/budget.js")(app);
 
-app.get("/expense", function (req, res) {
-  res.render("pages/expense");
-});
+require("./routes/expense.js")(app);
+
+// app.get("/expense", function (req, res) {
+//   res.render("pages/expense");
+// });
 
 app.get("/", function (req, res) {
   const viewPath = req.isAuthenticated() ? "/dashboard" : "/login";
