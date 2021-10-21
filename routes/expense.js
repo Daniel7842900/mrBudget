@@ -9,7 +9,7 @@ module.exports = (app) => {
 
   router.get("/edit", expense.edit);
 
-  //   router.post("/edit", expense.update);
+  router.post("/edit", expense.update);
 
   //   router.delete("/delete", expense.delete);
 
