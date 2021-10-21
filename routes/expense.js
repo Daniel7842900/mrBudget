@@ -11,7 +11,7 @@ module.exports = (app) => {
 
   router.post("/edit", expense.update);
 
-  //   router.delete("/delete", expense.delete);
+  router.delete("/delete", expense.delete);
 
   router.get("/", expense.findOne);
 

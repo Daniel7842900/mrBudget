@@ -217,6 +217,7 @@
           </div>
         </div>
       </main>
+      <%- include('../../partial/modal/delete') %>
     </div>
     <script>
       let expenseData = `<%- JSON.stringify(expenses); %>`;
@@ -225,5 +226,6 @@
     <script src="/navJs/nav.js"></script>
     <script src="/js/findExpense.js"></script>
     <script src="/js/markExpense.js"></script>
+    <script src="/js/deleteExpenseModal.js"></script>
   </body>
 </html>
