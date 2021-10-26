@@ -1,26 +1,35 @@
-$(function () {
-  let list = [];
-  let idx = 0;
-  let catMap = new Map([
-    [_.toLower("grocery"), false],
-    [_.toLower("rent"), false],
-    [_.toLower("utility"), false],
-    [_.toLower("dine out"), false],
-    [_.toLower("investment"), false],
-    [_.toLower("saving"), false],
-    [_.toLower("alcohol"), false],
-    [_.toLower("leisure"), false],
-    [_.toLower("insurance"), false],
-    [_.toLower("loan"), false],
-    [_.toLower("streaming service"), false],
-    [_.toLower("transportation"), false],
-    [_.toLower("etc"), false],
-  ]);
+let list = [];
+let idx = 0;
+let catMap = new Map([
+  [_.toLower("grocery"), false],
+  [_.toLower("rent"), false],
+  [_.toLower("utility"), false],
+  [_.toLower("dine out"), false],
+  [_.toLower("investment"), false],
+  [_.toLower("saving"), false],
+  [_.toLower("alcohol"), false],
+  [_.toLower("leisure"), false],
+  [_.toLower("insurance"), false],
+  [_.toLower("loan"), false],
+  [_.toLower("streaming service"), false],
+  [_.toLower("transportation"), false],
+  [_.toLower("etc"), false],
+]);
 
-  // Onclick event for adding an object
-  //to the list
-  $("#add_btn").on("click", function (e) {
+// Onclick event for adding an object to the list
+let onClickAdd = (
+  parentElement,
+  targetBtn,
+  event,
+  financeType,
+  catMap,
+  list,
+  idx
+) => {
+  $(targetBtn).on(event, function (e) {
+    // Prevent onClick event
     e.preventDefault();
+
     // Create a js object for category & amount
     let obj = {};
     let objCat = $("#category").children("option:selected").val();
@@ -38,9 +47,6 @@ $(function () {
       if (_.isNaN(amount) === true || amount === 0) {
         // Reset the values after adding
         $("#amount").val("");
-
-        // Prevent onClick event
-        e.preventDefault();
 
         toastr.warning("Please enter the amount!", "Warning", {
           timeOut: 1000,
@@ -71,69 +77,69 @@ $(function () {
         //to server-side.
         html = ejs.render(
           `<% list.forEach(function(obj) {
-            obj.category = _.startCase(obj.category) %>
-        <tr>
-          <td
-            class="
-              px-6
-              py-4
-              whitespace-nowrap
-              text-sm
-              font-medium
-              text-gray-900
-            "
-          >
-            <%= obj.category %>
-          </td>
-          <td
-            class="
-              px-6
-              py-4
-              whitespace-nowrap
-              text-sm text-gray-500
-            "
-          >
-            $ <%= obj.amount %>
-          </td>
-          <td
-            class="
-              px-6
-              py-4
-              whitespace-nowrap
-              text-sm text-gray-500
-            "
-          >
-            <button
-              class="
-                inline-flex
-                justify-center
-                py-2
-                px-4
-                border border-transparent
-                shadow-sm
-                text-sm
-                font-medium
-                rounded-md
-                text-white
-                bg-red-500
-                hover:bg-red-700
-                remove_btn
-              "
-              id="remove_btn_<%= obj.idx %>"
-            >
-              X
-            </button>
-          </td>
-        </tr>
-        <% });%>`,
+                  obj.category = _.startCase(obj.category) %>
+              <tr>
+                <td
+                  class="
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                    text-sm
+                    font-medium
+                    text-gray-900
+                  "
+                >
+                  <%= obj.category %>
+                </td>
+                <td
+                  class="
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                    text-sm text-gray-500
+                  "
+                >
+                  $ <%= obj.amount %>
+                </td>
+                <td
+                  class="
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                    text-sm text-gray-500
+                  "
+                >
+                  <button
+                    class="
+                      inline-flex
+                      justify-center
+                      py-2
+                      px-4
+                      border border-transparent
+                      shadow-sm
+                      text-sm
+                      font-medium
+                      rounded-md
+                      text-white
+                      bg-red-500
+                      hover:bg-red-700
+                      remove_btn
+                    "
+                    id="remove_btn_<%= obj.idx %>"
+                  >
+                    X
+                  </button>
+                </td>
+              </tr>
+              <% });%>`,
           { list: list }
         );
 
         // This is required for re-rendering table body element.
         //if this is not present, it will now show the list of objects
         //that we added above.
-        $.get("/budget/new", function () {
-          $("#summary_data").html(html);
+        $.get(`/${financeType}/new`, function () {
+          $(parentElement).html(html);
         });
       }
     } else if (catMap.get(objCat) === true) {
@@ -142,10 +148,21 @@ $(function () {
       });
     }
   });
+};
 
-  // Onclick event for removing an object
-  //from the list
-  $("#summary_data").on("click", ".remove_btn", function (e) {
+//TODO allow item be able to added after clear up once
+//TODO investigate the issue that is not allowing removing items after the list is fully cleared up.
+// Onclick event for removing an object from the list
+let onClickRemove = (
+  parentElement,
+  targetBtn,
+  event,
+  financeType,
+  list,
+  idx
+) => {
+  $(parentElement).on(event, targetBtn, function (e) {
+    // Prevent onClick event
     e.preventDefault();
     if (list.length !== 0) {
       let rIdx = parseInt($(this).attr("id").split("_")[2]);
@@ -224,16 +241,20 @@ $(function () {
           { list: list }
         );
 
-        $.get("/budget/new", function () {
-          $("#summary_data").html(html);
+        $.get(`/${financeType}/new`, function () {
+          $(parentElement).html(html);
         });
       }
     }
   });
+};
 
-  $("#submit_btn").on("click", function (e) {
+// Onclick event for submiting the list
+let onClickSubmit = (targetBtn, event, financeType, list, incomeExist) => {
+  $(targetBtn).on(event, function (e) {
     let date = $("#datepicker").val();
-    let income = $("#income").val();
+
+    let income = incomeExist ? $("#income").val() : null;
 
     list.forEach((obj) => {
       obj.category = obj.category.trim();
@@ -241,7 +262,7 @@ $(function () {
 
     e.preventDefault();
     $.ajax({
-      url: "/budget/new",
+      url: `/${financeType}/new`,
       type: "POST",
       dataType: "json",
       data: JSON.stringify({
@@ -264,9 +285,11 @@ $(function () {
         // Show success toastr message on current page
         //and redirect after 1 second
         toastr.options.onHidden = function () {
-          window.location.assign("/budget");
+          window.location.assign(`/${financeType}`);
         };
-        toastr.success("New budget is created!", "Success", { timeOut: 1000 });
+        toastr.success(`New ${financeType} is created!`, "Success", {
+          timeOut: 1000,
+        });
       },
       error: function (jqXHR, textStatus, errorThrown) {
         // Redirecting to new budget page again to display
@@ -278,4 +301,4 @@ $(function () {
       },
     });
   });
-});
+};

@@ -24,7 +24,9 @@ const app = express();
 // Static files
 app.use(express.static("public"));
 app.use("/css", express.static(__dirname + "/public/css"));
+// console.log(__dirname + "/public/js");
 app.use("/js", express.static(__dirname + "/public/js"));
+// app.use("/budgetJs", express.static(__dirname + "/public/js/budget"));
 app.use("/img", express.static(__dirname + "/pulbic/img"));
 
 // Nav static files

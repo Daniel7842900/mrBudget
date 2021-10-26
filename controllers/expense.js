@@ -103,6 +103,7 @@ exports.store = async (req, res) => {
   }
 };
 
+// Controller for displaying an expense
 exports.findOne = async (req, res) => {
   let itemizedItems = [];
   let expensesArr = [];
@@ -223,6 +224,7 @@ exports.findOne = async (req, res) => {
   }
 };
 
+// Controller for editing an expense
 exports.edit = async (req, res) => {
   let itemizedItems = [];
   let expensesArr = [];

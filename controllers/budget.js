@@ -5,7 +5,6 @@ const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
 
-//TODO show occupied ones in the calendar
 // Controller for displaying a new budget page
 exports.create = async (req, res) => {
   let itemizedItems = [];
