@@ -17,15 +17,7 @@ let catMap = new Map([
 ]);
 
 // Onclick event for adding an object to the list
-let onClickAdd = (
-  parentElement,
-  targetBtn,
-  event,
-  financeType,
-  catMap,
-  list,
-  idx
-) => {
+let onClickAdd = (parentElement, targetBtn, event, financeType) => {
   $(targetBtn).on(event, function (e) {
     // Prevent onClick event
     e.preventDefault();
@@ -34,7 +26,6 @@ let onClickAdd = (
     let obj = {};
     let objCat = $("#category").children("option:selected").val();
     objCat = _.toLower(objCat);
-    console.log(objCat);
     if (catMap.get(objCat) === false) {
       let amount = $("#amount").val();
 
@@ -55,7 +46,7 @@ let onClickAdd = (
       } else {
         catMap.set(objCat, true);
 
-        obj.category = objCat;
+        obj.category = _.startCase(objCat);
         obj.idx = idx;
         obj.amount = amount;
 
@@ -69,15 +60,12 @@ let onClickAdd = (
         // Increment the index
         idx++;
 
-        console.log("add list");
-        console.log(list);
-
         // Render table rows using the list that contains js objects.
         //this is done in client-side because we can't pass the list
         //to server-side.
         html = ejs.render(
           `<% list.forEach(function(obj) {
-                  obj.category = _.startCase(obj.category) %>
+              obj.category = _.startCase(obj.category) %>
               <tr>
                 <td
                   class="
@@ -153,14 +141,7 @@ let onClickAdd = (
 //TODO allow item be able to added after clear up once
 //TODO investigate the issue that is not allowing removing items after the list is fully cleared up.
 // Onclick event for removing an object from the list
-let onClickRemove = (
-  parentElement,
-  targetBtn,
-  event,
-  financeType,
-  list,
-  idx
-) => {
+let onClickRemove = (parentElement, targetBtn, event, financeType) => {
   $(parentElement).on(event, targetBtn, function (e) {
     // Prevent onClick event
     e.preventDefault();
@@ -168,6 +149,10 @@ let onClickRemove = (
       let rIdx = parseInt($(this).attr("id").split("_")[2]);
 
       if (rIdx > -1) {
+        // Change category availability to false if item is getting removed
+        let curObj = list[rIdx];
+        catMap.set(_.toLower(curObj.category), false);
+
         // Remove the object at index "rIdx"
         list.splice(rIdx, 1);
 
@@ -177,7 +162,6 @@ let onClickRemove = (
             obj.idx--;
           }
         });
-
         // Decrement idx for future adding
         idx--;
 
@@ -250,7 +234,7 @@ let onClickRemove = (
 };
 
 // Onclick event for submiting the list
-let onClickSubmit = (targetBtn, event, financeType, list, incomeExist) => {
+let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
   $(targetBtn).on(event, function (e) {
     let date = $("#datepicker").val();
 

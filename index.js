@@ -15,18 +15,13 @@ const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
 const _ = require("lodash");
 
-// Controller
-const budgetController = require("./controllers/budget.js");
-
 // Create an Express app
 const app = express();
 
 // Static files
 app.use(express.static("public"));
 app.use("/css", express.static(__dirname + "/public/css"));
-// console.log(__dirname + "/public/js");
 app.use("/js", express.static(__dirname + "/public/js"));
-// app.use("/budgetJs", express.static(__dirname + "/public/js/budget"));
 app.use("/img", express.static(__dirname + "/pulbic/img"));
 
 // Nav static files
@@ -39,27 +34,11 @@ app.set("view engine", "ejs");
 app.use(cors());
 app.options("*", cors());
 
-// bodyparser, use qs library
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // cookie parser
 app.use(cookieParser());
 
-// use connect-flash for flash messages stored in session
-app.use(flash());
-
-// To solve, its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled. cors
-// build is for Tailwind CSS
-app.use("/build", express.static("build"));
-
-// Set lodash in locals in order to use in ejs templates
-app.locals._ = _;
-
-// Create database connection
-const db = require("./models");
-
 // Add & configure session middleware
+//session needs to be used before passport.session
 app.use(
   session({
     secret: "keyboard cat",
@@ -67,8 +46,29 @@ app.use(
     // saveUninitialized: true,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: false,
+      maxAge: 3600000,
+    },
   })
 );
+
+// bodyparser, use qs library
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// use connect-flash for flash messages stored in session
+app.use(flash());
+
+// To solve, its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled. cors
+//build is for Tailwind CSS
+app.use("/build", express.static("build"));
+
+// Set lodash in locals in order to use in ejs templates
+app.locals._ = _;
+
+// Create database connection
+const db = require("./models");
 
 // Passport
 app.use(passport.initialize());
@@ -80,10 +80,12 @@ require("./routes/auth.js")(app, passport);
 require("./passport/passport.js")(passport, db.user);
 
 app.get("/dashboard", function (req, res) {
+  console.log("console log from dashboard");
+  console.log(req);
   // console.log("we are at dashboard!");
   // res.sendFile(__dirname + "/views/pages/dashboard/index.html");
   // console.log("Cookies: ", req.cookies);
-  // console.log("session: ", req.session);
+  console.log("session: ", req.session);
   // console.log("passport: ", req.session.passport);
   res.render("pages/dashboard");
 });

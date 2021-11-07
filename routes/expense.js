@@ -1,3 +1,5 @@
+const passport = require("../passport/passport.js");
+
 module.exports = (app) => {
   const expense = require("../controllers/expense.js");
 

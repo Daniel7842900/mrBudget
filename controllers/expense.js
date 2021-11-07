@@ -7,6 +7,15 @@ const _ = require("lodash");
 
 // Controller for displaying a new expense page
 exports.create = async (req, res) => {
+  console.log(req.isAuthenticated());
+  console.log(req.session);
+  console.log(req.session.passport.user);
+  console.log(req.user);
+  // console.log(req);
+  // console.log("this is session");
+  // console.log(req.session);
+  // console.log("this is user");
+  // console.log(req.user);
   let itemList = [];
   let expensesArr = [];
 
@@ -37,8 +46,10 @@ exports.create = async (req, res) => {
 
 // Controller for saving a new expense
 exports.store = async (req, res) => {
+  // console.log(req.user);
   let date = req.body.date,
-    list = req.body.list;
+    list = req.body.list,
+    user = req.user;
 
   let dateArr = date.split("-");
   let startDate = dateArr[0].trim(),
@@ -80,6 +91,7 @@ exports.store = async (req, res) => {
       startDate: startDate,
       endDate: endDate,
       financeTypeId: 2,
+      userId: user.id,
       items: itemizedList,
     };
 

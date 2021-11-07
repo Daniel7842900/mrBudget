@@ -14,6 +14,7 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     Finance.belongsTo(models.finance_type);
+    Finance.belongsTo(models.user);
   };
 
   return Finance;

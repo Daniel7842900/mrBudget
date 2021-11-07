@@ -1,12 +1,11 @@
 var bCrypt = require("bcrypt");
 var passport = require("passport");
+let LocalStrategy = require("passport-local").Strategy;
 
 // function to be called while there is a new sign/signup
 // We are using passport local signin/signup strategies for our app
 module.exports = function (passport, auth) {
   var Auth = auth;
-
-  var LocalStrategy = require("passport-local").Strategy;
 
   //   passport.use(
   //     "local-signup",
@@ -84,29 +83,33 @@ module.exports = function (passport, auth) {
           },
         })
           .then(function (user) {
-            console.log(user);
+            // console.log(user);
             if (!user) {
+              // Verify callback for email
               return done(null, false, {
                 message: "Email does not exist",
               });
             }
 
             if (!isValidPassword(user.password, password)) {
+              // Verify callback for password
               return done(null, false, {
                 message: "Incorrect password.",
               });
             }
 
             var userinfo = user.get();
-            console.log("user info is");
-            console.log(userinfo);
+            // console.log("user info is");
+            // console.log(userinfo);
+
+            // Verify callback for user - return user info if email & password is correct
             return done(null, userinfo);
           })
           .catch(function (err) {
             console.log("Error:", err);
 
             return done(null, false, {
-              message: "Something went wrong with your Signin",
+              message: "Something went wrong with your Sign in",
             });
           });
       }
@@ -126,12 +129,12 @@ module.exports = function (passport, auth) {
     )
   );
 
-  // Serialize user
+  // Keep user data into session
   passport.serializeUser(function (auth, done) {
     done(null, auth.id);
   });
 
-  // Deserialize user
+  // Retrieve user data from session
   passport.deserializeUser(function (id, done) {
     Auth.findByPk(id).then(function (user) {
       if (user) {
@@ -140,5 +143,8 @@ module.exports = function (passport, auth) {
         done(user.errors, null);
       }
     });
+    // Auth.findById(id, function (err, user) {
+    //   done(err, user);
+    // });
   });
 };
