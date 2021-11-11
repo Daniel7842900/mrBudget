@@ -74,29 +74,20 @@ const db = require("./models");
 app.use(passport.initialize());
 app.use(passport.session());
 
-require("./routes/auth.js")(app, passport);
-
 // load passport strategies
 require("./passport/passport.js")(passport, db.user);
 
-app.get("/dashboard", function (req, res) {
-  console.log("console log from dashboard");
-  console.log(req);
-  // console.log("we are at dashboard!");
-  // res.sendFile(__dirname + "/views/pages/dashboard/index.html");
-  // console.log("Cookies: ", req.cookies);
-  console.log("session: ", req.session);
-  // console.log("passport: ", req.session.passport);
-  res.render("pages/dashboard");
-});
+// Import router objects
+const authRouter = require("./routes/auth.js");
+const budgetRouter = require("./routes/budget.js");
+const expenseRouter = require("./routes/expense.js");
+const dashboardRouter = require("./routes/dashboard.js");
 
-require("./routes/budget.js")(app);
-
-require("./routes/expense.js")(app);
-
-// app.get("/expense", function (req, res) {
-//   res.render("pages/expense");
-// });
+// Call routers
+authRouter.loadRouter(app, passport);
+budgetRouter.loadRouter(app);
+expenseRouter.loadRouter(app);
+dashboardRouter.loadRouter(app);
 
 app.get("/", function (req, res) {
   const viewPath = req.isAuthenticated() ? "/dashboard" : "/login";

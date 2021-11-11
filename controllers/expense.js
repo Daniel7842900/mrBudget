@@ -64,6 +64,7 @@ exports.store = async (req, res) => {
       startDate: startDate,
       endDate: endDate,
       financeTypeId: 2,
+      userId: user.id,
     },
   };
 
@@ -119,6 +120,7 @@ exports.store = async (req, res) => {
 exports.findOne = async (req, res) => {
   let itemizedItems = [];
   let expensesArr = [];
+  let user = req.user;
 
   if (_.isEmpty(req.query)) {
     var expenseData = {};
@@ -128,6 +130,7 @@ exports.findOne = async (req, res) => {
     const expenses = await Finance.findAll({
       where: {
         financeTypeId: 2,
+        userId: user.id,
       },
     });
 
@@ -161,6 +164,7 @@ exports.findOne = async (req, res) => {
         startDate: startDate,
         endDate: endDate,
         financeTypeId: 2,
+        userId: user.id,
       },
     };
 
@@ -168,6 +172,7 @@ exports.findOne = async (req, res) => {
     const expenses = await Finance.findAll({
       where: {
         financeTypeId: 2,
+        userId: user.id,
       },
     });
 
@@ -241,7 +246,8 @@ exports.edit = async (req, res) => {
   let itemizedItems = [];
   let expensesArr = [];
   let startDate = req.query.start,
-    endDate = req.query.end;
+    endDate = req.query.end,
+    user = req.user;
 
   startDate = moment(startDate, "MM-DD-YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MM-DD-YYYY").format("YYYY-MM-DD");
@@ -259,6 +265,7 @@ exports.edit = async (req, res) => {
       startDate: startDate,
       endDate: endDate,
       financeTypeId: 2,
+      userId: user.id,
     },
   };
 
@@ -327,7 +334,8 @@ exports.edit = async (req, res) => {
 // Controller for updating an expense
 exports.update = async (req, res) => {
   let date = req.body.date,
-    list = req.body.list;
+    list = req.body.list,
+    user = req.user;
   let itemPromises = [];
   let expensesArr = [];
 
@@ -360,6 +368,7 @@ exports.update = async (req, res) => {
       startDate: startDate,
       endDate: endDate,
       financeTypeId: 2,
+      userId: user.id,
     },
   };
 
@@ -367,6 +376,7 @@ exports.update = async (req, res) => {
   const expenses = await Finance.findAll({
     where: {
       financeTypeId: 2,
+      userId: user.id,
     },
   });
 
@@ -492,7 +502,8 @@ exports.update = async (req, res) => {
 
 // Controller for deleting an expense
 exports.delete = async (req, res) => {
-  let date = req.body.date;
+  let date = req.body.date,
+    user = req.user;
 
   let dateArr = date.split("-");
   let startDate = dateArr[0].trim(),
@@ -507,6 +518,7 @@ exports.delete = async (req, res) => {
       startDate: startDate,
       endDate: endDate,
       financeTypeId: 2,
+      userId: user.id,
     },
   };
 

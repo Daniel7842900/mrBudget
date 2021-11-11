@@ -1,19 +1,23 @@
-module.exports = (app) => {
-  const budget = require("../controllers/budget.js");
+const budget = require("../controllers/budget.js");
+const auth = require("./auth.js");
+let router = require("express").Router();
 
-  let router = require("express").Router();
+let loadRouter = (app) => {
+  router.post("/new", auth.isLoggedIn, budget.store);
 
-  router.post("/new", budget.store);
+  router.get("/new", auth.isLoggedIn, budget.create);
 
-  router.get("/new", budget.create);
+  router.get("/edit", auth.isLoggedIn, budget.edit);
 
-  router.get("/edit", budget.edit);
+  router.post("/edit", auth.isLoggedIn, budget.update);
 
-  router.post("/edit", budget.update);
+  router.delete("/delete", auth.isLoggedIn, budget.delete);
 
-  router.delete("/delete", budget.delete);
-
-  router.get("/", budget.findOne);
+  router.get("/", auth.isLoggedIn, budget.findOne);
 
   app.use("/budget", router);
+};
+
+module.exports = {
+  loadRouter: loadRouter,
 };

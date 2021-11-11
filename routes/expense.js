@@ -1,21 +1,23 @@
-const passport = require("../passport/passport.js");
+const expense = require("../controllers/expense.js");
+const auth = require("./auth.js");
+let router = require("express").Router();
 
-module.exports = (app) => {
-  const expense = require("../controllers/expense.js");
+let loadRouter = (app) => {
+  router.post("/new", auth.isLoggedIn, expense.store);
 
-  let router = require("express").Router();
+  router.get("/new", auth.isLoggedIn, expense.create);
 
-  router.post("/new", expense.store);
+  router.get("/edit", auth.isLoggedIn, expense.edit);
 
-  router.get("/new", expense.create);
+  router.post("/edit", auth.isLoggedIn, expense.update);
 
-  router.get("/edit", expense.edit);
+  router.delete("/delete", auth.isLoggedIn, expense.delete);
 
-  router.post("/edit", expense.update);
-
-  router.delete("/delete", expense.delete);
-
-  router.get("/", expense.findOne);
+  router.get("/", auth.isLoggedIn, expense.findOne);
 
   app.use("/expense", router);
+};
+
+module.exports = {
+  loadRouter: loadRouter,
 };

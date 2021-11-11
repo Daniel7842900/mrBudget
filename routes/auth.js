@@ -1,7 +1,8 @@
 var passport = require("../passport/passport.js");
 var path = require("path");
 var db = require("../models");
-module.exports = function (app, passport) {
+
+let loadRouter = (app, passport) => {
   /**
    * Login route
    */
@@ -65,9 +66,14 @@ module.exports = function (app, passport) {
     //   res.redirect("/dashboard");
     // }
   );
+};
 
-  function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    res.redirect("/login");
-  }
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.redirect("/login");
+}
+
+module.exports = {
+  loadRouter: loadRouter,
+  isLoggedIn: isLoggedIn,
 };
