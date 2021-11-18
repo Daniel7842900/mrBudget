@@ -5,53 +5,80 @@ let LocalStrategy = require("passport-local").Strategy;
 // function to be called while there is a new sign/signup
 // We are using passport local signin/signup strategies for our app
 module.exports = function (passport, auth) {
-  var Auth = auth;
+  let Auth = auth;
 
-  //   passport.use(
-  //     "local-signup",
-  //     new LocalStrategy(
-  //       {
-  //         usernameField: "email",
-  //         passwordField: "password",
-  //         passReqToCallback: true, // allows us to pass back the entire request to the callback
-  //       },
-  //       function (req, email, password, done) {
-  //         console.log("Signup for - ", email);
-  //         var generateHash = function (password) {
-  //           return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null);
-  //         };
-  //         Auth.findOne({
-  //           where: {
-  //             email: email,
-  //           },
-  //         }).then(function (user) {
-  //           //console.log(user);
-  //           if (user) {
-  //             return done(null, false, {
-  //               message: "That email is already taken",
-  //             });
-  //           } else {
-  //             var userPassword = generateHash(password);
-  //             var data = {
-  //               email: email,
-  //               password: userPassword,
-  //               firstname: req.body.firstname,
-  //               lastname: req.body.lastname,
-  //             };
+  passport.use(
+    "local-signup",
+    new LocalStrategy(
+      {
+        usernameField: "email",
+        passwordField: "password",
+        passReqToCallback: true, // allows us to pass back the entire request to the callback
+      },
+      function (req, email, password, done) {
+        console.log("Signup for - ", email);
+        console.log(password);
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        console.log(firstName);
+        console.log(lastName);
 
-  //             Auth.create(data).then(function (newUser, created) {
-  //               if (!newUser) {
-  //                 return done(null, false);
-  //               }
-  //               if (newUser) {
-  //                 return done(null, newUser);
-  //               }
-  //             });
-  //           }
-  //         });
-  //       }
-  //     )
-  //   );
+        let generateHash = function (password) {
+          return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null);
+        };
+
+        Auth.findOne({
+          where: {
+            email: email,
+          },
+        })
+          .then(function (user) {
+            //console.log(user);
+            if (user) {
+              return done(null, false, {
+                message: "That email is already taken",
+              });
+            } else {
+              let userPassword = generateHash(password);
+              let data = {
+                email: email,
+                password: userPassword,
+                firstName: firstName,
+                lastName: lastName,
+              };
+
+              Auth.create(data)
+                .then(function (newUser, created) {
+                  if (!newUser) {
+                    console.log("creating a user - this is not a new user");
+                    return done(null, false);
+                  }
+                  if (newUser) {
+                    console.log("creating a user - this is a NEW USER");
+                    return done(null, newUser);
+                  }
+                })
+                .catch((err) => {
+                  console.log("catching an error on creating a user");
+                  res.status(500).send({
+                    message:
+                      err.message ||
+                      "Something wrong while creating an account",
+                  });
+                });
+            }
+          })
+          .catch((err) => {
+            console.log("catching an error on finding one");
+            res.status(500).send({
+              message:
+                err.message ||
+                "Something wrong while finding an exisiting account",
+            });
+          });
+      }
+    )
+  );
 
   //LOCAL SIGNIN
   passport.use(
@@ -65,16 +92,10 @@ module.exports = function (passport, auth) {
       },
 
       function (req, email, password, done) {
-        var Auth = auth;
+        let Auth = auth;
 
-        var isValidPassword = function (userpass, password) {
-          let isMatch = true;
-          if (userpass === password) return isMatch;
-          else {
-            isMatch = false;
-            return isMatch;
-          }
-          //   return bCrypt.compareSync(password, userpass);
+        let isValidPassword = function (userpass, password) {
+          return bCrypt.compareSync(password, userpass);
         };
         console.log("logged to", email);
         Auth.findOne({

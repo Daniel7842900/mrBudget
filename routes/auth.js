@@ -1,5 +1,4 @@
 var passport = require("../passport/passport.js");
-var path = require("path");
 var db = require("../models");
 
 let loadRouter = (app, passport) => {
@@ -7,20 +6,14 @@ let loadRouter = (app, passport) => {
    * Login route
    */
   app.get("/login", function (req, res) {
-    // console.log(req.flash("error"));
-    // res.sendFile(path.join(__dirname, "../login/index.html"));
     const errFlash = req.flash("error");
-    // res.cookie("name", "express");
-    // console.log("Cookies: ", req.cookies);
-    // console.log("session: ", req.session);
-    // console.log(req);
-    let view = "login";
+    let path = "auth/login";
     let isAuth = req.isAuthenticated();
     if (req.isAuthenticated()) {
-      let view = "/dashboard";
-      res.redirect(view);
+      path = "/dashboard";
+      res.redirect(path);
     } else {
-      res.render(view, {
+      res.render(path, {
         errFlash: errFlash,
         isAuth: isAuth,
       });
@@ -41,14 +34,25 @@ let loadRouter = (app, passport) => {
   /**
    * Register route
    */
-  //   app.post(
-  //     "/signup/newuser",
-  //     passport.authenticate("local-signup"),
-  //     function (req, res) {
-  //       console.log(req.user);
-  //       res.render("homepage");
-  //     }
-  //   );
+  app.get("/signup", function (req, res) {
+    const errFlash = req.flash("error");
+    res.render("auth/signup", {
+      errFlash: errFlash,
+    });
+  });
+
+  app.post(
+    "/signup",
+    passport.authenticate("local-signup", {
+      failureFlash: true,
+    }),
+    function (req, res) {
+      const errFlash = req.flash("error");
+      res.render("auth/login", {
+        errFlash: errFlash,
+      });
+    }
+  );
 
   /**
    * Login handler
