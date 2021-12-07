@@ -13,16 +13,34 @@ input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
 
-.daterangepicker .calendar-table td.occupied-end {
+.daterangepicker .calendar-table table {
+  border-collapse: separate !important;
+}
+
+.daterangepicker .calendar-table td.occupied-left {
+  border-color: #dee201;
+  border-width: 2px 0px 2px 2px;
+  border-radius: 0.5rem 0 0 0.5rem;
+  color: #000;
+}
+
+.daterangepicker .calendar-table td.occupied-right {
+  border-color: #dee201;
+  border-width: 2px 2px 2px 0px;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: #000;
+}
+
+.daterangepicker .calendar-table td.occupied-both {
   background-color: #dee201;
   border-color: transparent;
   color: #000;
-  border-radius: 4px 0 0 4px;
+  border-radius: 0.5rem;
 }
 
 .daterangepicker .calendar-table td.occupied-in-range {
-  background-color: #f8facf;
-  border-color: transparent;
+  border-color: #dee201;
+  border-width: 2px 0 2px 0;
   color: #000;
   border-radius: 0;
 }

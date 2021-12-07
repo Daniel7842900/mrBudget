@@ -23,13 +23,11 @@ let loadRouter = (app, passport) => {
   /**
    * Logout route
    */
-  //   app.get("/logout", function (req, res) {
-  //     console.log("Log Out Route Hit");
-  //     req.session.destroy(function (err) {
-  //       if (err) console.log(err);
-  //       res.redirect("/");
-  //     });
-  //   });
+  app.get("/logout", function (req, res) {
+    console.log("Log Out Route Hit");
+    req.logout();
+    res.redirect("/login");
+  });
 
   /**
    * Register route
@@ -45,6 +43,7 @@ let loadRouter = (app, passport) => {
     "/signup",
     passport.authenticate("local-signup", {
       failureFlash: true,
+      session: false,
     }),
     function (req, res) {
       const errFlash = req.flash("error");
@@ -63,12 +62,8 @@ let loadRouter = (app, passport) => {
       successRedirect: "/dashboard",
       failureRedirect: "/login",
       failureFlash: true,
+      session: true,
     })
-    // function (req, res) {
-    //   console.log(req.user);
-    //   //   res.render(__dirname, "../pages/dashboard/index.html");
-    //   res.redirect("/dashboard");
-    // }
   );
 };
 

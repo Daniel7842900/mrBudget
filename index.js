@@ -6,6 +6,7 @@ var cors = require("cors");
 const bodyParser = require("body-parser");
 const { validationResult } = require("express-validator");
 const session = require("express-session");
+const MemoryStore = require("memorystore")(session);
 const path = require("path");
 const mysql = require("mysql");
 const { v4: uuidv4 } = require("uuid");
@@ -42,10 +43,11 @@ app.use(cookieParser());
 app.use(
   session({
     secret: "keyboard cat",
-    // resave: true,
-    // saveUninitialized: true,
     resave: false,
     saveUninitialized: false,
+    store: new MemoryStore({
+      checkPeriod: 86400000,
+    }),
     cookie: {
       secure: false,
       maxAge: 3600000,

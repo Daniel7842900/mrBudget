@@ -18,25 +18,29 @@
     "express-validator": "^6.12.0",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
+    "memorystore": "^1.6.6",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
-    "nodemon": "^2.0.7",
+    "n": "^8.0.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.6.4",
+    "sequelize": "^6.11.0",
     "toastr": "^2.1.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.6",
+    "nodemon": "^2.0.15",
     "postcss": "^8.3.5",
     "postcss-cli": "^8.3.1",
     "tailwindcss": "^2.2.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "postcss public/css/styles.css -o build/styles.css"
+    "build": "postcss public/css/styles.css -o build/styles.css",
+    "start-dev": "NODE_ENV=development nodemon",
+    "start": "NODE_ENV=production"
   },
   "author": "",
   "license": "ISC",

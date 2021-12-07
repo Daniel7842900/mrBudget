@@ -7,22 +7,15 @@ const _ = require("lodash");
 
 // Controller for displaying a new expense page
 exports.create = async (req, res) => {
-  console.log(req.isAuthenticated());
-  console.log(req.session);
-  console.log(req.session.passport.user);
-  console.log(req.user);
-  // console.log(req);
-  // console.log("this is session");
-  // console.log(req.session);
-  // console.log("this is user");
-  // console.log(req.user);
   let itemList = [];
   let expensesArr = [];
+  let user = req.user;
 
   // Retrieve every expense records to display on the calendar
   const expenses = await Finance.findAll({
     where: {
       financeTypeId: 2,
+      userId: user.id,
     },
   });
 
@@ -34,6 +27,7 @@ exports.create = async (req, res) => {
         expensesArr.push(expenseData);
       });
       res.render("pages/expense/create", {
+        user: user,
         expenses: expensesArr,
         itemList: itemList,
         err_message: req.flash("err_message"),
@@ -142,6 +136,7 @@ exports.findOne = async (req, res) => {
           expensesArr.push(expenseData);
         });
         res.render("pages/expense", {
+          user: user,
           expenses: expensesArr,
           expense: expenseData,
           itemizedItems: itemizedItems,
@@ -219,6 +214,7 @@ exports.findOne = async (req, res) => {
         });
 
         res.render("pages/expense", {
+          user: user,
           expenses: expensesArr,
           expense: expenseData,
           itemizedItems: itemizedItems,
@@ -230,6 +226,7 @@ exports.findOne = async (req, res) => {
       .catch((err) => {
         req.flash("expense_err", "Expense doesn't exist!");
         res.render("pages/expense", {
+          user: user,
           expenses: expensesArr,
           expense: expenseData,
           itemizedItems: itemizedItems,
@@ -310,6 +307,7 @@ exports.edit = async (req, res) => {
       });
 
       res.render("pages/expense/edit", {
+        user: user,
         expenses: expensesArr,
         itemizedItems: itemizedItems,
         startDate: startDate,
@@ -321,6 +319,7 @@ exports.edit = async (req, res) => {
     .catch((err) => {
       req.flash("expense_err", "Expense doesn't exist!");
       res.render("pages/expense/edit", {
+        user: user,
         expenses: expensesArr,
         itemizedItems: itemizedItems,
         startDate: startDate,

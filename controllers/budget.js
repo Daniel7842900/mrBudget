@@ -10,6 +10,7 @@ exports.create = async (req, res) => {
   let itemizedItems = [];
   let budgetsArr = [];
   let user = req.user;
+  console.log(user);
 
   // Retrieve every budget records to display on the calendar
   const budgets = await Finance.findAll({
@@ -27,6 +28,7 @@ exports.create = async (req, res) => {
         budgetsArr.push(budgetData);
       });
       res.render("pages/budget/create", {
+        user: user,
         budgets: budgetsArr,
         itemizedItems: itemizedItems,
         err_message: req.flash("err_message"),
@@ -161,6 +163,7 @@ exports.findOne = async (req, res) => {
           budgetsArr.push(budgetData);
         });
         res.render("pages/budget", {
+          user: user,
           budgets: budgetsArr,
           budget: budgetData,
           itemizedItems: itemizedItems,
@@ -239,6 +242,7 @@ exports.findOne = async (req, res) => {
         });
 
         res.render("pages/budget", {
+          user: user,
           budgets: budgetsArr,
           budget: budgetData,
           itemizedItems: itemizedItems,
@@ -250,6 +254,7 @@ exports.findOne = async (req, res) => {
       .catch((err) => {
         req.flash("budget_err", "Budget doesn't exist!");
         res.render("pages/budget", {
+          user: user,
           budgets: budgetsArr,
           budget: budgetData,
           itemizedItems: itemizedItems,
@@ -331,6 +336,7 @@ exports.edit = async (req, res) => {
       });
 
       res.render("pages/budget/edit", {
+        user: user,
         budgets: budgetsArr,
         itemizedItems: itemizedItems,
         startDate: startDate,
@@ -342,6 +348,7 @@ exports.edit = async (req, res) => {
     .catch((err) => {
       req.flash("budget_err", "Budget doesn't exist!");
       res.render("pages/budget/edit", {
+        user: user,
         budgets: budgetsArr,
         itemizedItems: itemizedItems,
         startDate: startDate,

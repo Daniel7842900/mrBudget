@@ -1,31 +1,31 @@
-const budgetJson = JSON.parse(budgetData);
+let markFinance = (parentElement, event, targetBtn, data) => {
+  $(parentElement).on(event, targetBtn, function (e) {
+    highlight(data);
 
-$(document).on("click", "#datepicker", function (e) {
-  markBudget();
+    // Mark finance when prev btn clicked
+    $(".drp-calendar.left").on("click", "th.prev", function (e) {
+      highlight(data);
+    });
 
-  // Mark budgets when prev btn clicked
-  $(".drp-calendar.left").on("click", "th.prev", function (e) {
-    markBudget();
+    // Let finance stay marked when dates are clicked
+    $(".drp-calendar.left").on("mousedown", "td.available", function (e) {
+      highlight(data);
+    });
+
+    // Mark finance when next btn clicked
+    $(".drp-calendar.right").on("click", "th.next", function (e) {
+      highlight(data);
+    });
+
+    // Let finance stay marked when dates are clicked
+    $(".drp-calendar.right").on("mousedown", "td.available", function (e) {
+      highlight(data);
+    });
   });
+};
 
-  // Let budgets stay marked when dates are clicked
-  $(".drp-calendar.left").on("mousedown", "td.available", function (e) {
-    markBudget();
-  });
-
-  // Mark budgets when next btn clicked
-  $(".drp-calendar.right").on("click", "th.next", function (e) {
-    markBudget();
-  });
-
-  // Let budgets stay marked when dates are clicked
-  $(".drp-calendar.right").on("mousedown", "td.available", function (e) {
-    markBudget();
-  });
-});
-
-// Mark budgets
-function markBudget() {
+// Mark finance
+function highlight(data) {
   // Get the DOM elements of month and year from a calendar
   let monYrsDom = $("thead").find("th.month");
   let monYrs = [];
@@ -79,11 +79,11 @@ function markBudget() {
     rightFullDates.push(date);
   });
 
-  // Go through each budget we get from db
+  // Go through each finance we get from db
   //TODO find a better way to implement this
-  budgetJson.forEach((budget) => {
-    let start = budget.startDate;
-    let end = budget.endDate;
+  data.forEach((finance) => {
+    let start = finance.startDate;
+    let end = finance.endDate;
 
     let startMonth = parseInt(start.split("-")[1], 10);
     let startDate = parseInt(start.split("-")[2], 10);
@@ -102,8 +102,16 @@ function markBudget() {
         // If dates are starting/ending dates
         //else if dates are in between starting/ending dates
         if (leftFullDate === startDate || leftFullDate === endDate) {
-          let occupiedEnd = leftDatesDom.get(i);
-          $(occupiedEnd).addClass("occupied-end");
+          if (leftFullDate === startDate && leftFullDate === endDate) {
+            let occupiedBoth = leftDatesDom.get(i);
+            $(occupiedBoth).addClass("occupied-both");
+          } else if (leftFullDate === startDate && leftFullDate !== endDate) {
+            let occupiedLeft = leftDatesDom.get(i);
+            $(occupiedLeft).addClass("occupied-left");
+          } else if (leftFullDate !== startDate && leftFullDate === endDate) {
+            let occupiedRight = leftDatesDom.get(i);
+            $(occupiedRight).addClass("occupied-right");
+          }
         } else if (leftFullDate > startDate && leftFullDate < endDate) {
           let occupiedInRange = leftDatesDom.get(i);
           $(occupiedInRange).addClass("occupied-in-range");
@@ -112,8 +120,8 @@ function markBudget() {
         // If date is starting date
         //else if dates are after starting date
         if (leftFullDate === startDate) {
-          let occupiedEnd = leftDatesDom.get(i);
-          $(occupiedEnd).addClass("occupied-end");
+          let occupiedLeft = leftDatesDom.get(i);
+          $(occupiedLeft).addClass("occupied-left");
         } else if (leftFullDate > startDate) {
           let occupiedInRange = leftDatesDom.get(i);
           $(occupiedInRange).addClass("occupied-in-range");
@@ -133,8 +141,16 @@ function markBudget() {
         // If dates are starting/ending dates
         //else if dates are in between starting/ending dates
         if (rightFullDate === startDate || rightFullDate === endDate) {
-          let occupiedEnd = rightDatesDom.get(i);
-          $(occupiedEnd).addClass("occupied-end");
+          if (rightFullDate === startDate && rightFullDate === endDate) {
+            let occupiedBoth = rightDatesDom.get(i);
+            $(occupiedBoth).addClass("occupied-both");
+          } else if (rightFullDate === startDate && rightFullDate !== endDate) {
+            let occupiedLeft = rightDatesDom.get(i);
+            $(occupiedLeft).addClass("occupied-left");
+          } else if (rightFullDate !== startDate && rightFullDate === endDate) {
+            let occupiedRight = rightDatesDom.get(i);
+            $(occupiedRight).addClass("occupied-right");
+          }
         } else if (rightFullDate > startDate && rightFullDate < endDate) {
           let occupiedInRange = rightDatesDom.get(i);
           $(occupiedInRange).addClass("occupied-in-range");
@@ -143,8 +159,8 @@ function markBudget() {
         // If date is ending date
         //else if dates are before ending date
         if (rightFullDate === endDate) {
-          let occupiedEnd = rightDatesDom.get(i);
-          $(occupiedEnd).addClass("occupied-end");
+          let occupiedRight = rightDatesDom.get(i);
+          $(occupiedRight).addClass("occupied-right");
         } else if (rightFullDate < endDate) {
           let occupiedInRange = rightDatesDom.get(i);
           $(occupiedInRange).addClass("occupied-in-range");
