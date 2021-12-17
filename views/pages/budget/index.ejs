@@ -41,19 +41,19 @@
   <body>
     <div>
       <%- include('../../partial/nav/index'); %>
-      <header class="bg-green-500">
+      <header class="bg-yellow-500">
         <div
           class="
             flex
             items-center
             justify-between
-            max-w-7xl
+            lg:max-w-7xl
             mx-auto
-            py-4
-            px-4
+            py-14
+            lg:py-4
             sm:px-6
             lg:px-8
-            bg-green-500
+            bg-yellow-500
             border-b-2 border-white border-solid
           "
         >
@@ -63,20 +63,31 @@
             toastr.error(`<%=error%>`);
           </script>
           <%}%>
-          <h1 class="text-lg leading-6 font-semibold text-white">Budget</h1>
+          <h1 class="text-5xl lg:text-lg leading-6 font-semibold text-white">
+            Budget
+          </h1>
           <a href="/budget/new">
-            <button class="text-2xl text-white">
+            <button class="mr-6 text-5xl lg:text-2xl text-white">
               <i class="fas fa-plus"></i>
             </button>
           </a>
         </div>
       </header>
-      <main class="bg-green-500 h-screen">
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 bg-green-500">
+      <main class="min-h-screen bg-green-500 lg:h-screen">
+        <div
+          class="
+            py-8
+            lg:max-w-7xl lg:mx-auto lg:py-6
+            sm:px-6
+            lg:px-8
+            bg-green-500
+          "
+        >
           <!-- Content -->
-          <div class="px-4 py-4 sm:px-0">
+          <div class="lg:px-4 lg:py-4 sm:px-0">
             <div
               class="
+                min-h-screen
                 border-4 border-dashed border-gray-200
                 rounded-lg
                 h-96
@@ -86,31 +97,50 @@
             >
               <!-- Edit and Delete button section -->
               <% if(itemizedItems.length !== 0) { %>
-              <div class="w-auto my-4 mx-10 text-right">
+              <div class="my-12 mx-12 lg:w-auto lg:my-4 lg:mx-10 text-right">
                 <a
                   href="/budget/edit?start=<%= startDate %>&end=<%= endDate %>"
                 >
-                  <button class="text-2xl mx-2 text-yellow-500">
+                  <button
+                    class="text-6xl mx-7 lg:text-2xl lg:mx-2 text-yellow-500"
+                  >
                     <i class="fas fa-pen"></i>
                   </button>
                 </a>
-                <button class="text-2xl mx-2 text-red-600" id="delete-btn">
+                <button
+                  class="text-6xl ml-7 lg:text-2xl lg:mx-2 text-red-600"
+                  id="delete-btn"
+                >
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
               <% } %>
               <!-- Date selection section -->
-              <div class="w-auto my-4 mx-14 text-center">
+              <div class="my-12 lg:w-auto lg:my-4 lg:mx-14 text-center">
                 <form action="/budget" method="GET">
-                  <label for="datepicker" class="text-lg">Date</label>
-                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
+                  <label for="datepicker" class="text-6xl lg:text-lg"
+                    >Date</label
+                  >
+                  <div
+                    class="
+                      min-w-full
+                      my-8
+                      lg:w-auto lg:m-auto
+                      md:w-6/12
+                      lg:w-6/12
+                    "
+                  >
                     <input
                       type="text"
                       id="datepicker"
                       class="
-                        border-2 border-solid border-gray-200
+                        text-5xl
+                        font-light
+                        border-4
+                        lg:border-2
+                        border-solid border-gray-200
                         text-center
-                        w-full
+                        w-8/12
                         mt-2
                         rounded-lg
                       "
