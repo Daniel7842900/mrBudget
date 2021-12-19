@@ -136,6 +136,7 @@
                       class="
                         text-5xl
                         font-light
+                        py-3
                         border-4
                         lg:border-2
                         border-solid border-gray-200
@@ -149,34 +150,50 @@
                 </form>
               </div>
               <!-- Income section -->
-              <div class="w-auto my-4 mx-14 text-center">
-                <label for="income" class="text-lg">Income</label>
-                <div class="w-auto m-auto md:w-6/12 lg:w-6/12 relative">
+              <div class="my-12 lg:w-auto lg:my-4 lg:mx-14 text-center">
+                <label for="income" class="text-6xl lg:text-lg">Income</label>
+                <div
+                  class="
+                    min-w-full
+                    my-8
+                    lg:w-auto lg:m-auto
+                    md:w-6/12
+                    lg:w-6/12
+                  "
+                >
                   <div
                     class="
-                      absolute
-                      inset-y-0
-                      left-0
-                      pl-3
-                      flex
-                      items-center
-                      pointer-events-none
-                    "
-                  >
-                    <span class="text-gray-500 sm:text-sm"> $ </span>
-                  </div>
-                  <div
-                    class="
-                      border-2 border-solid border-gray-200
-                      text-center
-                      w-full
+                      relative
+                      text-5xl
+                      w-8/12
                       mt-2
+                      py-3
+                      mx-auto
+                      font-light
+                      border-4
+                      lg:border-2
+                      border-solid border-gray-200
+                      text-center
+                      lg:w-full lg:mt-2
                       rounded-md
-                      block
                     "
                     placeholder="0.00"
                     aria-describedby="income-currency"
                   >
+                    <div
+                      class="
+                        absolute
+                        w-40
+                        inset-y-0
+                        left-0
+                        pl-3
+                        flex
+                        items-center
+                        pointer-events-none
+                      "
+                    >
+                      <span class="text-5xl text-gray-500"> $ </span>
+                    </div>
                     <% if(itemizedItems.length != 0) { let idx = 0; %> <%
                     itemizedItems.forEach((obj)=> { %> <% if(obj.category ===
                     _.toLower("income")) { %>
@@ -187,21 +204,21 @@
                     <% } %> <% } else { %>
                     <span>0.00</span>
                     <% } %>
-                  </div>
-                  <div
-                    class="
-                      absolute
-                      inset-y-0
-                      right-0
-                      pr-3
-                      flex
-                      items-center
-                      pointer-events-none
-                    "
-                  >
-                    <span class="text-gray-500 sm:text-sm" id="income-currency">
-                      CAD
-                    </span>
+                    <div
+                      class="
+                        absolute
+                        inset-y-0
+                        right-0
+                        pr-3
+                        flex
+                        items-center
+                        pointer-events-none
+                      "
+                    >
+                      <span class="text-5xl text-gray-500" id="income-currency">
+                        CAD
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
