@@ -43,19 +43,7 @@
       <%- include('../../partial/nav/index'); %>
       <header class="bg-yellow-500">
         <div
-          class="
-            flex
-            items-center
-            justify-between
-            lg:max-w-7xl
-            mx-auto
-            py-14
-            lg:py-4
-            sm:px-6
-            lg:px-8
-            bg-yellow-500
-            border-b-2 border-white border-solid
-          "
+          class="flex items-center justify-between lg:max-w-7xl mx-auto py-14 lg:py-4 sm:px-6 lg:px-8 bg-yellow-500 border-b-2 border-white border-solid"
         >
           <!-- Is this the only way to display an error...? -->
           <% if(error.length > 0) {%>
@@ -75,25 +63,12 @@
       </header>
       <main class="min-h-screen bg-green-500 lg:h-screen">
         <div
-          class="
-            py-8
-            lg:max-w-7xl lg:mx-auto lg:py-6
-            sm:px-6
-            lg:px-8
-            bg-green-500
-          "
+          class="py-8 lg:max-w-7xl lg:mx-auto lg:py-6 sm:px-6 lg:px-8 bg-green-500"
         >
           <!-- Content -->
           <div class="lg:px-4 lg:py-4 sm:px-0">
             <div
-              class="
-                min-h-screen
-                border-4 border-dashed border-gray-200
-                rounded-lg
-                h-96
-                bg-white
-                h-auto
-              "
+              class="min-h-screen border-4 border-dashed border-gray-200 rounded-lg h-96 bg-white h-auto"
             >
               <!-- Edit and Delete button section -->
               <% if(itemizedItems.length !== 0) { %>
@@ -124,29 +99,12 @@
                     >Date</label
                   >
                   <div
-                    class="
-                      min-w-full
-                      my-8
-                      lg:w-auto lg:m-auto
-                      md:w-6/12
-                      lg:w-6/12
-                    "
+                    class="min-w-full my-8 lg:w-auto lg:m-auto md:w-6/12 lg:w-6/12"
                   >
                     <input
                       type="text"
                       id="datepicker"
-                      class="
-                        text-5xl
-                        font-light
-                        py-3
-                        border-4
-                        lg:border-2
-                        border-solid border-gray-200
-                        text-center
-                        w-8/12
-                        mt-2
-                        rounded-lg
-                      "
+                      class="text-5xl font-light py-3 border-4 lg:border-2 border-solid border-gray-200 text-center w-8/12 mt-2 rounded-lg"
                     />
                   </div>
                 </form>
@@ -155,44 +113,15 @@
               <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
                 <label for="income" class="text-6xl lg:text-lg">Income</label>
                 <div
-                  class="
-                    min-w-full
-                    my-8
-                    lg:w-auto lg:m-auto
-                    md:w-6/12
-                    lg:w-6/12
-                  "
+                  class="min-w-full my-8 lg:w-auto lg:m-auto md:w-6/12 lg:w-6/12"
                 >
                   <div
-                    class="
-                      relative
-                      text-5xl
-                      w-8/12
-                      mt-2
-                      py-3
-                      mx-auto
-                      font-light
-                      border-4
-                      lg:border-2
-                      border-solid border-gray-200
-                      text-center
-                      lg:w-full lg:mt-2
-                      rounded-md
-                    "
+                    class="relative text-5xl w-8/12 mt-2 py-3 mx-auto font-light border-4 lg:border-2 border-solid border-gray-200 text-center lg:w-full lg:mt-2 rounded-md"
                     placeholder="0.00"
                     aria-describedby="income-currency"
                   >
                     <div
-                      class="
-                        absolute
-                        w-40
-                        inset-y-0
-                        left-0
-                        pl-3
-                        flex
-                        items-center
-                        pointer-events-none
-                      "
+                      class="absolute w-40 inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
                     >
                       <span class="text-5xl text-gray-500"> $ </span>
                     </div>
@@ -207,15 +136,7 @@
                     <span>0.00</span>
                     <% } %>
                     <div
-                      class="
-                        absolute
-                        inset-y-0
-                        right-0
-                        pr-3
-                        flex
-                        items-center
-                        pointer-events-none
-                      "
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
                     >
                       <span class="text-5xl text-gray-500" id="income-currency">
                         CAD
@@ -228,58 +149,29 @@
               <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
                 <span class="text-6xl lg:text-lg">Summary</span>
                 <div
-                  class="flex flex-col min-w-full md:w-6/12 lg:w-6/12 mt-2 py-3"
+                  class="flex flex-col min-w-full w-8/12 md:w-6/12 lg:w-6/12 m-auto mt-10"
                 >
-                  <div class="w-8/12 mx-auto -my-2 overflow-x-auto lg:-mx-8">
+                  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div
-                      class="
-                        py-3
-                        mt-6
-                        bg-gray-100
-                        align-middle
-                        sm:px-6
-                        lg:px-8
-                        rounded-lg
-                      "
+                      class="align-middle w-8/12 m-auto border-2 border-gray-200 lg:px-8"
                     >
-                      <div class="overflow-hidden sm:rounded-lg">
+                      <div
+                        class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+                      >
                         <table
-                          class="
-                            min-w-full
-                            table-auto
-                            divide-y divide-gray-200
-                            text-center
-                          "
+                          class="min-w-full w-8/12 table-auto divide-y divide-gray-200 text-center"
                         >
-                          <thead class="">
+                          <thead class="bg-gray-50">
                             <tr>
                               <th
                                 scope="col"
-                                class="
-                                  px-8
-                                  py-4
-                                  text-4xl
-                                  font-medium
-                                  lg:px-6 lg:py-3 lg:text-xs lg:font-medium
-                                  text-gray-500
-                                  uppercase
-                                  tracking-wider
-                                "
+                                class="px-8 py-4 text-4xl font-medium lg:px-6 lg:py-3 lg:text-xs lg:font-medium text-gray-500 uppercase tracking-wider"
                               >
                                 Item
                               </th>
                               <th
                                 scope="col"
-                                class="
-                                  px-8
-                                  py-4
-                                  text-4xl
-                                  font-medium
-                                  lg:px-6 lg:py-3 lg:text-xs lg:font-medium
-                                  text-gray-500
-                                  uppercase
-                                  tracking-wider
-                                "
+                                class="px-8 py-4 text-4xl font-medium lg:px-6 lg:py-3 lg:text-xs lg:font-medium text-gray-500 uppercase tracking-wider"
                               >
                                 Amount
                               </th>
@@ -292,25 +184,12 @@
                             obj.category = _.startCase(obj.category) %>
                             <tr>
                               <td
-                                class="
-                                  px-6
-                                  py-4
-                                  text-4xl
-                                  whitespace-nowrap
-                                  lg:text-sm lg:font-medium
-                                  text-gray-900
-                                "
+                                class="px-6 py-4 text-4xl whitespace-nowrap lg:text-sm lg:font-medium text-gray-900"
                               >
                                 <%= obj.category %>
                               </td>
                               <td
-                                class="
-                                  px-6
-                                  py-4
-                                  text-4xl
-                                  whitespace-nowrap
-                                  lg:text-sm lg:text-gray-500
-                                "
+                                class="px-6 py-4 text-4xl whitespace-nowrap lg:text-sm lg:text-gray-500"
                               >
                                 $<%= obj.amount %>
                               </td>
