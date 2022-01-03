@@ -97,7 +97,9 @@
             >
               <!-- Edit and Delete button section -->
               <% if(itemizedItems.length !== 0) { %>
-              <div class="my-12 mx-12 lg:w-auto lg:my-4 lg:mx-10 text-right">
+              <div
+                class="mt-20 mb-20 mx-12 lg:w-auto lg:my-4 lg:mx-10 text-right"
+              >
                 <a
                   href="/budget/edit?start=<%= startDate %>&end=<%= endDate %>"
                 >
@@ -116,7 +118,7 @@
               </div>
               <% } %>
               <!-- Date selection section -->
-              <div class="my-12 lg:w-auto lg:my-4 lg:mx-14 text-center">
+              <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
                 <form action="/budget" method="GET">
                   <label for="datepicker" class="text-6xl lg:text-lg"
                     >Date</label
@@ -150,7 +152,7 @@
                 </form>
               </div>
               <!-- Income section -->
-              <div class="my-12 lg:w-auto lg:my-4 lg:mx-14 text-center">
+              <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
                 <label for="income" class="text-6xl lg:text-lg">Income</label>
                 <div
                   class="
@@ -223,30 +225,24 @@
                 </div>
               </div>
               <!-- Summary Section -->
-              <div class="w-auto my-4 mx-14 text-center">
-                <span class="text-lg">Summary</span>
+              <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
+                <span class="text-6xl lg:text-lg">Summary</span>
                 <div
-                  class="
-                    flex flex-col
-                    w-auto
-                    md:w-6/12
-                    lg:w-6/12
-                    m-auto
-                    border-2 border-gray-200
-                    mt-2
-                    rounded-md
-                  "
+                  class="flex flex-col min-w-full md:w-6/12 lg:w-6/12 mt-2 py-3"
                 >
-                  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div class="py-2 align-middle min-w-full sm:px-6 lg:px-8">
-                      <div
-                        class="
-                          shadow
-                          overflow-hidden
-                          border-b border-gray-200
-                          sm:rounded-lg
-                        "
-                      >
+                  <div class="w-8/12 mx-auto -my-2 overflow-x-auto lg:-mx-8">
+                    <div
+                      class="
+                        py-3
+                        mt-6
+                        bg-gray-100
+                        align-middle
+                        sm:px-6
+                        lg:px-8
+                        rounded-lg
+                      "
+                    >
+                      <div class="overflow-hidden sm:rounded-lg">
                         <table
                           class="
                             min-w-full
@@ -255,15 +251,16 @@
                             text-center
                           "
                         >
-                          <thead class="bg-gray-50">
+                          <thead class="">
                             <tr>
                               <th
                                 scope="col"
                                 class="
-                                  px-6
-                                  py-3
-                                  text-xs
+                                  px-8
+                                  py-4
+                                  text-4xl
                                   font-medium
+                                  lg:px-6 lg:py-3 lg:text-xs lg:font-medium
                                   text-gray-500
                                   uppercase
                                   tracking-wider
@@ -274,10 +271,11 @@
                               <th
                                 scope="col"
                                 class="
-                                  px-6
-                                  py-3
-                                  text-xs
+                                  px-8
+                                  py-4
+                                  text-4xl
                                   font-medium
+                                  lg:px-6 lg:py-3 lg:text-xs lg:font-medium
                                   text-gray-500
                                   uppercase
                                   tracking-wider
@@ -297,9 +295,9 @@
                                 class="
                                   px-6
                                   py-4
+                                  text-4xl
                                   whitespace-nowrap
-                                  text-sm
-                                  font-medium
+                                  lg:text-sm lg:font-medium
                                   text-gray-900
                                 "
                               >
@@ -309,8 +307,9 @@
                                 class="
                                   px-6
                                   py-4
+                                  text-4xl
                                   whitespace-nowrap
-                                  text-sm text-gray-500
+                                  lg:text-sm lg:text-gray-500
                                 "
                               >
                                 $<%= obj.amount %>

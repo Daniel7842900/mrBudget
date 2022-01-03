@@ -13,8 +13,27 @@ input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
 
+.daterangepicker .calendar-table th,
+.daterangepicker .calendar-table td {
+  font-size: 2em !important;
+}
+
+.daterangepicker .drp-calendar {
+  max-width: 100% !important;
+  width: 100%;
+}
+
+.daterangepicker .calendar-table {
+  height: 100%;
+}
+
 .daterangepicker .calendar-table table {
   border-collapse: separate !important;
+  height: 100%;
+}
+
+.daterangepicker.show-calendar .drp-calendar {
+  height: 50%;
 }
 
 .daterangepicker .calendar-table td.occupied-left {
@@ -43,4 +62,12 @@ input[type="number"] {
   border-width: 2px 0 2px 0;
   color: #000;
   border-radius: 0;
+}
+
+.daterangepicker .drp-selected {
+  font-size: 25px !important;
+}
+
+.daterangepicker .drp-buttons .btn {
+  font-size: 25px !important;
 }

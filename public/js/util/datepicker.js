@@ -6,7 +6,28 @@ if (_.isEmpty(params)) {
     locale: {
       format: "MMM DD YYYY",
     },
+
+    // function() {
+    //   $("#datepicker").on("click", function () {
+    //     $(".daterangepicker").removeAttr("style");
+    //   });
+    // },
   });
+  $("#datepicker").on("click", function () {
+    $(".daterangepicker").removeAttr("style");
+    $(".daterangepicker").css({
+      top: "626px",
+      left: "182px",
+      right: "auto",
+      display: "flex",
+      "flex-direction": "column",
+      height: "50%",
+      width: "63%",
+    });
+  });
+  // let data = $("#datepicker").data("daterangepicker");
+  // console.log(data);
+  // $(".daterangepicker").css("display", "flex");
 } else {
   let start = params.start;
   let end = params.end;
@@ -22,4 +43,5 @@ if (_.isEmpty(params)) {
       format: "MMM DD YYYY",
     },
   });
+  // $(".daterangepicker").css("display", "flex");
 }
