@@ -43,5 +43,17 @@ if (_.isEmpty(params)) {
       format: "MMM DD YYYY",
     },
   });
+  $("#datepicker").on("click", function () {
+    $(".daterangepicker").removeAttr("style");
+    $(".daterangepicker").css({
+      top: "626px",
+      left: "182px",
+      right: "auto",
+      display: "flex",
+      "flex-direction": "column",
+      height: "50%",
+      width: "63%",
+    });
+  });
   // $(".daterangepicker").css("display", "flex");
 }
