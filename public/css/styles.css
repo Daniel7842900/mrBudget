@@ -38,14 +38,14 @@ input[type="number"] {
 
 .daterangepicker .calendar-table td.occupied-left {
   border-color: #dee201;
-  border-width: 2px 0px 2px 2px;
+  border-width: 3px 0px 3px 3px;
   border-radius: 0.5rem 0 0 0.5rem;
   color: #000;
 }
 
 .daterangepicker .calendar-table td.occupied-right {
   border-color: #dee201;
-  border-width: 2px 2px 2px 0px;
+  border-width: 3px 3px 3px 0px;
   border-radius: 0 0.5rem 0.5rem 0;
   color: #000;
 }
@@ -59,7 +59,7 @@ input[type="number"] {
 
 .daterangepicker .calendar-table td.occupied-in-range {
   border-color: #dee201;
-  border-width: 2px 0 2px 0;
+  border-width: 3px 0 3px 0;
   color: #000;
   border-radius: 0;
 }
