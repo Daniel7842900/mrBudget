@@ -39,201 +39,323 @@
     />
     <script src="/js/ejs.min.js"></script>
   </head>
-  <body class="bg-yellow-500">
+  <body class="bg-green-500">
     <div>
       <%- include('../../partial/nav/index'); %>
-      <header class="bg-yellow-500">
+      <header class="bg-green-500">
         <div
-          class="flex items-center justify-between lg:max-w-7xl mx-auto py-14 lg:py-4 sm:px-6 lg:px-8 bg-yellow-500 border-b-2 border-white border-solid"
+          class="
+            flex
+            items-center
+            justify-between
+            max-w-7xl
+            mx-auto
+            py-4
+            px-4
+            sm:px-6
+            lg:px-8
+            bg-green-500
+            border-b-2 border-white border-solid
+          "
         >
-          <h1 class="text-5xl lg:text-lg leading-6 font-semibold text-white">
-            New Budget
-          </h1>
+          <h1 class="text-lg leading-6 font-semibold text-white">New Budget</h1>
           <a href="/budget">
-            <button class="mr-6 text-5xl lg:text-2xl text-white">
+            <button class="text-2xl text-white">
               <i class="fas fa-times"></i>
             </button>
           </a>
         </div>
       </header>
-      <main class="min-h-screen bg-green-500 lg:h-screen">
-        <div
-          class="py-8 lg:max-w-7xl lg:mx-auto lg:py-6 sm:px-6 lg:px-8 bg-green-500"
-        >
+      <main class="bg-green-500 h-screen">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 bg-green-500">
           <!-- Content -->
           <form action="/budget/new" method="POST">
-            <div class="lg:px-4 lg:py-4 sm:px-0">
+            <div class="px-4 py-4 sm:px-0">
               <div
-                class="min-h-screen border-4 border-dashed border-gray-200 rounded-lg h-96 bg-white h-auto"
+                class="
+                  border-4 border-dashed border-gray-200
+                  rounded-lg
+                  h-96
+                  bg-white
+                  h-auto
+                "
               >
-                <!-- error message -->
                 <% if(err_message.length > 0) { %>
                 <div
-                  class="w-auto py-2 my-4 mx-14 text-center border border-transparent text-md font-medium rounded-md text-white bg-red-500 items-center"
+                  class="
+                    w-auto
+                    py-2
+                    my-4
+                    mx-14
+                    text-center
+                    border border-transparent
+                    text-md
+                    font-medium
+                    rounded-md
+                    text-white
+                    bg-red-500
+                    items-center
+                  "
                 >
                   <p><%= err_message %></p>
                 </div>
                 <% } %>
-                <!-- Date selection section -->
-                <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
-                  <label for="datepicker" class="text-6xl lg:text-lg"
-                    >Date</label
-                  >
-                  <div
-                    class="min-w-full my-8 lg:w-auto lg:m-auto md:w-6/12 lg:w-6/12"
-                  >
+                <div class="w-auto my-4 mx-14 text-center">
+                  <label for="datepicker" class="text-lg">Date</label>
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12">
                     <input
                       type="text"
                       id="datepicker"
-                      class="text-5xl font-light py-3 border-4 lg:border-2 border-solid border-gray-200 text-center w-8/12 mt-2 rounded-lg"
+                      class="
+                        border-2 border-solid border-gray-200
+                        text-center
+                        w-full
+                        mt-2
+                        rounded-md
+                      "
                     />
                   </div>
                 </div>
                 <!-- Income input section -->
-                <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
-                  <label for="income" class="text-6xl lg:text-lg">Income</label>
-                  <div
-                    class="min-w-full my-8 lg:w-auto lg:m-auto md:w-6/12 lg:w-6/12"
-                  >
+                <div class="w-auto my-4 mx-14 text-center">
+                  <label for="income" class="text-lg">Income</label>
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 relative">
                     <div
-                      class="text-2xl lg:text-xs relative text-5xl w-8/12 mt-2 py-3 mx-auto font-light border-4 lg:border-2 border-solid border-gray-200 text-center lg:w-full lg:mt-2 rounded-md hover:border-blue-500"
+                      class="
+                        absolute
+                        inset-y-0
+                        left-0
+                        pl-3
+                        flex
+                        items-center
+                        pointer-events-none
+                      "
+                    >
+                      <span class="text-gray-500 sm:text-sm"> $ </span>
+                    </div>
+                    <input
+                      type="number"
+                      name="income"
+                      id="income"
+                      class="
+                        border-2 border-solid border-gray-200
+                        text-center
+                        w-full
+                        mt-2
+                        rounded-md
+                        block
+                      "
                       placeholder="0.00"
                       aria-describedby="income-currency"
+                    />
+                    <div
+                      class="
+                        absolute
+                        inset-y-0
+                        right-0
+                        pr-3
+                        flex
+                        items-center
+                        pointer-events-none
+                      "
                     >
-                      <div
-                        class="absolute w-40 inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                      <span
+                        class="text-gray-500 sm:text-sm"
+                        id="income-currency"
                       >
-                        <span class="text-5xl text-gray-500"> $ </span>
+                        CAD
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Budget input section -->
+                <div class="w-auto my-4 mx-14 text-center">
+                  <span class="text-lg">Category & Amount</span>
+                </div>
+                <div
+                  class="
+                    w-9/12
+                    m-auto
+                    md:w-5/12
+                    lg:w-5/12
+                    xl:w-5/12
+                    text-center
+                    border-2 border-solid border-gray-200
+                    rounded-md
+                  "
+                >
+                  <!-- Category for item being added -->
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pt-4 pb-1">
+                    <label for="category">Category</label>
+                    <div class="w-auto m-auto">
+                      <select
+                        name="category"
+                        id="category"
+                        class="
+                          border-2 border-solid border-gray-200
+                          text-center
+                          w-full
+                          mt-2
+                          rounded-md
+                        "
+                      >
+                        <option value="grocery">Grocery</option>
+                        <option value="rent">Rent</option>
+                        <option value="utility">Utility</option>
+                        <option value="dine out">Dine out</option>
+                        <option value="investment">Investment</option>
+                        <option value="saving">Saving</option>
+                        <option value="alcohol">Alcohol</option>
+                        <option value="leisure">Leisure</option>
+                        <option value="insurance">Insurance</option>
+                        <option value="loan">Loan</option>
+                        <option value="streaming service">
+                          Streaming Service
+                        </option>
+                        <option value="transportation">Transportation</option>
+                        <option value="etc">Etc</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- $ Amount for item being added -->
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pb-4 pt-1">
+                    <label for="amount">Amount</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <div
+                        class="
+                          absolute
+                          inset-y-0
+                          left-0
+                          pl-3
+                          flex
+                          items-center
+                          pointer-events-none
+                        "
+                      >
+                        <span class="text-gray-500 sm:text-sm"> $ </span>
                       </div>
                       <input
                         type="number"
-                        name="income"
-                        id="income"
-                        class="text-center w-full mt-2 rounded-md block outline-none"
+                        name="amount"
+                        id="amount"
+                        class="
+                          border-2 border-solid border-gray-200
+                          text-center
+                          w-full
+                          mt-2
+                          rounded-md
+                          block
+                        "
                         placeholder="0.00"
-                        aria-describedby="income-currency"
+                        aria-describedby="amount-currency"
                       />
                       <div
-                        class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+                        class="
+                          absolute
+                          inset-y-0
+                          right-0
+                          pr-3
+                          flex
+                          items-center
+                          pointer-events-none
+                        "
                       >
                         <span
-                          class="text-5xl text-gray-500"
-                          id="income-currency"
+                          class="text-gray-500 sm:text-sm"
+                          id="amount-currency"
                         >
                           CAD
                         </span>
                       </div>
                     </div>
                   </div>
-                </div>
-                <!-- Budget input section -->
-                <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
-                  <span class="text-6xl lg:text-lg">Category & Amount</span>
-                  <div
-                    class="min-w-full my-8 lg:w-auto lg:m-auto md:w-6/12 lg:w-6/12"
-                  >
-                    <div
-                      class="w-8/12 mx-auto mt-2 py-3 lg:w-5/12 xl:w-5/12 text-center border-4 lg:border-2 border-solid border-gray-200 rounded-lg"
+                  <!-- Add button for an item -->
+                  <div class="text-right mr-1 mb-1">
+                    <button
+                      class="
+                        inline-flex
+                        justify-center
+                        py-2
+                        px-4
+                        border border-transparent
+                        shadow-sm
+                        text-sm
+                        font-medium
+                        rounded-md
+                        text-white
+                        bg-blue-500
+                        hover:bg-blue-700
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-offset-2
+                        focus:ring-indigo-500
+                      "
+                      id="add_btn"
                     >
-                      <!-- Category for item being added -->
-                      <div class="mt-4 mb-8 w-6/12 m-auto lg:w-6/12 pt-4 pb-1">
-                        <label for="category" class="text-4xl lg:text-lg"
-                          >Category</label
-                        >
-                        <div class="mt-5 w-auto m-auto">
-                          <select
-                            name="category"
-                            id="category"
-                            class="text-2xl border-4 lg:border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-lg"
-                          >
-                            <option value="grocery">Grocery</option>
-                            <option value="rent">Rent</option>
-                            <option value="utility">Utility</option>
-                            <option value="dine out">Dine out</option>
-                            <option value="investment">Investment</option>
-                            <option value="saving">Saving</option>
-                            <option value="alcohol">Alcohol</option>
-                            <option value="leisure">Leisure</option>
-                            <option value="insurance">Insurance</option>
-                            <option value="loan">Loan</option>
-                            <option value="streaming service">
-                              Streaming Service
-                            </option>
-                            <option value="transportation">
-                              Transportation
-                            </option>
-                            <option value="etc">Etc</option>
-                          </select>
-                        </div>
-                      </div>
-                      <!-- $ Amount for item being added -->
-                      <div class="mt-4 mb-8 w-6/12 m-auto lg:w-6/12 pb-4 pt-1">
-                        <label for="amount" class="text-4xl lg:text-lg"
-                          >Amount</label
-                        >
-                        <div class="mt-5 relative rounded-md shadow-sm">
-                          <div
-                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                          >
-                            <span class="text-2xl text-gray-500"> $ </span>
-                          </div>
-                          <input
-                            type="number"
-                            name="amount"
-                            id="amount"
-                            class="text-2xl border-4 lg:border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md block"
-                            placeholder="0.00"
-                            aria-describedby="amount-currency"
-                          />
-                          <div
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-                          >
-                            <span
-                              class="text-2xl text-gray-500"
-                              id="amount-currency"
-                            >
-                              CAD
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- Add button for an item -->
-                      <div class="text-right mr-5 mb-5 lg:mr-1 lg:mb-1">
-                        <button
-                          class="inline-flex justify-center py-4 px-6 lg:py-2 lg:px-4 border border-transparent shadow-sm text-2xl lg:text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                          id="add_btn"
-                        >
-                          Add
-                        </button>
-                      </div>
-                    </div>
+                      Add
+                    </button>
                   </div>
                 </div>
                 <!-- Summary Section -->
-                <div class="mt-20 mb-20 lg:w-auto lg:my-4 lg:mx-14 text-center">
-                  <span class="text-6xl lg:text-lg">Summary</span>
+                <div class="w-auto my-4 mx-14 text-center">
+                  <span class="text-lg">Summary</span>
                   <div
-                    class="flex flex-col w-8/12 mt-8 lg:w-6/12 m-auto rounded-md"
+                    class="
+                      flex flex-col
+                      w-auto
+                      md:w-6/12
+                      lg:w-6/12
+                      m-auto
+                      mt-2
+                      rounded-md
+                    "
                   >
                     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                       <div class="py-2 align-middle min-w-full sm:px-6 lg:px-8">
                         <div
-                          class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+                          class="
+                            shadow
+                            overflow-hidden
+                            border-b border-gray-200
+                            sm:rounded-lg
+                          "
                         >
                           <table
-                            class="min-w-full table-auto divide-y divide-gray-200 border-2 border-gray-200 text-center"
+                            class="
+                              min-w-full
+                              table-auto
+                              divide-y divide-gray-200
+                              border-2 border-gray-200
+                              text-center
+                            "
                           >
                             <thead class="bg-gray-50">
                               <tr>
                                 <th
                                   scope="col"
-                                  class="px-6 py-3 text-2xl lg:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                  class="
+                                    px-6
+                                    py-3
+                                    text-xs
+                                    font-medium
+                                    text-gray-500
+                                    uppercase
+                                    tracking-wider
+                                  "
                                 >
                                   Item
                                 </th>
                                 <th
                                   scope="col"
-                                  class="px-6 py-3 text-2xl lg:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                  class="
+                                    px-6
+                                    py-3
+                                    text-xs
+                                    font-medium
+                                    text-gray-500
+                                    uppercase
+                                    tracking-wider
+                                  "
                                 >
                                   Amount
                                 </th>
@@ -251,11 +373,28 @@
                           </table>
                         </div>
                       </div>
-                      <div
-                        class="text-right py-4 px-6 lg:py-2 min-w-full lg:px-8"
-                      >
+                      <div class="text-right py-2 min-w-full sm:px-6 lg:px-8">
                         <button
-                          class="inline-flex justify-center mr-1 mb-1 py-4 px-6 lg:py-2 lg:px-4 border border-transparent shadow-sm text-2xl lg:text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          class="
+                            inline-flex
+                            justify-center
+                            mr-1
+                            mb-1
+                            py-2
+                            px-4
+                            border border-transparent
+                            shadow-sm
+                            text-sm
+                            font-medium
+                            rounded-md
+                            text-white
+                            bg-blue-500
+                            hover:bg-blue-700
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-offset-2
+                            focus:ring-indigo-500
+                          "
                           id="submit_btn"
                         >
                           Submit

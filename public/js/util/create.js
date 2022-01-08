@@ -72,8 +72,8 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     px-6
                     py-4
                     whitespace-nowrap
-                    text-2xl
-                    lg:text-xs
+                    text-sm
+                    font-medium
                     text-gray-900
                   "
                 >
@@ -84,9 +84,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     px-6
                     py-4
                     whitespace-nowrap
-                    text-2xl
-                    lg:text-xs
-                    text-gray-500
+                    text-sm text-gray-500
                   "
                 >
                   $ <%= obj.amount %>
@@ -96,9 +94,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     px-6
                     py-4
                     whitespace-nowrap
-                    text-2xl
-                    lg:text-xs
-                    text-gray-500
+                    text-sm text-gray-500
                   "
                 >
                   <button
@@ -107,11 +103,10 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                       justify-center
                       py-2
                       px-4
-                      border
-                      border-transparent
+                      border border-transparent
                       shadow-sm
-                      text-2xl
-                      lg:text-xs
+                      text-sm
+                      font-medium
                       rounded-md
                       text-white
                       bg-red-500
@@ -179,8 +174,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                 px-6
                 py-4
                 whitespace-nowrap
-                text-2xl
-                lg:text-xs
+                text-sm
                 font-medium
                 text-gray-900
               "
@@ -192,9 +186,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                 px-6
                 py-4
                 whitespace-nowrap
-                text-2xl
-                lg:text-xs 
-                text-gray-500
+                text-sm text-gray-500
               "
             >
               $ <%= obj.amount %>
@@ -204,9 +196,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                 px-6
                 py-4
                 whitespace-nowrap
-                text-2xl
-                lg:text-xs 
-                text-gray-500
+                text-sm text-gray-500
               "
             >
               <button
@@ -217,8 +207,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                   px-4
                   border border-transparent
                   shadow-sm
-                  text-2xl
-                  lg:text-xs
+                  text-sm
                   font-medium
                   rounded-md
                   text-white
