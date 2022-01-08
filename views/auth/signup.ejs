@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="../build/styles.css" rel="stylesheet" />
     <script
       type="text/javascript"
@@ -31,35 +32,13 @@
   </head>
   <body>
     <div
-      class="
-        min-h-screen
-        flex
-        items-center
-        justify-center
-        bg-gray-50
-        py-12
-        px-4
-        sm:px-6
-        lg:px-8
-      "
+      class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
     >
       <div class="max-w-md w-full space-y-8">
         <!--  -->
         <% if(errFlash.length > 0) { %>
         <div
-          class="
-            relative
-            flex
-            justify-center
-            py-2
-            border border-transparent
-            text-sm
-            font-medium
-            rounded-md
-            text-white
-            bg-red-500
-            items-center
-          "
+          class="relative flex justify-center py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-500 items-center"
         >
           <span><%= errFlash %> </span>
         </div>
@@ -85,26 +64,7 @@
                 type="text"
                 autocomplete="given-name"
                 required
-                class="
-                  appearance-none
-                  rounded-none
-                  relative
-                  block
-                  w-1/2
-                  px-3
-                  py-2
-                  my-3
-                  mr-1
-                  border border-gray-300
-                  placeholder-gray-500
-                  text-gray-900
-                  rounded-md
-                  focus:outline-none
-                  focus:ring-indigo-500
-                  focus:border-indigo-500
-                  focus:z-10
-                  sm:text-sm
-                "
+                class="appearance-none rounded-none relative block w-1/2 px-3 py-2 my-3 mr-1 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="First name"
               />
               <label for="lastname" class="sr-only">Last name</label>
@@ -114,26 +74,7 @@
                 type="text"
                 autocomplete="family-name"
                 required
-                class="
-                  appearance-none
-                  rounded-none
-                  relative
-                  block
-                  w-1/2
-                  px-3
-                  py-2
-                  my-3
-                  ml-1
-                  border border-gray-300
-                  placeholder-gray-500
-                  text-gray-900
-                  rounded-md
-                  focus:outline-none
-                  focus:ring-indigo-500
-                  focus:border-indigo-500
-                  focus:z-10
-                  sm:text-sm
-                "
+                class="appearance-none rounded-none relative block w-1/2 px-3 py-2 my-3 ml-1 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Last name"
               />
             </div>
@@ -146,25 +87,7 @@
                 type="email"
                 autocomplete="email"
                 required
-                class="
-                  appearance-none
-                  rounded-none
-                  relative
-                  block
-                  w-full
-                  px-3
-                  py-2
-                  my-4
-                  border border-gray-300
-                  placeholder-gray-500
-                  text-gray-900
-                  rounded-md
-                  focus:outline-none
-                  focus:ring-indigo-500
-                  focus:border-indigo-500
-                  focus:z-10
-                  sm:text-sm
-                "
+                class="appearance-none rounded-none relative block w-full px-3 py-2 my-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
               />
             </div>
@@ -176,25 +99,7 @@
                 type="password"
                 autocomplete="current-password"
                 required
-                class="
-                  appearance-none
-                  rounded-none
-                  relative
-                  block
-                  w-full
-                  px-3
-                  py-2
-                  my-6
-                  border border-gray-300
-                  placeholder-gray-500
-                  text-gray-900
-                  rounded-md
-                  focus:outline-none
-                  focus:ring-indigo-500
-                  focus:border-indigo-500
-                  focus:z-10
-                  sm:text-sm
-                "
+                class="appearance-none rounded-none relative block w-full px-3 py-2 my-6 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
               />
             </div>
@@ -203,26 +108,7 @@
             <button
               type="submit"
               id="submit_btn"
-              class="
-                group
-                relative
-                w-full
-                flex
-                justify-center
-                py-2
-                px-4
-                border border-transparent
-                text-sm
-                font-medium
-                rounded-md
-                text-white
-                bg-blue-600
-                hover:bg-blue-700
-                focus:outline-none
-                focus:ring-2
-                focus:ring-offset-2
-                focus:ring-blue-500
-              "
+              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                 <i class="fas fa-check"></i>
