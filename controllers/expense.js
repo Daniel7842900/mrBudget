@@ -4,6 +4,7 @@ const Finance = db.finance;
 const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
+const { Op } = require("sequelize");
 
 // Controller for displaying a new expense page
 exports.create = async (req, res) => {
@@ -55,15 +56,78 @@ exports.store = async (req, res) => {
   // Condition for finding an expense
   let filter = {
     where: {
-      startDate: startDate,
-      endDate: endDate,
+      [Op.or]: [
+        // first case, input s is equal or s or e or
+        {
+          [Op.or]: [
+            {
+              startDate: {
+                [Op.or]: [startDate, endDate],
+              },
+            },
+            {
+              endDate: {
+                [Op.or]: [startDate, endDate],
+              },
+            },
+          ],
+        },
+        // second case, input s is smaller than s
+        {
+          [Op.and]: [
+            {
+              startDate: {
+                [Op.gt]: startDate,
+              },
+            },
+            {
+              startDate: {
+                [Op.lt]: endDate,
+              },
+            },
+          ],
+        },
+        //third case, input s is greater than s
+        {
+          [Op.or]: [
+            {
+              [Op.and]: [
+                {
+                  startDate: {
+                    [Op.lt]: startDate,
+                  },
+                },
+                {
+                  endDate: {
+                    [Op.gt]: endDate,
+                  },
+                },
+              ],
+            },
+            {
+              [Op.and]: [
+                {
+                  startDate: {
+                    [Op.lt]: startDate,
+                  },
+                },
+                {
+                  endDate: {
+                    [Op.gt]: startDate,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
       financeTypeId: 2,
       userId: user.id,
     },
   };
 
   const expenseCount = await Finance.count(filter);
-  if (expenseCount !== 1) {
+  if (expenseCount === 0) {
     // Check if there is an expense on selected dates
     if (list.length === 0) {
       req.flash("err_message", "Please fill out the form!");
