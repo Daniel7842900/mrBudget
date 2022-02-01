@@ -13,6 +13,8 @@ exports.findAll = async (req, res) => {
   let user = req.user;
   let monthExpItemArr = [];
   let monthBudItemArr = [];
+  let weekExpItemArr = [];
+  let weekBudItemArr = [];
 
   // Get local time zone
   let tz = moment.tz.guess();
@@ -22,24 +24,23 @@ exports.findAll = async (req, res) => {
   let parsedLocalTime = moment(localTime, "YYYY-MM-DD");
 
   // Get the start date of the current month
-  const startDateOfCurrentMonth = parsedLocalTime
+  const startDateOfMonth = parsedLocalTime
     .startOf("month")
     .format("YYYY-MM-DD");
 
   // Get the end date of the current month
-  const endDateOfCurrentMonth = parsedLocalTime
-    .endOf("month")
-    .format("YYYY-MM-DD");
+  const endDateOfMonth = parsedLocalTime.endOf("month").format("YYYY-MM-DD");
+
+  // Get the start date of the current week
+  const startDateOfWeek = parsedLocalTime.startOf("week").format("YYYY-MM-DD");
+
+  // Get the end date of the current week
+  const endDateOfWeek = parsedLocalTime.endOf("week").format("YYYY-MM-DD");
 
   console.log(parsedLocalTime.startOf("month").format("YYYY-MM-DD"));
   console.log(parsedLocalTime.endOf("month").format("YYYY-MM-DD"));
-  //month expense - how much we spent in this month.
-  //month expense - how much we spent on each category this month.
-  //month budget - how much we predicted in this month.
-  //month budget - how much we predicted on each category this month.
-  // we are essentially grabing only items using finance ids.
-  //from here, we can sum the total -> the total amount of expense or budget for the month.
-  //we can also group by category id and then this would be used on pie chart.
+  console.log(startDateOfWeek);
+  console.log(endDateOfWeek);
 
   // Find all expense items in the current month
   const monthExpenseItems = await Item.findAll({
@@ -50,8 +51,8 @@ exports.findAll = async (req, res) => {
           `(SELECT f.id FROM finances f
                 WHERE f.financeTypeId = 2
                 AND f.userId = ${user.id}
-                AND f.startDate >= '${startDateOfCurrentMonth}'
-                AND f.endDate <= '${endDateOfCurrentMonth}'
+                AND f.startDate >= '${startDateOfMonth}'
+                AND f.endDate <= '${endDateOfMonth}'
               )`
         ),
       },
@@ -67,23 +68,70 @@ exports.findAll = async (req, res) => {
           `(SELECT f.id FROM finances f
                 WHERE f.financeTypeId = 1
                 AND f.userId = ${user.id}
-                AND f.startDate >= '${startDateOfCurrentMonth}'
-                AND f.endDate <= '${endDateOfCurrentMonth}'
+                AND f.startDate >= '${startDateOfMonth}'
+                AND f.endDate <= '${endDateOfMonth}'
               )`
         ),
       },
     },
   });
 
-  Promise.all([monthExpenseItems, monthBudgetItems])
+  // Find all expense items in the current week
+  const weekExpenseItems = await Item.findAll({
+    attributes: ["amount", "categoryId"],
+    where: {
+      financeId: {
+        [Op.in]: sequelize.literal(
+          `(SELECT f.id FROM finances f
+                  WHERE f.financeTypeId = 2
+                  AND f.userId = ${user.id}
+                  AND f.startDate >= '${startDateOfWeek}'
+                  AND f.endDate <= '${endDateOfWeek}'
+                )`
+        ),
+      },
+    },
+  });
+
+  // Find all budget items in the current week
+  const weekBudgetItems = await Item.findAll({
+    attributes: ["amount", "categoryId"],
+    where: {
+      financeId: {
+        [Op.in]: sequelize.literal(
+          `(SELECT f.id FROM finances f
+                  WHERE f.financeTypeId = 1
+                  AND f.userId = ${user.id}
+                  AND f.startDate >= '${startDateOfWeek}'
+                  AND f.endDate <= '${endDateOfWeek}'
+                )`
+        ),
+      },
+    },
+  });
+
+  Promise.all([
+    monthExpenseItems,
+    monthBudgetItems,
+    weekExpenseItems,
+    weekBudgetItems,
+  ])
     .then((response) => {
       const monthExpItemInsts = response[0];
       const monthBudItemInsts = response[1];
+      const weekExpItemInsts = response[2];
+      const weekBudItemInsts = response[3];
       // console.log("this is month expense item insts:");
       // console.log(monthExpItemInsts);
 
       // console.log("this is month budget item insts");
       // console.log(monthBudItemInsts);
+
+      // console.log("this is week expense item insts:");
+      // console.log(weekExpItemInsts.length);
+
+      // console.log("this is week budget item insts");
+      // console.log(weekBudItemInsts.length);
 
       monthExpItemInsts.forEach((monthExpItemInst) => {
         let monthExpItemData = monthExpItemInst.get();
@@ -97,6 +145,19 @@ exports.findAll = async (req, res) => {
         monthBudItemArr.push(monthBudItemData);
       });
 
+      weekExpItemInsts.forEach((weekExpItemInst) => {
+        let weekExpItemData = weekExpItemInst.get();
+        // console.log(weekExpItemData);
+        weekExpItemArr.push(weekExpItemData);
+      });
+
+      weekBudItemInsts.forEach((weekBudgetItemInst) => {
+        let weekBudItemData = weekBudgetItemInst.get();
+        // console.log(weekBudItemData);
+        weekBudItemArr.push(weekBudItemData);
+      });
+
+      // monthly expense & budget variables
       let monthExpTotal = 0;
       let monthBudTotal = 0;
       let monthBudIncome = 0;
@@ -105,28 +166,39 @@ exports.findAll = async (req, res) => {
       let monthExpByCategory = {};
       let monthBudByCategory = {};
 
+      // weekly expense & budget variables
+      let weekExpTotal = 0;
+      let weekBudTotal = 0;
+      let weekBudIncome = 0;
+      let newWeekExpItemArr = [];
+      let newWeekBudItemArr = [];
+      let weekExpByCategory = {};
+      let weekBudByCategory = {};
+
       // Re-format the month expense objects and put them into a new array
       monthExpItemArr.forEach((monthExpItem) => {
-        let monthExpNewItem = {};
-        monthExpTotal += monthExpItem.amount;
+        // Add each amount to monthly expense total
+        monthExpTotal += parseFloat(monthExpItem.amount);
 
-        monthExpNewItem.amount = parseFloat(monthExpItem.amount);
+        // Convert category id to category
+        convertCatIdToCat(monthExpItem);
 
-        convertCatIdToCat(monthExpItem, monthExpNewItem);
-
-        newMonthExpItemArr.push(monthExpNewItem);
+        // Add formatted item object to a new array
+        newMonthExpItemArr.push(monthExpItem);
       });
       console.log("month expense total except income" + monthExpTotal);
       console.log(monthExpTotal);
 
       // Re-format the month budget objects and put them into a new array
       monthBudItemArr.forEach((monthBudItem) => {
-        let monthBudNewItem = {};
-        monthBudNewItem.amount = parseFloat(monthBudItem.amount);
-        convertCatIdToCat(monthBudItem, monthBudNewItem);
-        newMonthBudItemArr.push(monthBudNewItem);
+        // Convert category id to category
+        convertCatIdToCat(monthBudItem);
+
+        // Add formatted item object to a new array
+        newMonthBudItemArr.push(monthBudItem);
       });
 
+      // Get monthly budget income and budget total except "income"
       newMonthBudItemArr.forEach((newBudItem) => {
         if (_.toLower(newBudItem.category) === "income") {
           monthBudIncome += newBudItem.amount;
@@ -137,26 +209,34 @@ exports.findAll = async (req, res) => {
       console.log("month budget total except income" + monthBudTotal);
       console.log("month budget income: " + monthBudIncome);
 
+      // Create a new associative array with categories and summed up amount on each category for monthly expense
       newMonthExpItemArr.forEach((monthExpNewItem) => {
         // console.log(monthExpNewItem);
-        const cat = monthExpNewItem.category;
+        const cat = _.upperFirst(monthExpNewItem.category);
         const amount = monthExpNewItem.amount;
+
         if (cat in monthExpByCategory) {
+          // Add amount on exisiting amount
           monthExpByCategory[cat] = monthExpByCategory[cat] + amount;
         } else {
+          // Add category as a new key and amount as a new value
           monthExpByCategory[cat] = cat;
           monthExpByCategory[cat] = amount;
         }
       });
 
+      //  Create a new associative array with categories and summed up amount on each category for monthly budget
       newMonthBudItemArr.forEach((monthBudNewItem) => {
         // console.log(monthBudNewItem);
         const cat = _.upperFirst(monthBudNewItem.category);
         const amount = monthBudNewItem.amount;
+
         if (_.toLower(cat) !== "income") {
           if (cat in monthBudByCategory) {
+            // Add amount on exisiting amount
             monthBudByCategory[cat] = monthBudByCategory[cat] + amount;
           } else {
+            // Add category as a new key and amount as a new value
             monthBudByCategory[cat] = cat;
             monthBudByCategory[cat] = amount;
           }
@@ -267,49 +347,63 @@ var convertCatToCatId = (obj) => {
   }
 };
 
-var convertCatIdToCat = (dbObj, newObj) => {
+var convertCatIdToCat = (dbObj) => {
   switch (dbObj.categoryId) {
     case 1:
-      newObj.category = _.toLower("income");
+      dbObj.category = _.toLower("income");
+      delete dbObj.categoryId;
       break;
     case 2:
-      newObj.category = _.toLower("grocery");
+      dbObj.category = _.toLower("grocery");
+      delete dbObj.categoryId;
       break;
     case 3:
-      newObj.category = _.toLower("rent");
+      dbObj.category = _.toLower("rent");
+      delete dbObj.categoryId;
       break;
     case 4:
-      newObj.category = _.toLower("utility");
+      dbObj.category = _.toLower("utility");
+      delete dbObj.categoryId;
       break;
     case 5:
-      newObj.category = _.toLower("dine out");
+      dbObj.category = _.toLower("dine out");
+      delete dbObj.categoryId;
       break;
     case 6:
-      newObj.category = _.toLower("investment");
+      dbObj.category = _.toLower("investment");
+      delete dbObj.categoryId;
       break;
     case 7:
-      newObj.category = _.toLower("saving");
+      dbObj.category = _.toLower("saving");
+      delete dbObj.categoryId;
       break;
     case 8:
-      newObj.category = _.toLower("alcohol");
+      dbObj.category = _.toLower("alcohol");
+      delete dbObj.categoryId;
       break;
     case 9:
-      newObj.category = _.toLower("leisure");
+      dbObj.category = _.toLower("leisure");
+      delete dbObj.categoryId;
       break;
     case 10:
-      newObj.category = _.toLower("insurance");
+      dbObj.category = _.toLower("insurance");
+      delete dbObj.categoryId;
       break;
     case 11:
-      newObj.category = _.toLower("loan");
+      dbObj.category = _.toLower("loan");
+      delete dbObj.categoryId;
       break;
     case 12:
-      newObj.category = _.toLower("streaming service");
+      dbObj.category = _.toLower("streaming service");
+      delete dbObj.categoryId;
       break;
     case 13:
-      newObj.category = _.toLower("transportation");
+      dbObj.category = _.toLower("transportation");
+      delete dbObj.categoryId;
       break;
     case 14:
-      newObj.category = _.toLower("etc");
+      dbObj.category = _.toLower("etc");
+      delete dbObj.categoryId;
       break;
     default:
   }
