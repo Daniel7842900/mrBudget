@@ -121,36 +121,29 @@ exports.findAll = async (req, res) => {
       const monthBudItemInsts = response[1];
       const weekExpItemInsts = response[2];
       const weekBudItemInsts = response[3];
-      // console.log("this is month expense item insts:");
-      // console.log(monthExpItemInsts);
 
-      // console.log("this is month budget item insts");
-      // console.log(monthBudItemInsts);
-
-      // console.log("this is week expense item insts:");
-      // console.log(weekExpItemInsts.length);
-
-      // console.log("this is week budget item insts");
-      // console.log(weekBudItemInsts.length);
-
+      // Re-format instances to data format for month expense items
       monthExpItemInsts.forEach((monthExpItemInst) => {
         let monthExpItemData = monthExpItemInst.get();
         // console.log(monthExpItemData);
         monthExpItemArr.push(monthExpItemData);
       });
 
+      // Re-format instances to data format for month budget items
       monthBudItemInsts.forEach((budgetItemInst) => {
         let monthBudItemData = budgetItemInst.get();
         // console.log(monthBudItemData);
         monthBudItemArr.push(monthBudItemData);
       });
 
+      // Re-format instances to data format for week expense items
       weekExpItemInsts.forEach((weekExpItemInst) => {
         let weekExpItemData = weekExpItemInst.get();
         // console.log(weekExpItemData);
         weekExpItemArr.push(weekExpItemData);
       });
 
+      // Re-format instances to data format for week budget items
       weekBudItemInsts.forEach((weekBudgetItemInst) => {
         let weekBudItemData = weekBudgetItemInst.get();
         // console.log(weekBudItemData);
@@ -243,11 +236,78 @@ exports.findAll = async (req, res) => {
         }
       });
 
-      let keys = Object.keys(monthBudByCategory);
-      console.log(keys);
+      // Re-format the month expense objects and put them into a new array
+      weekExpItemArr.forEach((weekExpItem) => {
+        // Add each amount to monthly expense total
+        weekExpTotal += parseFloat(weekExpItem.amount);
 
-      let values = Object.values(monthBudByCategory);
-      console.log(values);
+        // Convert category id to category
+        convertCatIdToCat(weekExpItem);
+
+        // Add formatted item object to a new array
+        newWeekExpItemArr.push(weekExpItem);
+      });
+      console.log("week expense total except income: " + weekExpTotal);
+
+      // Re-format the month budget objects and put them into a new array
+      weekBudItemArr.forEach((weekBudItem) => {
+        // Convert category id to category
+        convertCatIdToCat(weekBudItem);
+
+        // Add formatted item object to a new array
+        newWeekBudItemArr.push(weekBudItem);
+      });
+
+      // Get monthly budget income and budget total except "income"
+      newWeekBudItemArr.forEach((newBudItem) => {
+        if (_.toLower(newBudItem.category) === "income") {
+          weekBudIncome += newBudItem.amount;
+        } else {
+          weekBudTotal += newBudItem.amount;
+        }
+      });
+      console.log("week budget total except income" + weekBudTotal);
+      console.log("week budget income: " + weekBudIncome);
+
+      // Create a new associative array with categories and summed up amount on each category for monthly expense
+      newWeekExpItemArr.forEach((weekExpNewItem) => {
+        // console.log(weekExpNewItem);
+        const cat = _.upperFirst(weekExpNewItem.category);
+        const amount = weekExpNewItem.amount;
+
+        if (cat in weekExpByCategory) {
+          // Add amount on exisiting amount
+          weekExpByCategory[cat] = weekExpByCategory[cat] + amount;
+        } else {
+          // Add category as a new key and amount as a new value
+          weekExpByCategory[cat] = cat;
+          weekExpByCategory[cat] = amount;
+        }
+      });
+
+      //  Create a new associative array with categories and summed up amount on each category for monthly budget
+      newWeekBudItemArr.forEach((weekBudNewItem) => {
+        // console.log(weekBudNewItem);
+        const cat = _.upperFirst(weekBudNewItem.category);
+        const amount = weekBudNewItem.amount;
+
+        if (_.toLower(cat) !== "income") {
+          if (cat in weekBudByCategory) {
+            // Add amount on exisiting amount
+            weekBudByCategory[cat] = weekBudByCategory[cat] + amount;
+          } else {
+            // Add category as a new key and amount as a new value
+            weekBudByCategory[cat] = cat;
+            weekBudByCategory[cat] = amount;
+          }
+        }
+      });
+
+      // let keys = Object.keys(monthBudByCategory);
+      // console.log(keys);
+
+      // let values = Object.values(monthBudByCategory);
+      // console.log(values);
 
       res.render("pages/dashboard", {
         user: user,
@@ -256,6 +316,11 @@ exports.findAll = async (req, res) => {
         monthBudTotal: monthBudTotal,
         monthBudIncome: monthBudIncome,
         monthBudCat: monthBudByCategory,
+        weekExpTotal: weekExpTotal,
+        weekExpCat: weekExpByCategory,
+        weekBudTotal: weekBudTotal,
+        weekBudIncome: weekBudIncome,
+        weekBudCat: weekBudByCategory,
       });
     })
     .catch((err) => {
