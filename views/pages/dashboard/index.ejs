@@ -33,7 +33,7 @@
             >
               <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                 <h2 class="text-lg leading-6 font-semibold text-center">
-                  Month
+                  This Month
                 </h2>
               </div>
               <!-- char example -->
@@ -41,24 +41,24 @@
                 <div
                   class="flex-1 w-full md:w-1/3 relative px-3 w-auto h-auto my-3"
                 >
-                  <canvas id="myChart" class="bottom-0"></canvas>
+                  <canvas id="month-total" class=""></canvas>
                 </div>
                 <div
                   class="flex-1 w-full md:w-1/3 relative px-3 w-auto h-auto my-3"
                 >
-                  <canvas id="myChart2" class=""></canvas>
+                  <canvas id="month-budget-category" class=""></canvas>
                 </div>
                 <div
                   class="flex-1 w-full md:w-1/3 relative px-3 w-auto h-auto my-3"
                 >
-                  <canvas id="myChart3" class=""></canvas>
+                  <canvas id="month-expense-category" class=""></canvas>
                 </div>
               </div>
               <div
                 class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 border-t-4 border-dashed border-gray-200"
               >
                 <h2 class="text-lg leading-6 font-semibold text-center">
-                  Week
+                  This Week
                 </h2>
               </div>
               <!-- char example -->
@@ -66,17 +66,17 @@
                 <div
                   class="flex-1 w-full md:w-1/3 relative px-3 w-auto h-auto my-3"
                 >
-                  <canvas id="myChart4" class="bottom-0"></canvas>
+                  <canvas id="week-total" class=""></canvas>
                 </div>
                 <div
                   class="flex-1 w-full md:w-1/3 relative px-3 w-auto h-auto my-3"
                 >
-                  <canvas id="myChart5" class=""></canvas>
+                  <canvas id="week-budget-category" class=""></canvas>
                 </div>
                 <div
                   class="flex-1 w-full md:w-1/3 relative px-3 w-auto h-auto my-3"
                 >
-                  <canvas id="myChart6" class=""></canvas>
+                  <canvas id="week-expense-category" class=""></canvas>
                 </div>
               </div>
             </div>
@@ -86,35 +86,12 @@
     </div>
     <script src="/navJs/nav.js"></script>
     <script>
-      const ctx = document.getElementById("myChart").getContext("2d");
-      const myChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: ["Red", "Blue"],
-          datasets: [
-            {
-              label: "# of Votes",
-              data: [12, 19],
-              backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-              ],
-              borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
-      });
+      const monthBudTotal = `<%- JSON.stringify(monthBudTotal); %>`;
+      const monthExpTotal = `<%- JSON.stringify(monthExpTotal); %>`;
+      const monthBudCatJSON = `<%- JSON.stringify(monthBudCat); %>`;
+      const monthExpCatJSON = `<%- JSON.stringify(monthExpCat); %>`;
     </script>
-    <script>
+    <!-- <script>
       const ctx2 = document.getElementById("myChart2").getContext("2d");
       const data = {
         labels: ["Red", "Blue", "Yellow"],
@@ -262,6 +239,8 @@
           },
         },
       });
-    </script>
+    </script> -->
+    <script src="/js/util/createChart.js"></script>
+    <script src="/js/dashboard/createChart.js"></script>
   </body>
 </html>
