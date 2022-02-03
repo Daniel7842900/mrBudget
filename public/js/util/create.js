@@ -174,7 +174,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
           <tr>
             <td
               class="
-                px-6
+                px-4
                 py-4
                 whitespace-nowrap
                 text-sm
@@ -186,7 +186,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
             </td>
             <td
               class="
-                px-6
+                px-4
                 py-4
                 whitespace-nowrap
                 text-sm text-gray-500
@@ -196,7 +196,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
             </td>
             <td
               class="
-                px-6
+                px-4
                 py-4
                 whitespace-nowrap
                 text-sm text-gray-500

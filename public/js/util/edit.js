@@ -112,7 +112,7 @@ let onClickAdd = (
                 <tr>
                   <td
                     class="
-                      px-6
+                      px-4
                       py-4
                       whitespace-nowrap
                       text-sm
@@ -124,7 +124,7 @@ let onClickAdd = (
                   </td>
                   <td
                     class="
-                      px-6
+                      px-4
                       py-4
                       whitespace-nowrap
                       text-sm text-gray-500
@@ -134,7 +134,7 @@ let onClickAdd = (
                   </td>
                   <td
                     class="
-                      px-6
+                      px-4
                       py-4
                       whitespace-nowrap
                       text-sm text-gray-500
@@ -215,7 +215,7 @@ let onClickRemove = (
                 <tr>
                   <td
                     class="
-                      px-6
+                      px-4
                       py-4
                       whitespace-nowrap
                       text-sm
@@ -227,7 +227,7 @@ let onClickRemove = (
                   </td>
                   <td
                     class="
-                      px-6
+                      px-4
                       py-4
                       whitespace-nowrap
                       text-sm text-gray-500
@@ -237,7 +237,7 @@ let onClickRemove = (
                   </td>
                   <td
                     class="
-                      px-6
+                      px-4
                       py-4
                       whitespace-nowrap
                       text-sm text-gray-500
