@@ -68,8 +68,9 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
               obj.category = _.startCase(obj.category) %>
               <tr>
                 <td
+                scope="col"
                   class="
-                    px-6
+                    px-4
                     py-4
                     whitespace-nowrap
                     text-sm
@@ -80,8 +81,9 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                   <%= obj.category %>
                 </td>
                 <td
+                scope="col"
                   class="
-                    px-6
+                    px-4
                     py-4
                     whitespace-nowrap
                     text-sm text-gray-500
@@ -90,8 +92,9 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                   $ <%= obj.amount %>
                 </td>
                 <td
+                scope="col"
                   class="
-                    px-6
+                    px-4
                     py-4
                     whitespace-nowrap
                     text-sm text-gray-500

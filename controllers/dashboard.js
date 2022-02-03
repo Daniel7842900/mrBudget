@@ -326,27 +326,6 @@ exports.findAll = async (req, res) => {
     .catch((err) => {
       console.log(err);
     });
-
-  //   const weekExpenses = await Finance.findAll({
-  //     where: {
-  //       financeType: 2,
-  //       userId: user.id,
-  //     },
-  //   });
-
-  //week expense - how much we spent in this week.
-  //week expense - how much we spent on each category this week.
-  //week budget - how much we predicted in this week.
-  //week budget - how much we predicted on each category this week.
-
-  // console.log("we are at dashboard!");
-  // res.sendFile(__dirname + "/views/pages/dashboard/index.html");
-  // console.log("Cookies: ", req.cookies);
-  console.log("session: ", req.session);
-  // console.log("passport: ", req.session.passport);
-  // res.render("pages/dashboard", {
-  //   user: user,
-  // });
 };
 
 var convertCatToCatId = (obj) => {
