@@ -22,6 +22,8 @@ exports.findAll = async (req, res) => {
   // Convert local time zone to date
   let localTime = moment.tz(tz).format("YYYY-MM-DD");
   let parsedLocalTime = moment(localTime, "YYYY-MM-DD");
+  let localTime2 = moment.tz(tz).format("YYYY-MM-DD");
+  let parsedLocalTime2 = moment(localTime2, "YYYY-MM-DD");
 
   // Get the start date of the current month
   const startDateOfMonth = parsedLocalTime
@@ -32,15 +34,15 @@ exports.findAll = async (req, res) => {
   const endDateOfMonth = parsedLocalTime.endOf("month").format("YYYY-MM-DD");
 
   // Get the start date of the current week
-  const startDateOfWeek = parsedLocalTime.startOf("week").format("YYYY-MM-DD");
+  const startDateOfWeek = parsedLocalTime2.startOf("week").format("YYYY-MM-DD");
 
   // Get the end date of the current week
-  const endDateOfWeek = parsedLocalTime.endOf("week").format("YYYY-MM-DD");
+  const endDateOfWeek = parsedLocalTime2.endOf("week").format("YYYY-MM-DD");
 
-  console.log(parsedLocalTime.startOf("month").format("YYYY-MM-DD"));
-  console.log(parsedLocalTime.endOf("month").format("YYYY-MM-DD"));
-  console.log(startDateOfWeek);
-  console.log(endDateOfWeek);
+  console.log("start date of month: " + startDateOfMonth);
+  console.log("end date of month: " + endDateOfMonth);
+  console.log("start date of week: " + startDateOfWeek);
+  console.log("end date of week: " + endDateOfWeek);
 
   // Find all expense items in the current month
   const monthExpenseItems = await Item.findAll({
