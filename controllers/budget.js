@@ -599,7 +599,6 @@ exports.update = async (req, res) => {
       }
 
       Promise.all(itemPromises);
-      req.flash("budget_err", "Budget doesn't exist!");
       res.send(itemizedList);
     })
     .catch((err) => {

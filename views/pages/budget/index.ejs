@@ -47,7 +47,7 @@
           class="flex items-center justify-between max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 bg-green-500 border-b-2 border-white border-solid"
         >
           <!-- Is this the only way to display an error...? -->
-          <% if(error.length > 0) {%>
+          <% if(error.length > 0) { %>
           <script>
             toastr.error(`<%=error%>`);
           </script>

@@ -26,7 +26,6 @@ let catMap = new Map([
 // Remove "Income" from the list
 for (let i = itemizedItemsJSON.length - 1; i >= 0; i -= 1) {
   if (itemizedItemsJSON[i].category === _.toLower("income")) {
-    console.log("getting rid of income?");
     itemizedItemsJSON.splice(i, 1);
   }
 }
@@ -38,8 +37,6 @@ itemizedItemsJSON.forEach((itemObj) => {
   // Assign idx to already existing items
   itemObj.idx = idx;
   idx++;
-  console.log("logging itemObj");
-  console.log(itemObj);
 });
 
 // Onclick event for adding an object to the list
@@ -58,7 +55,6 @@ let onClickAdd = (
     let obj = {};
     let objCat = $("#category").children("option:selected").val();
     objCat = _.toLower(objCat);
-    console.log(objCat);
 
     if (catMap.get(objCat) === false) {
       let amount = $("#amount").val();
@@ -87,9 +83,6 @@ let onClickAdd = (
         obj.category = _.startCase(objCat);
         obj.amount = amount;
 
-        console.log("logging obj category");
-        console.log(obj.category);
-
         // Push the object into the list
         itemizedItemsJSON.push(obj);
 
@@ -99,9 +92,6 @@ let onClickAdd = (
 
         // Increment the index
         idx++;
-
-        console.log("add list");
-        console.log(itemizedItemsJSON);
 
         // Render table rows using the list that contains js objects.
         //this is done in client-side because we can't pass the list
@@ -286,13 +276,10 @@ let onClickSubmit = (
 ) => {
   $(targetBtn).on(event, function (e) {
     let date = $("#datepicker").val();
-    console.log(date);
     let income = incomeExist ? $("#income").val() : null;
-    console.log(income);
 
     itemizedItemsJSON.forEach((obj) => {
       obj.category = obj.category.trim();
-      console.log(obj);
     });
 
     e.preventDefault();
@@ -315,14 +302,13 @@ let onClickSubmit = (
       success: function (res) {
         // res is data that we get from server side
         //in our case, from controller
-        console.log(res);
-        console.log("edit was success");
+        // console.log(res);
 
         // Show success toastr message on current page
         //and redirect after 1 second
-        // toastr.options.onHidden = function () {
-        //   window.location.assign(`/budget/edit?start=${start}&end=${end}`);
-        // };
+        toastr.options.onHidden = function () {
+          window.location.assign(`/${financeType}?start=${start}&end=${end}`);
+        };
         toastr.success(`The ${financeType} is edited!`, "Success", {
           timeOut: 1000,
         });
@@ -333,9 +319,6 @@ let onClickSubmit = (
         // TODO research if there is any way to display error
         //message not redirecting
         // window.location.assign("/budget/new");
-        console.log("edit error caught");
-        console.log(textStatus);
-        console.log(errorThrown);
       },
     });
   });

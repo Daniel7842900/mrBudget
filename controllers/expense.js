@@ -552,7 +552,6 @@ exports.update = async (req, res) => {
       }
 
       Promise.all(itemPromises);
-      req.flash("expense_err", "Expense doesn't exist!");
       res.send(itemizedList);
     })
     .catch((err) => {

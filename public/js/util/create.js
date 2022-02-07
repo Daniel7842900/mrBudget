@@ -267,7 +267,7 @@ let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
       success: function (res) {
         // res is data that we get from server side
         //in our case, from controller
-        console.log(res);
+        // console.log(res);
 
         // Show success toastr message on current page
         //and redirect after 1 second
