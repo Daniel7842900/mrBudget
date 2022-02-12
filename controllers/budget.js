@@ -678,7 +678,7 @@ var convertCatToCatId = (obj) => {
       obj.categoryId = 6;
       delete obj.category;
       break;
-    case toLower("saving"):
+    case toLower("shopping"):
       obj.categoryId = 7;
       delete obj.category;
       break;
@@ -698,7 +698,7 @@ var convertCatToCatId = (obj) => {
       obj.categoryId = 11;
       delete obj.category;
       break;
-    case toLower("streaming service"):
+    case toLower("subscription"):
       obj.categoryId = 12;
       delete obj.category;
       break;
@@ -708,6 +708,10 @@ var convertCatToCatId = (obj) => {
       break;
     case toLower("etc"):
       obj.categoryId = 14;
+      delete obj.category;
+      break;
+    case toLower("personal maintenance"):
+      obj.categoryId = 15;
       delete obj.category;
       break;
     default:
@@ -735,7 +739,7 @@ var convertCatIdToCat = (dbObj, newObj) => {
       newObj.category = toLower("investment");
       break;
     case 7:
-      newObj.category = toLower("saving");
+      newObj.category = toLower("shopping");
       break;
     case 8:
       newObj.category = toLower("alcohol");
@@ -750,13 +754,16 @@ var convertCatIdToCat = (dbObj, newObj) => {
       newObj.category = toLower("loan");
       break;
     case 12:
-      newObj.category = toLower("streaming service");
+      newObj.category = toLower("subscription");
       break;
     case 13:
       newObj.category = toLower("transportation");
       break;
     case 14:
       newObj.category = toLower("etc");
+      break;
+    case 15:
+      newObj.category = toLower("personal maintenance");
       break;
     default:
   }

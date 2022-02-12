@@ -14,6 +14,7 @@ createChart = (target, chartType, data, labels, financeType) => {
     "rgba(150, 157, 88, 0.8)",
     "rgba(189, 166, 116, 0.8)",
     "rgba(175, 151, 129, 0.8)",
+    "rgba(125, 125, 129, 0.8)",
   ];
   const myChart = new Chart(target, {
     type: chartType,

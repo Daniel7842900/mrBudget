@@ -6,14 +6,15 @@ let catMap = new Map([
   [_.toLower("utility"), false],
   [_.toLower("dine out"), false],
   [_.toLower("investment"), false],
-  [_.toLower("saving"), false],
+  [_.toLower("shopping"), false],
   [_.toLower("alcohol"), false],
   [_.toLower("leisure"), false],
   [_.toLower("insurance"), false],
   [_.toLower("loan"), false],
-  [_.toLower("streaming service"), false],
+  [_.toLower("subscription"), false],
   [_.toLower("transportation"), false],
   [_.toLower("etc"), false],
+  [_.toLower("personal maintenance"), false],
 ]);
 
 // Onclick event for adding an object to the list
