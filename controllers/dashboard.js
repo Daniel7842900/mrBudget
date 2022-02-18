@@ -15,6 +15,8 @@ exports.findAll = async (req, res) => {
   let monthBudItemArr = [];
   let weekExpItemArr = [];
   let weekBudItemArr = [];
+  const budgetTypeId = 1;
+  const expenseTypeId = 2;
 
   // Get local time zone
   let tz = moment.tz.guess();
@@ -47,14 +49,15 @@ exports.findAll = async (req, res) => {
   // Find all expense items in the current month
   const monthExpenseItems = await Item.findAll({
     attributes: ["amount", "categoryId"],
+    replacements: [expenseTypeId, user.id, startDateOfMonth, endDateOfMonth],
     where: {
       financeId: {
         [Op.in]: sequelize.literal(
           `(SELECT f.id FROM finances f
-                WHERE f.financeTypeId = 2
-                AND f.userId = ${user.id}
-                AND f.startDate >= '${startDateOfMonth}'
-                AND f.endDate <= '${endDateOfMonth}'
+                WHERE f.financeTypeId = ?
+                AND f.userId = ?
+                AND f.startDate >= ?
+                AND f.endDate <= ?
               )`
         ),
       },
@@ -64,14 +67,15 @@ exports.findAll = async (req, res) => {
   // Find all budget items in the current month
   const monthBudgetItems = await Item.findAll({
     attributes: ["amount", "categoryId"],
+    replacements: [budgetTypeId, user.id, startDateOfMonth, endDateOfMonth],
     where: {
       financeId: {
         [Op.in]: sequelize.literal(
           `(SELECT f.id FROM finances f
-                WHERE f.financeTypeId = 1
-                AND f.userId = ${user.id}
-                AND f.startDate >= '${startDateOfMonth}'
-                AND f.endDate <= '${endDateOfMonth}'
+                WHERE f.financeTypeId = ?
+                AND f.userId = ?
+                AND f.startDate >= ?
+                AND f.endDate <= ?
               )`
         ),
       },
@@ -81,14 +85,15 @@ exports.findAll = async (req, res) => {
   // Find all expense items in the current week
   const weekExpenseItems = await Item.findAll({
     attributes: ["amount", "categoryId"],
+    replacements: [expenseTypeId, user.id, startDateOfWeek, endDateOfWeek],
     where: {
       financeId: {
         [Op.in]: sequelize.literal(
           `(SELECT f.id FROM finances f
-                  WHERE f.financeTypeId = 2
-                  AND f.userId = ${user.id}
-                  AND f.startDate >= '${startDateOfWeek}'
-                  AND f.endDate <= '${endDateOfWeek}'
+                  WHERE f.financeTypeId = ?
+                  AND f.userId = ?
+                  AND f.startDate >= ?
+                  AND f.endDate <= ?
                 )`
         ),
       },
@@ -98,14 +103,15 @@ exports.findAll = async (req, res) => {
   // Find all budget items in the current week
   const weekBudgetItems = await Item.findAll({
     attributes: ["amount", "categoryId"],
+    replacements: [budgetTypeId, user.id, startDateOfWeek, endDateOfWeek],
     where: {
       financeId: {
         [Op.in]: sequelize.literal(
           `(SELECT f.id FROM finances f
-                  WHERE f.financeTypeId = 1
-                  AND f.userId = ${user.id}
-                  AND f.startDate >= '${startDateOfWeek}'
-                  AND f.endDate <= '${endDateOfWeek}'
+                  WHERE f.financeTypeId = ?
+                  AND f.userId = ?
+                  AND f.startDate >= ?
+                  AND f.endDate <= ?
                 )`
         ),
       },
