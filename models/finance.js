@@ -2,9 +2,11 @@ module.exports = (sequelize, Sequelize) => {
   const Finance = sequelize.define("finance", {
     startDate: {
       type: Sequelize.DATEONLY,
+      allowNull: false,
     },
     endDate: {
       type: Sequelize.DATEONLY,
+      allowNull: false,
     },
   });
 

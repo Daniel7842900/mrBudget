@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
   const FinanceType = sequelize.define("finance_type", {
     type: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
   });
 
