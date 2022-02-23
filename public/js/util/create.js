@@ -1,22 +1,24 @@
 let list = [];
 let idx = 0;
 let catMap = new Map([
-  [_.toLower("grocery"), false],
-  [_.toLower("rent"), false],
-  [_.toLower("utility"), false],
-  [_.toLower("dine out"), false],
-  [_.toLower("investment"), false],
+  [_.toLower("food"), false],
+  [_.toLower("housing"), false],
   [_.toLower("shopping"), false],
-  [_.toLower("alcohol"), false],
-  [_.toLower("leisure"), false],
-  [_.toLower("insurance"), false],
-  [_.toLower("loan"), false],
-  [_.toLower("subscription"), false],
+  [_.toLower("personal care"), false],
+  [_.toLower("health"), false],
+  [_.toLower("fee"), false],
+  [_.toLower("utility"), false],
+  [_.toLower("investment"), false],
+  [_.toLower("entertainment"), false],
+  [_.toLower("travel"), false],
   [_.toLower("transportation"), false],
-  [_.toLower("etc"), false],
-  [_.toLower("personal maintenance"), false],
+  [_.toLower("gift"), false],
+  [_.toLower("business service"), false],
+  [_.toLower("tax"), false],
+  [_.toLower("tax"), false],
 ]);
 
+// Onchange event for dynamically displaying subcategories
 let onChangeCategory = (sourceElement, event, targetElement) => {
   $(sourceElement).on(event, function (e) {
     const subCat = $(targetElement);
@@ -25,7 +27,7 @@ let onChangeCategory = (sourceElement, event, targetElement) => {
       let output = "";
       const noSubCat = "";
 
-      output += `<option value="">` + noSubCat + "</option>";
+      output += `<option>` + noSubCat + "</option>";
       $.each(subCategory[$(sourceElement).val()], function (key, value) {
         output += `<option value="${key}">` + value + "</option>";
       });
@@ -43,47 +45,49 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
     // Create a js object for category & amount
     let obj = {};
     let objCat = $("#category").children("option:selected").val();
+    let objSubCat = $("#sub-category").children("option:selected").val();
     objCat = _.toLower(objCat);
-    if (catMap.get(objCat) === false) {
-      let amount = $("#amount").val();
+    objSubCat = _.toLower(objSubCat);
+    let amount = $("#amount").val();
+    let description = $("#description").val().trim();
 
-      // Change the text to number
-      amount = parseFloat(amount);
+    // Change the text to number
+    amount = parseFloat(amount);
 
-      // Round the number until 2 decimals
-      amount = Math.round(amount * 100) / 100;
+    // Round the number until 2 decimals
+    amount = Math.round(amount * 100) / 100;
 
-      if (_.isNaN(amount) === true || amount === 0) {
-        // Reset the values after adding
-        $("#amount").val("");
+    if (_.isNaN(amount) === true || amount === 0) {
+      // Reset the values after adding
+      $("#amount").val("");
 
-        toastr.warning("Please enter the amount!", "Warning", {
-          timeOut: 1000,
-        });
-        return false;
-      } else {
-        catMap.set(objCat, true);
+      toastr.warning("Please enter the amount!", "Warning", {
+        timeOut: 1000,
+      });
+      return false;
+    } else {
+      // catMap.set(objCat, true);
 
-        obj.category = _.startCase(objCat);
-        obj.idx = idx;
-        obj.amount = amount;
+      obj.category = _.startCase(objCat);
+      obj.subcategory = _.startCase(objSubCat);
+      obj.idx = idx;
+      obj.amount = amount;
+      obj.description = description;
 
-        // Push the object into the list
-        list.push(obj);
+      // Push the object into the list
+      list.push(obj);
 
-        // Reset the values after adding
-        $("#category option:first").prop("selected", true);
-        $("#amount").val("");
+      // Reset the values after adding
+      $("#amount").val("");
 
-        // Increment the index
-        idx++;
+      // Increment the index
+      idx++;
 
-        // Render table rows using the list that contains js objects.
-        //this is done in client-side because we can't pass the list
-        //to server-side.
-        html = ejs.render(
-          `<% list.forEach(function(obj) {
-              obj.category = _.startCase(obj.category) %>
+      // Render table rows using the list that contains js objects.
+      //this is done in client-side because we can't pass the list
+      //to server-side.
+      html = ejs.render(
+        `<% list.forEach(function(obj) { %>
               <tr>
                 <td
                 scope="col"
@@ -96,7 +100,11 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     text-gray-900
                   "
                 >
+                <% if(obj.subcategory === "") { %>
                   <%= obj.category %>
+                <% } else { %>
+                  <%= obj.subcategory %>
+                <% } %>
                 </td>
                 <td
                 scope="col"
@@ -108,6 +116,17 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                   "
                 >
                   $ <%= obj.amount %>
+                </td>
+                <td
+                scope="col"
+                  class="
+                    px-4
+                    py-4
+                    whitespace-nowrap
+                    text-sm text-gray-500
+                  "
+                >
+                  <%= obj.description %>
                 </td>
                 <td
                 scope="col"
@@ -141,19 +160,14 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                 </td>
               </tr>
               <% });%>`,
-          { list: list }
-        );
+        { list: list }
+      );
 
-        // This is required for re-rendering table body element.
-        //if this is not present, it will now show the list of objects
-        //that we added above.
-        $.get(`/${financeType}/new`, function () {
-          $(parentElement).html(html);
-        });
-      }
-    } else if (catMap.get(objCat) === true) {
-      toastr.warning("No same category!", "Warning", {
-        timeOut: 1000,
+      // This is required for re-rendering table body element.
+      //if this is not present, it will now show the list of objects
+      //that we added above.
+      $.get(`/${financeType}/new`, function () {
+        $(parentElement).html(html);
       });
     }
   });
