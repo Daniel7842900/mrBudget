@@ -129,22 +129,43 @@
                         id="category"
                         class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md"
                       >
-                        <option value="grocery">Grocery</option>
-                        <option value="rent">Rent</option>
-                        <option value="utility">Utility</option>
-                        <option value="dine out">Dine out</option>
-                        <option value="investment">Investment</option>
+                        <option value="food">Food & Dining</option>
+                        <option value="housing">Housing</option>
                         <option value="shopping">Shopping</option>
-                        <option value="alcohol">Alcohol</option>
-                        <option value="leisure">Leisure</option>
-                        <option value="insurance">Insurance</option>
-                        <option value="loan">Loan</option>
-                        <option value="subscription">Subscription</option>
+                        <option value="personal care">Personal Care</option>
+                        <option value="health">Health & fitness</option>
+                        <option value="fee">Fees & Charges</option>
+                        <option value="utility">Bills & Utility</option>
+                        <option value="investment">Investment</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="travel">Travel</option>
                         <option value="transportation">Transportation</option>
-                        <option value="etc">Etc</option>
-                        <option value="personal maintenance">
-                          Personal Maintenance
+                        <option value="gift">Gifts & Donations</option>
+                        <option value="business service">
+                          Business Services
                         </option>
+                        <option value="tax">Taxes</option>
+                        <option value="etc">Etc</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- Sub Category for item being added -->
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pt-4 pb-1">
+                    <label for="sub-category">Sub Category</label>
+                    <div class="w-auto m-auto">
+                      <select
+                        name="sub-category"
+                        id="sub-category"
+                        class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md"
+                      >
+                        <option value=""></option>
+                        <option value="grocery">Groceries</option>
+                        <option value="coffee">Coffee Shop</option>
+                        <option value="fast">Fast Food</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="take out">Take Out</option>
+                        <option value="delivery">Delivery</option>
+                        <option value="alcohol">Alcohol</option>
                       </select>
                     </div>
                   </div>
@@ -276,6 +297,7 @@
     </script>
     <script src="/navJs/nav.js"></script>
     <script src="/js/util/datepicker.js"></script>
+    <script src="/js/util/variables.js"></script>
     <script src="/js/util/edit.js"></script>
     <script src="/js/budget/edit.js"></script>
   </body>

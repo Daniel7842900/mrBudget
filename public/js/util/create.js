@@ -17,6 +17,23 @@ let catMap = new Map([
   [_.toLower("personal maintenance"), false],
 ]);
 
+let onChangeCategory = (sourceElement, event, targetElement) => {
+  $(sourceElement).on(event, function (e) {
+    const subCat = $(targetElement);
+
+    subCat.empty().append(function () {
+      let output = "";
+      const noSubCat = "";
+
+      output += `<option value="">` + noSubCat + "</option>";
+      $.each(subCategory[$(sourceElement).val()], function (key, value) {
+        output += `<option value="${key}">` + value + "</option>";
+      });
+      return output;
+    });
+  });
+};
+
 // Onclick event for adding an object to the list
 let onClickAdd = (parentElement, targetBtn, event, financeType) => {
   $(targetBtn).on(event, function (e) {

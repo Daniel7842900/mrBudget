@@ -40,6 +40,23 @@ itemizedItemsJSON.forEach((itemObj) => {
   idx++;
 });
 
+let onChangeCategory = (sourceElement, event, targetElement) => {
+  $(sourceElement).on(event, function (e) {
+    const subCat = $(targetElement);
+
+    subCat.empty().append(function () {
+      let output = "";
+      const noSubCat = "";
+
+      output += `<option value="">` + noSubCat + "</option>";
+      $.each(subCategory[$(sourceElement).val()], function (key, value) {
+        output += `<option value="${key}">` + value + "</option>";
+      });
+      return output;
+    });
+  });
+};
+
 // Onclick event for adding an object to the list
 let onClickAdd = (
   parentElement,
