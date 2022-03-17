@@ -5,6 +5,7 @@ const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
 const { Op } = require("sequelize");
+const { catToCatId, catIdToCat } = require("./util/convertCategories");
 
 // Controller for displaying a new budget page
 exports.create = async (req, res) => {
@@ -54,11 +55,13 @@ exports.store = async (req, res) => {
   startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
 
-  // Condition for finding a budget
+  // Condition to check if there is already a budget/budgets within the input date range.
+  //This filter is to FIND a budget/budgets
   let filter = {
     where: {
       [Op.or]: [
-        // first case, input s is equal or s or e or
+        // first case, input startDate or input endDate is equal to startDate
+        //OR input startDate or input endDate is equal to endDate
         {
           [Op.or]: [
             {
@@ -66,14 +69,14 @@ exports.store = async (req, res) => {
                 [Op.or]: [startDate, endDate],
               },
             },
-            {
-              endDate: {
-                [Op.or]: [startDate, endDate],
-              },
-            },
+            // {
+            //   endDate: {
+            //     [Op.or]: [startDate, endDate],
+            //   },
+            // },
           ],
         },
-        // second case, input s is smaller than s
+        // second case, input startDate < startDate < input endDate
         {
           [Op.and]: [
             {
@@ -88,36 +91,33 @@ exports.store = async (req, res) => {
             },
           ],
         },
-        //third case, input s is greater than s
+        // third case, startDate < input startDate AND input endDate < endDate
         {
-          [Op.or]: [
+          [Op.and]: [
             {
-              [Op.and]: [
-                {
-                  startDate: {
-                    [Op.lt]: startDate,
-                  },
-                },
-                {
-                  endDate: {
-                    [Op.gt]: endDate,
-                  },
-                },
-              ],
+              startDate: {
+                [Op.lt]: startDate,
+              },
             },
             {
-              [Op.and]: [
-                {
-                  startDate: {
-                    [Op.lt]: startDate,
-                  },
-                },
-                {
-                  endDate: {
-                    [Op.gt]: startDate,
-                  },
-                },
-              ],
+              endDate: {
+                [Op.gt]: endDate,
+              },
+            },
+          ],
+        },
+        // forth case, startDate < input startDate AND endDate < input endDate
+        {
+          [Op.and]: [
+            {
+              startDate: {
+                [Op.lt]: startDate,
+              },
+            },
+            {
+              endDate: {
+                [Op.gt]: startDate,
+              },
             },
           ],
         },
@@ -149,7 +149,7 @@ exports.store = async (req, res) => {
     // TODO there must be better way to do this...
     let itemizedIncome = {
       amount: income,
-      category: toLower("income"),
+      category: _.toLower("income"),
     };
 
     list.push(itemizedIncome);
@@ -157,7 +157,7 @@ exports.store = async (req, res) => {
     let itemizedList = [];
 
     list.forEach((obj) => {
-      convertCatToCatId(obj);
+      catToCatId(obj);
       itemizedList.push(obj);
     });
 
@@ -172,18 +172,20 @@ exports.store = async (req, res) => {
       items: itemizedList,
     };
 
-    Finance.create(budget, {
-      include: [Item],
-    })
-      .then((data) => {
-        req.flash("success_message", "New budget is created!");
-        res.send(data);
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || "Something wrong while creating budget",
-        });
-      });
+    console.log(budget);
+
+    // Finance.create(budget, {
+    //   include: [Item],
+    // })
+    //   .then((data) => {
+    //     req.flash("success_message", "New budget is created!");
+    //     res.send(data);
+    //   })
+    //   .catch((err) => {
+    //     res.status(500).send({
+    //       message: err.message || "Something wrong while creating budget",
+    //     });
+    //   });
   } else {
     req.flash("budget_err_message", "No more budget on these dates!");
     return res.status(400).send({
@@ -299,7 +301,7 @@ exports.findOne = async (req, res) => {
           itemizedItem.amount = parseFloat(itemData["amount"]);
 
           // Convert category id to category string
-          convertCatIdToCat(itemData, itemizedItem);
+          catIdToCat(itemData, itemizedItem);
 
           // Add a new obj to the list
           itemizedItems.push(itemizedItem);
@@ -393,7 +395,7 @@ exports.edit = async (req, res) => {
         itemizedItem.amount = parseFloat(itemData["amount"]);
 
         // Convert category id to category string
-        convertCatIdToCat(itemData, itemizedItem);
+        catIdToCat(itemData, itemizedItem);
 
         // Add a new obj to the list
         itemizedItems.push(itemizedItem);
@@ -458,7 +460,7 @@ exports.update = async (req, res) => {
   // Make the income field same format with others
   let itemizedIncome = {
     amount: income,
-    category: toLower("income"),
+    category: _.toLower("income"),
   };
 
   // Add income obj to the list
@@ -468,7 +470,7 @@ exports.update = async (req, res) => {
   //a new array
   let itemizedList = [];
   list.forEach((obj) => {
-    convertCatToCatId(obj);
+    catToCatId(obj);
     itemizedList.push(obj);
   });
 
@@ -645,126 +647,4 @@ exports.delete = async (req, res) => {
         message: err.message || "Something wrong while deleting budget",
       });
     });
-};
-
-var toLower = (word) => {
-  return _.toLower(word);
-};
-
-var convertCatToCatId = (obj) => {
-  delete obj.idx;
-  switch (toLower(obj.category)) {
-    case toLower("income"):
-      obj.categoryId = 1;
-      delete obj.category;
-      break;
-    case toLower("grocery"):
-      obj.categoryId = 2;
-      delete obj.category;
-      break;
-    case toLower("rent"):
-      obj.categoryId = 3;
-      delete obj.category;
-      break;
-    case toLower("utility"):
-      obj.categoryId = 4;
-      delete obj.category;
-      break;
-    case toLower("dine out"):
-      obj.categoryId = 5;
-      delete obj.category;
-      break;
-    case toLower("investment"):
-      obj.categoryId = 6;
-      delete obj.category;
-      break;
-    case toLower("shopping"):
-      obj.categoryId = 7;
-      delete obj.category;
-      break;
-    case toLower("alcohol"):
-      obj.categoryId = 8;
-      delete obj.category;
-      break;
-    case toLower("leisure"):
-      obj.categoryId = 9;
-      delete obj.category;
-      break;
-    case toLower("insurance"):
-      obj.categoryId = 10;
-      delete obj.category;
-      break;
-    case toLower("loan"):
-      obj.categoryId = 11;
-      delete obj.category;
-      break;
-    case toLower("subscription"):
-      obj.categoryId = 12;
-      delete obj.category;
-      break;
-    case toLower("transportation"):
-      obj.categoryId = 13;
-      delete obj.category;
-      break;
-    case toLower("etc"):
-      obj.categoryId = 14;
-      delete obj.category;
-      break;
-    case toLower("personal maintenance"):
-      obj.categoryId = 15;
-      delete obj.category;
-      break;
-    default:
-  }
-};
-
-var convertCatIdToCat = (dbObj, newObj) => {
-  switch (dbObj.categoryId) {
-    case 1:
-      newObj.category = toLower("income");
-      break;
-    case 2:
-      newObj.category = toLower("grocery");
-      break;
-    case 3:
-      newObj.category = toLower("rent");
-      break;
-    case 4:
-      newObj.category = toLower("utility");
-      break;
-    case 5:
-      newObj.category = toLower("dine out");
-      break;
-    case 6:
-      newObj.category = toLower("investment");
-      break;
-    case 7:
-      newObj.category = toLower("shopping");
-      break;
-    case 8:
-      newObj.category = toLower("alcohol");
-      break;
-    case 9:
-      newObj.category = toLower("leisure");
-      break;
-    case 10:
-      newObj.category = toLower("insurance");
-      break;
-    case 11:
-      newObj.category = toLower("loan");
-      break;
-    case 12:
-      newObj.category = toLower("subscription");
-      break;
-    case 13:
-      newObj.category = toLower("transportation");
-      break;
-    case 14:
-      newObj.category = toLower("etc");
-      break;
-    case 15:
-      newObj.category = toLower("personal maintenance");
-      break;
-    default:
-  }
 };

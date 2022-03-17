@@ -48,7 +48,8 @@ const subCategory = {
     television: "Television",
     phone: "Phone bill",
     internet: "Internet",
-    hydro: "Hydro",
+    gas: "Gas",
+    electricity: "Electricity",
     other: "Others",
   },
   investment: {
@@ -72,7 +73,7 @@ const subCategory = {
     vacation: "Vacation",
   },
   transportation: {
-    gas: "Gas & Fuel",
+    gasoline: "Gas & Fuel",
     parking: "Parking",
     service: "Service",
     parts: "Auto Parts",

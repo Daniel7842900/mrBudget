@@ -60,6 +60,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
     if (_.isNaN(amount) === true || amount === 0) {
       // Reset the values after adding
       $("#amount").val("");
+      $("#description").val("");
 
       toastr.warning("Please enter the amount!", "Warning", {
         timeOut: 1000,
@@ -79,6 +80,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
 
       // Reset the values after adding
       $("#amount").val("");
+      $("#description").val("");
 
       // Increment the index
       idx++;
@@ -186,7 +188,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
       if (rIdx > -1) {
         // Change category availability to false if item is getting removed
         let curObj = list[rIdx];
-        catMap.set(_.toLower(curObj.category), false);
+        // catMap.set(_.toLower(curObj.category), false);
 
         // Remove the object at index "rIdx"
         list.splice(rIdx, 1);
@@ -214,7 +216,11 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                 text-gray-900
               "
             >
+            <% if(obj.subcategory === "") { %>
               <%= obj.category %>
+            <% } else { %>
+              <%= obj.subcategory %>
+            <% } %>
             </td>
             <td
               class="
@@ -226,6 +232,17 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
             >
               $ <%= obj.amount %>
             </td>
+            <td
+                scope="col"
+                  class="
+                    px-4
+                    py-4
+                    whitespace-nowrap
+                    text-sm text-gray-500
+                  "
+                >
+                  <%= obj.description %>
+                </td>
             <td
               class="
                 px-4
@@ -277,6 +294,8 @@ let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
 
     list.forEach((obj) => {
       obj.category = obj.category.trim();
+      obj.subcategory = obj.subcategory.trim();
+      console.log(obj);
     });
 
     e.preventDefault();

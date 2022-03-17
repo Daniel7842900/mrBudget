@@ -6,6 +6,7 @@ const moment = require("moment");
 const _ = require("lodash");
 const { Op } = require("sequelize");
 const { sequelize } = require("../models");
+const { catIdToCat } = require("./util/convertCategories");
 
 // Controller for getting all finance information
 exports.findAll = async (req, res) => {
@@ -182,7 +183,7 @@ exports.findAll = async (req, res) => {
         monthExpTotal += parseFloat(monthExpItem.amount);
 
         // Convert category id to category
-        convertCatIdToCat(monthExpItem);
+        catIdToCat(monthExpItem);
 
         // Add formatted item object to a new array
         newMonthExpItemArr.push(monthExpItem);
@@ -193,7 +194,7 @@ exports.findAll = async (req, res) => {
       // Re-format the month budget objects and put them into a new array
       monthBudItemArr.forEach((monthBudItem) => {
         // Convert category id to category
-        convertCatIdToCat(monthBudItem);
+        catIdToCat(monthBudItem);
 
         // Add formatted item object to a new array
         newMonthBudItemArr.push(monthBudItem);
@@ -250,7 +251,7 @@ exports.findAll = async (req, res) => {
         weekExpTotal += parseFloat(weekExpItem.amount);
 
         // Convert category id to category
-        convertCatIdToCat(weekExpItem);
+        catIdToCat(weekExpItem);
 
         // Add formatted item object to a new array
         newWeekExpItemArr.push(weekExpItem);
@@ -260,7 +261,7 @@ exports.findAll = async (req, res) => {
       // Re-format the month budget objects and put them into a new array
       weekBudItemArr.forEach((weekBudItem) => {
         // Convert category id to category
-        convertCatIdToCat(weekBudItem);
+        catIdToCat(weekBudItem);
 
         // Add formatted item object to a new array
         newWeekBudItemArr.push(weekBudItem);
@@ -334,137 +335,4 @@ exports.findAll = async (req, res) => {
     .catch((err) => {
       console.log(err);
     });
-};
-
-var convertCatToCatId = (obj) => {
-  delete obj.idx;
-  switch (_.toLower(obj.category)) {
-    case _.toLower("income"):
-      obj.categoryId = 1;
-      delete obj.category;
-      break;
-    case _.toLower("grocery"):
-      obj.categoryId = 2;
-      delete obj.category;
-      break;
-    case _.toLower("rent"):
-      obj.categoryId = 3;
-      delete obj.category;
-      break;
-    case _.toLower("utility"):
-      obj.categoryId = 4;
-      delete obj.category;
-      break;
-    case _.toLower("dine out"):
-      obj.categoryId = 5;
-      delete obj.category;
-      break;
-    case _.toLower("investment"):
-      obj.categoryId = 6;
-      delete obj.category;
-      break;
-    case _.toLower("shopping"):
-      obj.categoryId = 7;
-      delete obj.category;
-      break;
-    case _.toLower("alcohol"):
-      obj.categoryId = 8;
-      delete obj.category;
-      break;
-    case _.toLower("leisure"):
-      obj.categoryId = 9;
-      delete obj.category;
-      break;
-    case _.toLower("insurance"):
-      obj.categoryId = 10;
-      delete obj.category;
-      break;
-    case _.toLower("loan"):
-      obj.categoryId = 11;
-      delete obj.category;
-      break;
-    case _.toLower("subscription"):
-      obj.categoryId = 12;
-      delete obj.category;
-      break;
-    case _.toLower("transportation"):
-      obj.categoryId = 13;
-      delete obj.category;
-      break;
-    case _.toLower("etc"):
-      obj.categoryId = 14;
-      delete obj.category;
-      break;
-    case _.toLower("personal maintenance"):
-      obj.categoryId = 15;
-      delete obj.category;
-      break;
-    default:
-  }
-};
-
-var convertCatIdToCat = (dbObj) => {
-  switch (dbObj.categoryId) {
-    case 1:
-      dbObj.category = _.toLower("income");
-      delete dbObj.categoryId;
-      break;
-    case 2:
-      dbObj.category = _.toLower("grocery");
-      delete dbObj.categoryId;
-      break;
-    case 3:
-      dbObj.category = _.toLower("rent");
-      delete dbObj.categoryId;
-      break;
-    case 4:
-      dbObj.category = _.toLower("utility");
-      delete dbObj.categoryId;
-      break;
-    case 5:
-      dbObj.category = _.toLower("dine out");
-      delete dbObj.categoryId;
-      break;
-    case 6:
-      dbObj.category = _.toLower("investment");
-      delete dbObj.categoryId;
-      break;
-    case 7:
-      dbObj.category = _.toLower("shopping");
-      delete dbObj.categoryId;
-      break;
-    case 8:
-      dbObj.category = _.toLower("alcohol");
-      delete dbObj.categoryId;
-      break;
-    case 9:
-      dbObj.category = _.toLower("leisure");
-      delete dbObj.categoryId;
-      break;
-    case 10:
-      dbObj.category = _.toLower("insurance");
-      delete dbObj.categoryId;
-      break;
-    case 11:
-      dbObj.category = _.toLower("loan");
-      delete dbObj.categoryId;
-      break;
-    case 12:
-      dbObj.category = _.toLower("subscription");
-      delete dbObj.categoryId;
-      break;
-    case 13:
-      dbObj.category = _.toLower("transportation");
-      delete dbObj.categoryId;
-      break;
-    case 14:
-      dbObj.category = _.toLower("etc");
-      delete dbObj.categoryId;
-      break;
-    case 15:
-      dbObj.category = _.toLower("personal maintenance");
-      delete dbObj.categoryId;
-      break;
-    default:
-  }
 };
