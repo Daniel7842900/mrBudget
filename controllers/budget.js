@@ -55,6 +55,8 @@ exports.store = async (req, res) => {
   startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
 
+  console.log(list);
+
   // Condition to check if there is already a budget/budgets within the input date range.
   //This filter is to FIND a budget/budgets
   let filter = {
@@ -158,6 +160,8 @@ exports.store = async (req, res) => {
 
     list.forEach((obj) => {
       catToCatId(obj);
+      //TODO
+      //change sub category to sub category id
       itemizedList.push(obj);
     });
 
@@ -172,6 +176,7 @@ exports.store = async (req, res) => {
       items: itemizedList,
     };
 
+    console.log("budget is:");
     console.log(budget);
 
     // Finance.create(budget, {

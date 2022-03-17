@@ -11,7 +11,7 @@ const convertCatToCatId = (obj) => {
       obj.categoryId = 2;
       delete obj.category;
       break;
-    case _.toLower("rent"):
+    case _.toLower("fee"):
       obj.categoryId = 3;
       delete obj.category;
       break;
@@ -19,7 +19,7 @@ const convertCatToCatId = (obj) => {
       obj.categoryId = 4;
       delete obj.category;
       break;
-    case _.toLower("dine out"):
+    case _.toLower("food"):
       obj.categoryId = 5;
       delete obj.category;
       break;
@@ -35,7 +35,7 @@ const convertCatToCatId = (obj) => {
       obj.categoryId = 8;
       delete obj.category;
       break;
-    case _.toLower("leisure"):
+    case _.toLower("entertainment"):
       obj.categoryId = 9;
       delete obj.category;
       break;
@@ -59,8 +59,32 @@ const convertCatToCatId = (obj) => {
       obj.categoryId = 14;
       delete obj.category;
       break;
-    case _.toLower("personal maintenance"):
+    case _.toLower("personal care"):
       obj.categoryId = 15;
+      delete obj.category;
+      break;
+    case _.toLower("travel"):
+      obj.categoryId = 16;
+      delete obj.category;
+      break;
+    case _.toLower("health"):
+      obj.categoryId = 17;
+      delete obj.category;
+      break;
+    case _.toLower("gift"):
+      obj.categoryId = 18;
+      delete obj.category;
+      break;
+    case _.toLower("business service"):
+      obj.categoryId = 19;
+      delete obj.category;
+      break;
+    case _.toLower("tax"):
+      obj.categoryId = 20;
+      delete obj.category;
+      break;
+    case _.toLower("housing"):
+      obj.categoryId = 21;
       delete obj.category;
       break;
     default:
@@ -76,13 +100,13 @@ const convertCatIdToCat = (dbObj, newObj) => {
       newObj.category = _.toLower("grocery");
       break;
     case 3:
-      newObj.category = _.toLower("rent");
+      newObj.category = _.toLower("fee");
       break;
     case 4:
       newObj.category = _.toLower("utility");
       break;
     case 5:
-      newObj.category = _.toLower("dine out");
+      newObj.category = _.toLower("food");
       break;
     case 6:
       newObj.category = _.toLower("investment");
@@ -94,7 +118,7 @@ const convertCatIdToCat = (dbObj, newObj) => {
       newObj.category = _.toLower("alcohol");
       break;
     case 9:
-      newObj.category = _.toLower("leisure");
+      newObj.category = _.toLower("entertainment");
       break;
     case 10:
       newObj.category = _.toLower("insurance");
@@ -112,7 +136,25 @@ const convertCatIdToCat = (dbObj, newObj) => {
       newObj.category = _.toLower("etc");
       break;
     case 15:
-      newObj.category = _.toLower("personal maintenance");
+      newObj.category = _.toLower("personal care");
+      break;
+    case 16:
+      newObj.category = _.toLower("travel");
+      break;
+    case 17:
+      newObj.category = _.toLower("health");
+      break;
+    case 18:
+      newObj.category = _.toLower("gift");
+      break;
+    case 19:
+      newObj.category = _.toLower("business service");
+      break;
+    case 20:
+      newObj.category = _.toLower("tax");
+      break;
+    case 21:
+      newObj.category = _.toLower("housing");
       break;
     default:
   }
