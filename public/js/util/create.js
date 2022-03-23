@@ -70,7 +70,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
       // catMap.set(objCat, true);
 
       obj.category = _.startCase(objCat);
-      obj.subcategory = _.startCase(objSubCat);
+      obj.subCategory = _.startCase(objSubCat);
       obj.idx = idx;
       obj.amount = amount;
       obj.description = description;
@@ -102,10 +102,10 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     text-gray-900
                   "
                 >
-                <% if(obj.subcategory === "") { %>
+                <% if(obj.subCategory === "") { %>
                   <%= obj.category %>
                 <% } else { %>
-                  <%= obj.subcategory %>
+                  <%= obj.subCategory %>
                 <% } %>
                 </td>
                 <td
@@ -216,10 +216,10 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                 text-gray-900
               "
             >
-            <% if(obj.subcategory === "") { %>
+            <% if(obj.subCategory === "") { %>
               <%= obj.category %>
             <% } else { %>
-              <%= obj.subcategory %>
+              <%= obj.subCategory %>
             <% } %>
             </td>
             <td
@@ -294,7 +294,7 @@ let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
 
     list.forEach((obj) => {
       obj.category = obj.category.trim();
-      obj.subcategory = obj.subcategory.trim();
+      obj.subCategory = obj.subCategory.trim();
       console.log(obj);
     });
 

@@ -37,7 +37,7 @@ const subCategory = {
     sports: "Sports",
   },
   fee: {
-    service: "Service Fee",
+    "service fee": "Service Fee",
     late: "Late Fee",
     finance: "Finance Fee",
     atm: "ATM Fee",

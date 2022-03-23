@@ -172,7 +172,7 @@ module.exports = {
             categoryId: 17,
           },
           {
-            type: "service",
+            type: "service fee",
             createdAt: new Date(),
             updatedAt: new Date(),
             categoryId: 3,

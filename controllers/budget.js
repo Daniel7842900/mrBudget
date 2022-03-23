@@ -152,6 +152,7 @@ exports.store = async (req, res) => {
     let itemizedIncome = {
       amount: income,
       category: _.toLower("income"),
+      description: _.toLower("income"),
     };
 
     list.push(itemizedIncome);
@@ -159,7 +160,10 @@ exports.store = async (req, res) => {
     let itemizedList = [];
 
     list.forEach((obj) => {
-      catToCatId(obj);
+      //TEST
+      delete obj.idx;
+
+      // catToCatId(obj);
       //TODO
       //change sub category to sub category id
       itemizedList.push(obj);
@@ -179,7 +183,7 @@ exports.store = async (req, res) => {
     console.log("budget is:");
     console.log(budget);
 
-    // Finance.create(budget, {
+    // await Finance.create(budget, {
     //   include: [Item],
     // })
     //   .then((data) => {

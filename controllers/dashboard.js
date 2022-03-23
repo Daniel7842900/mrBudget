@@ -183,7 +183,7 @@ exports.findAll = async (req, res) => {
         monthExpTotal += parseFloat(monthExpItem.amount);
 
         // Convert category id to category
-        catIdToCat(monthExpItem);
+        // catIdToCat(monthExpItem);
 
         // Add formatted item object to a new array
         newMonthExpItemArr.push(monthExpItem);
@@ -194,7 +194,7 @@ exports.findAll = async (req, res) => {
       // Re-format the month budget objects and put them into a new array
       monthBudItemArr.forEach((monthBudItem) => {
         // Convert category id to category
-        catIdToCat(monthBudItem);
+        // catIdToCat(monthBudItem);
 
         // Add formatted item object to a new array
         newMonthBudItemArr.push(monthBudItem);
@@ -251,7 +251,7 @@ exports.findAll = async (req, res) => {
         weekExpTotal += parseFloat(weekExpItem.amount);
 
         // Convert category id to category
-        catIdToCat(weekExpItem);
+        // catIdToCat(weekExpItem);
 
         // Add formatted item object to a new array
         newWeekExpItemArr.push(weekExpItem);
@@ -261,7 +261,7 @@ exports.findAll = async (req, res) => {
       // Re-format the month budget objects and put them into a new array
       weekBudItemArr.forEach((weekBudItem) => {
         // Convert category id to category
-        catIdToCat(weekBudItem);
+        // catIdToCat(weekBudItem);
 
         // Add formatted item object to a new array
         newWeekBudItemArr.push(weekBudItem);
