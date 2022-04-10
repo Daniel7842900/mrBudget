@@ -168,15 +168,15 @@
                           <tbody class="bg-white divide-y divide-gray-200">
                             <% if(itemizedItems.length != 0) { %> <%
                             itemizedItems.forEach((obj) => { %> <%
-                            if(obj.category !== _.toLower("income")) {
-                            console.log(obj); obj.category =
-                            _.startCase(obj.category) %>
+                            if(obj.category !== _.toLower("income")) { %>
                             <tr>
                               <td
                                 class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                               >
-                                <% if(obj.subCategory === "") { %> <%=
-                                obj.category %> <% } else { %> <%=
+                                <% if(obj.subCategory === "") { obj.category =
+                                _.startCase(obj.category) %> <%= obj.category %>
+                                <% } else { obj.subCategory =
+                                _.startCase(obj.subCategory) %> <%=
                                 obj.subCategory %> <% } %>
                               </td>
                               <td

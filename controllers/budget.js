@@ -410,8 +410,12 @@ exports.edit = async (req, res) => {
         // Assign amount to a new obj
         itemizedItem.amount = parseFloat(itemData["amount"]);
 
-        // Convert category id to category string
+        // Assign description to a new obj
+        itemizedItem.description = itemData["description"];
+
+        // Convert category id & subCategory id to category value & subCategory value
         catIdToCat(itemData, itemizedItem);
+        subCatIdToSubCat(itemData, itemizedItem);
 
         // Add a new obj to the list
         itemizedItems.push(itemizedItem);

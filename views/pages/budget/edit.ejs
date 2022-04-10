@@ -236,6 +236,12 @@
                                 >
                                   Amount
                                 </th>
+                                <th
+                                  scope="col"
+                                  class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Description
+                                </th>
                                 <th scope="col" class="px-4 py-3 relative">
                                   <span class="sr-only">Remove</span>
                                 </th>
@@ -247,18 +253,26 @@
                             >
                               <% if(itemizedItems.length != 0) { let idx = 0; %>
                               <% itemizedItems.forEach((obj) => { %> <%
-                              if(obj.category !== _.toLower("income")) {
-                              obj.category = _.startCase(obj.category) %>
+                              if(obj.category !== _.toLower("income")) { %>
                               <tr>
                                 <td
                                   class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                                 >
-                                  <%= obj.category %>
+                                  <% if(obj.subCategory === "") { obj.category =
+                                  _.startCase(obj.category) %> <%= obj.category
+                                  %> <% } else { obj.subCategory =
+                                  _.startCase(obj.subCategory) %> <%=
+                                  obj.subCategory %> <% } %>
                                 </td>
                                 <td
                                   class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
                                 >
                                   $<%= obj.amount %>
+                                </td>
+                                <td
+                                  class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                                >
+                                  <%= obj.description %>
                                 </td>
                                 <td>
                                   <button
