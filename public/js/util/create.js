@@ -187,8 +187,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
 
       if (rIdx > -1) {
         // Change category availability to false if item is getting removed
-        let curObj = list[rIdx];
-        // catMap.set(_.toLower(curObj.category), false);
+        // let curObj = list[rIdx];
 
         // Remove the object at index "rIdx"
         list.splice(rIdx, 1);

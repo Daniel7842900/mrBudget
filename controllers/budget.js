@@ -417,6 +417,8 @@ exports.edit = async (req, res) => {
         catIdToCat(itemData, itemizedItem);
         subCatIdToSubCat(itemData, itemizedItem);
 
+        console.log(itemizedItem);
+
         // Add a new obj to the list
         itemizedItems.push(itemizedItem);
       });
@@ -486,11 +488,16 @@ exports.update = async (req, res) => {
   // Add income obj to the list
   list.push(itemizedIncome);
 
+  list.forEach((element) => {
+    console.log(element);
+  });
+
   // Format the records from db and push it to
   //a new array
   let itemizedList = [];
   list.forEach((obj) => {
     catToCatId(obj);
+    subCatToId(obj);
     itemizedList.push(obj);
   });
 
@@ -559,69 +566,69 @@ exports.update = async (req, res) => {
       }
 
       // Compare original list and new list based on new list
-      for (let i = 0; i < newListSize; i++) {
-        let newItem = itemizedList[i];
-        for (let j = 0; j < originalListSize; j++) {
-          let oldItem = originalList[j];
+      // for (let i = 0; i < newListSize; i++) {
+      //   let newItem = itemizedList[i];
+      //   for (let j = 0; j < originalListSize; j++) {
+      //     let oldItem = originalList[j];
 
-          if (newItem.categoryId === oldItem.categoryId) {
-            let updateItemProm = await Item.update(
-              { amount: newItem.amount },
-              {
-                where: {
-                  financeId: budgetData.id,
-                  categoryId: oldItem.categoryId,
-                },
-              }
-            );
-            itemPromises.push(updateItemProm);
-            break;
-          } else if (
-            newItem.categoryId !== oldItem.categoryId &&
-            j === originalListSize - 1
-          ) {
-            let createItemProm = await Item.create({
-              amount: newItem.amount,
-              categoryId: newItem.categoryId,
-              financeId: budgetData.id,
-            });
-            itemPromises.push(createItemProm);
-          } else if (
-            newItem.categoryId !== oldItem.categoryId &&
-            j !== originalListSize - 1
-          ) {
-          }
-        }
-      }
+      //     if (newItem.categoryId === oldItem.categoryId) {
+      //       let updateItemProm = await Item.update(
+      //         { amount: newItem.amount },
+      //         {
+      //           where: {
+      //             financeId: budgetData.id,
+      //             categoryId: oldItem.categoryId,
+      //           },
+      //         }
+      //       );
+      //       itemPromises.push(updateItemProm);
+      //       break;
+      //     } else if (
+      //       newItem.categoryId !== oldItem.categoryId &&
+      //       j === originalListSize - 1
+      //     ) {
+      //       let createItemProm = await Item.create({
+      //         amount: newItem.amount,
+      //         categoryId: newItem.categoryId,
+      //         financeId: budgetData.id,
+      //       });
+      //       itemPromises.push(createItemProm);
+      //     } else if (
+      //       newItem.categoryId !== oldItem.categoryId &&
+      //       j !== originalListSize - 1
+      //     ) {
+      //     }
+      //   }
+      // }
 
-      // Compare original list and new list based on original list
-      for (let i = 0; i < originalListSize; i++) {
-        let oldItem = originalList[i];
-        for (let j = 0; j < newListSize; j++) {
-          let newItem = itemizedList[j];
-          if (oldItem.categoryId === newItem.categoryId) {
-            break;
-          } else if (
-            oldItem.categoryId !== newItem.categoryId &&
-            j === newListSize - 1
-          ) {
-            let itemDestroyProm = await Item.destroy({
-              where: {
-                categoryId: oldItem.categoryId,
-                financeId: budgetData.id,
-              },
-            });
-            itemPromises.push(itemDestroyProm);
-          } else if (
-            oldItem.categoryId !== newItem.categoryId &&
-            j !== newListSize - 1
-          ) {
-          }
-        }
-      }
+      // // Compare original list and new list based on original list
+      // for (let i = 0; i < originalListSize; i++) {
+      //   let oldItem = originalList[i];
+      //   for (let j = 0; j < newListSize; j++) {
+      //     let newItem = itemizedList[j];
+      //     if (oldItem.categoryId === newItem.categoryId) {
+      //       break;
+      //     } else if (
+      //       oldItem.categoryId !== newItem.categoryId &&
+      //       j === newListSize - 1
+      //     ) {
+      //       let itemDestroyProm = await Item.destroy({
+      //         where: {
+      //           categoryId: oldItem.categoryId,
+      //           financeId: budgetData.id,
+      //         },
+      //       });
+      //       itemPromises.push(itemDestroyProm);
+      //     } else if (
+      //       oldItem.categoryId !== newItem.categoryId &&
+      //       j !== newListSize - 1
+      //     ) {
+      //     }
+      //   }
+      // }
 
-      Promise.all(itemPromises);
-      res.send(itemizedList);
+      // Promise.all(itemPromises);
+      // res.send(itemizedList);
     })
     .catch((err) => {
       console.log(err);

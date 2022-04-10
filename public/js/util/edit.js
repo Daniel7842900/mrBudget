@@ -33,7 +33,7 @@ for (let i = itemizedItemsJSON.length - 1; i >= 0; i -= 1) {
 
 itemizedItemsJSON.forEach((itemObj) => {
   // Mark existing category
-  catMap.set(itemObj.category, true);
+  // catMap.set(itemObj.category, true);
 
   // Assign idx to already existing items
   itemObj.idx = idx;
@@ -63,60 +63,74 @@ let onClickAdd = (
   targetBtn,
   event,
   financeType,
-  catMap,
-  itemizedItemsJSON,
-  idx
+  // catMap,
+  itemizedItemsJSON
 ) => {
   $(targetBtn).on(event, function (e) {
     e.preventDefault();
     // Create a js object for category & amount
     let obj = {};
-    let objCat = $("#category").children("option:selected").val();
-    objCat = _.toLower(objCat);
+    let objCatVal = $("#category").children("option:selected").val();
+    let objCatText = $("#category").children("option:selected").text();
+    let objSubCatVal = $("#sub-category").children("option:selected").val();
+    let objSubCatText = $("#sub-category").children("option:selected").text();
+    let displayCat;
+    objCatVal = _.toLower(objCatVal);
+    objSubCatVal = _.toLower(objSubCatVal);
+    let amount = $("#amount").val();
+    let description = $("#description").val().trim();
 
-    if (catMap.get(objCat) === false) {
-      let amount = $("#amount").val();
+    console.log("cat: " + objCatText);
+    console.log("sub: " + objSubCatText);
 
-      // Change the text to number
-      amount = parseFloat(amount);
+    // Change the text to number
+    amount = parseFloat(amount);
 
-      // Round the number until 2 decimals
-      amount = Math.round(amount * 100) / 100;
+    // Round the number until 2 decimals
+    amount = Math.round(amount * 100) / 100;
 
-      if (_.isNaN(amount) === true || amount === 0) {
-        // Reset the values after adding
-        $("#amount").val("");
+    if (_.isNaN(amount) === true || amount === 0) {
+      // Reset the values after adding
+      $("#amount").val("");
+      $("#description").val("");
 
-        // Prevent onClick event
-        e.preventDefault();
+      // Prevent onClick event
+      e.preventDefault();
 
-        toastr.warning("Please enter the amount!", "Warning", {
-          timeOut: 1000,
-        });
-        return false;
-      } else {
-        catMap.set(objCat, true);
+      toastr.warning("Please enter the amount!", "Warning", {
+        timeOut: 1000,
+      });
+      return false;
+    } else {
+      // if (objSubCatText === "") {
+      //   displayCat = objCatText;
+      // } else {
+      //   displayCat = objSubCatText;
+      // }
 
-        obj.idx = idx;
-        obj.category = _.startCase(objCat);
-        obj.amount = amount;
+      obj.idx = idx;
+      obj.category = _.startCase(objCatVal);
+      obj.subCategory = _.startCase(objSubCatVal);
+      obj.amount = amount;
+      obj.description = description;
+      // obj.displayCat = displayCat;
 
-        // Push the object into the list
-        itemizedItemsJSON.push(obj);
+      // Push the object into the list
+      itemizedItemsJSON.push(obj);
 
-        // Reset the values after adding
-        $("#category option:first").prop("selected", true);
-        $("#amount").val("");
+      // Reset the values after adding
+      // $("#category option:first").prop("selected", true);
+      $("#amount").val("");
+      $("#description").val("");
 
-        // Increment the index
-        idx++;
+      // Increment the index
+      idx++;
 
-        // Render table rows using the list that contains js objects.
-        //this is done in client-side because we can't pass the list
-        //to server-side.
-        html = ejs.render(
-          `<% list.forEach(function(obj) { %>
-                obj.category = _.startCase(obj.category) %>
+      // Render table rows using the list that contains js objects.
+      //this is done in client-side because we can't pass the list
+      //to server-side.
+      html = ejs.render(
+        `<% list.forEach(function(obj) { %>
                 <tr>
                   <td
                     class="
@@ -128,7 +142,11 @@ let onClickAdd = (
                       text-gray-900
                     "
                   >
+                  <% if(obj.subCategory === "") { %>
                     <%= obj.category %>
+                  <% } else { %>
+                    <%= obj.subCategory %>
+                  <% } %>
                   </td>
                   <td
                     class="
@@ -139,6 +157,17 @@ let onClickAdd = (
                     "
                   >
                     $ <%= obj.amount %>
+                  </td>
+                  <td
+                  scope="col"
+                    class="
+                      px-4
+                      py-4
+                      whitespace-nowrap
+                      text-sm text-gray-500
+                    "
+                  >
+                    <%= obj.description %>
                   </td>
                   <td
                     class="
@@ -171,19 +200,14 @@ let onClickAdd = (
                   </td>
                 </tr>
                 <% });%>`,
-          { list: itemizedItemsJSON }
-        );
+        { list: itemizedItemsJSON }
+      );
 
-        // This is required for re-rendering table body element.
-        //if this is not present, it will now show the list of objects
-        //that we added above.
-        $.get(`/${financeType}/edit?start=${start}&end=${end}`, function () {
-          $(parentElement).html(html);
-        });
-      }
-    } else if (catMap.get(objCat) === true) {
-      toastr.warning("No same category!", "Warning", {
-        timeOut: 1000,
+      // This is required for re-rendering table body element.
+      //if this is not present, it will now show the list of objects
+      //that we added above.
+      $.get(`/${financeType}/edit?start=${start}&end=${end}`, function () {
+        $(parentElement).html(html);
       });
     }
   });
@@ -195,14 +219,14 @@ let onClickRemove = (
   targetBtn,
   event,
   financeType,
-  catMap,
-  itemizedItemsJSON,
-  idx
+  itemizedItemsJSON
 ) => {
   $(parentElement).on(event, targetBtn, function (e) {
     e.preventDefault();
     if (itemizedItemsJSON.length !== 0) {
       let rIdx = parseInt($(this).attr("id").split("_")[2]);
+      console.log($(this));
+      console.log("ridx: " + rIdx);
 
       if (rIdx > -1) {
         // Remove the object at index "rIdx"
@@ -210,6 +234,7 @@ let onClickRemove = (
 
         // Decrement idx inside of objects by 1
         itemizedItemsJSON.forEach((obj) => {
+          console.log("idx: " + obj.idx);
           if (rIdx < obj.idx) {
             obj.idx--;
           }
@@ -231,7 +256,11 @@ let onClickRemove = (
                       text-gray-900
                     "
                   >
+                  <% if(obj.subCategory === "") { %>
                     <%= obj.category %>
+                  <% } else { %>
+                    <%= obj.subCategory %>
+                  <% } %>
                   </td>
                   <td
                     class="
@@ -242,6 +271,17 @@ let onClickRemove = (
                     "
                   >
                     $ <%= obj.amount %>
+                  </td>
+                  <td
+                  scope="col"
+                    class="
+                      px-4
+                      py-4
+                      whitespace-nowrap
+                      text-sm text-gray-500
+                    "
+                  >
+                    <%= obj.description %>
                   </td>
                   <td
                     class="
@@ -298,47 +338,49 @@ let onClickSubmit = (
 
     itemizedItemsJSON.forEach((obj) => {
       obj.category = obj.category.trim();
+      obj.subCategory = obj.subCategory.trim();
+      console.log(obj);
     });
 
     e.preventDefault();
-    $.ajax({
-      url: `/${financeType}/edit`,
-      type: "POST",
-      dataType: "json",
-      data: JSON.stringify({
-        date: date,
-        income: income,
-        list: itemizedItemsJSON,
-      }),
+    // $.ajax({
+    //   url: `/${financeType}/edit`,
+    //   type: "POST",
+    //   dataType: "json",
+    //   data: JSON.stringify({
+    //     date: date,
+    //     income: income,
+    //     list: itemizedItemsJSON,
+    //   }),
 
-      // contentType json is essential to make server
-      //understand that data is JSON
-      contentType: "application/json",
+    //   // contentType json is essential to make server
+    //   //understand that data is JSON
+    //   contentType: "application/json",
 
-      // Here, success is a callback function
-      //after we get a response from server side
-      success: function (res) {
-        // res is data that we get from server side
-        //in our case, from controller
-        // console.log(res);
+    //   // Here, success is a callback function
+    //   //after we get a response from server side
+    //   success: function (res) {
+    //     // res is data that we get from server side
+    //     //in our case, from controller
+    //     // console.log(res);
 
-        // Show success toastr message on current page
-        //and redirect after 1 second
-        toastr.options.onHidden = function () {
-          window.location.assign(`/${financeType}?start=${start}&end=${end}`);
-        };
-        toastr.success(`The ${financeType} is edited!`, "Success", {
-          timeOut: 1000,
-        });
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        // Redirecting to new budget page again to display
-        //error message.
-        // TODO research if there is any way to display error
-        //message not redirecting
-        // window.location.assign("/budget/new");
-      },
-    });
+    //     // Show success toastr message on current page
+    //     //and redirect after 1 second
+    //     toastr.options.onHidden = function () {
+    //       window.location.assign(`/${financeType}?start=${start}&end=${end}`);
+    //     };
+    //     toastr.success(`The ${financeType} is edited!`, "Success", {
+    //       timeOut: 1000,
+    //     });
+    //   },
+    //   error: function (jqXHR, textStatus, errorThrown) {
+    //     // Redirecting to new budget page again to display
+    //     //error message.
+    //     // TODO research if there is any way to display error
+    //     //message not redirecting
+    //     // window.location.assign("/budget/new");
+    //   },
+    // });
   });
 };
 

@@ -198,6 +198,19 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Description of item being added -->
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pb-4 pt-1">
+                    <label for="amount">Description</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        name="description"
+                        id="description"
+                        class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md block"
+                        placeholder="Short description here"
+                      />
+                    </div>
+                  </div>
                   <!-- Add button for an item -->
                   <div class="text-right mr-1 mb-1">
                     <button
@@ -252,8 +265,9 @@
                               id="summary_data"
                             >
                               <% if(itemizedItems.length != 0) { let idx = 0; %>
-                              <% itemizedItems.forEach((obj) => { %> <%
-                              if(obj.category !== _.toLower("income")) { %>
+                              <% itemizedItems.forEach((obj) => {
+                              console.log(obj); %> <% if(obj.category !==
+                              _.toLower("income")) { %>
                               <tr>
                                 <td
                                   class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
@@ -283,7 +297,7 @@
                                   </button>
                                 </td>
                               </tr>
-                              <% }%> <% }) %> <% idx++; } %>
+                              <% }%> <% idx++; }) %> <% } %>
                             </tbody>
                           </table>
                         </div>

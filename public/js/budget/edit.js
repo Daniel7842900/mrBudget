@@ -9,7 +9,6 @@ $(function () {
     "#add_btn",
     "click",
     financeType,
-    catMap,
     itemizedItemsJSON,
     idx
   );
@@ -20,7 +19,6 @@ $(function () {
     ".remove_btn",
     "click",
     financeType,
-    catMap,
     itemizedItemsJSON,
     idx
   );
