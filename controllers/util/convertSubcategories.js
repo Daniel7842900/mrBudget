@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 const convertSubCatToId = (obj) => {
   switch (_.toLower(obj.subCategory)) {
     case _.toLower("grocery"):
@@ -520,4 +522,9 @@ const convertSubCatIdToCat = (dbObj, newObj) => {
 
     default:
   }
+};
+
+module.exports = {
+  subCatToId: convertSubCatToId,
+  subCatIdToSubCat: convertSubCatIdToCat,
 };

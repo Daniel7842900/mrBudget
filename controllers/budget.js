@@ -6,6 +6,7 @@ const moment = require("moment");
 const _ = require("lodash");
 const { Op } = require("sequelize");
 const { catToCatId, catIdToCat } = require("./util/convertCategories");
+const { subCatToId, subCatIdToSubCat } = require("./util/convertSubcategories");
 
 // Controller for displaying a new budget page
 exports.create = async (req, res) => {
@@ -159,13 +160,15 @@ exports.store = async (req, res) => {
 
     let itemizedList = [];
 
+    // Perform modification on an item object in order to match with db
     list.forEach((obj) => {
-      //TEST
+      // Delete idx that was used in front-end
       delete obj.idx;
 
-      // catToCatId(obj);
-      //TODO
-      //change sub category to sub category id
+      // Change category & subCategory values to ids
+      catToCatId(obj);
+      subCatToId(obj);
+
       itemizedList.push(obj);
     });
 
@@ -183,18 +186,18 @@ exports.store = async (req, res) => {
     console.log("budget is:");
     console.log(budget);
 
-    // await Finance.create(budget, {
-    //   include: [Item],
-    // })
-    //   .then((data) => {
-    //     req.flash("success_message", "New budget is created!");
-    //     res.send(data);
-    //   })
-    //   .catch((err) => {
-    //     res.status(500).send({
-    //       message: err.message || "Something wrong while creating budget",
-    //     });
-    //   });
+    await Finance.create(budget, {
+      include: [Item],
+    })
+      .then((data) => {
+        req.flash("success_message", "New budget is created!");
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || "Something wrong while creating budget",
+        });
+      });
   } else {
     req.flash("budget_err_message", "No more budget on these dates!");
     return res.status(400).send({
@@ -311,6 +314,7 @@ exports.findOne = async (req, res) => {
 
           // Convert category id to category string
           catIdToCat(itemData, itemizedItem);
+          subCatIdToSubCat(itemData, itemizedItem);
 
           // Add a new obj to the list
           itemizedItems.push(itemizedItem);

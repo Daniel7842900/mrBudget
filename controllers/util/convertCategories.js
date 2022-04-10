@@ -1,7 +1,7 @@
 const _ = require("lodash");
 
 const convertCatToCatId = (obj) => {
-  delete obj.idx;
+  // delete obj.idx;
   switch (_.toLower(obj.category)) {
     case _.toLower("income"):
       obj.categoryId = 1;
