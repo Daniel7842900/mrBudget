@@ -343,44 +343,44 @@ let onClickSubmit = (
     });
 
     e.preventDefault();
-    // $.ajax({
-    //   url: `/${financeType}/edit`,
-    //   type: "POST",
-    //   dataType: "json",
-    //   data: JSON.stringify({
-    //     date: date,
-    //     income: income,
-    //     list: itemizedItemsJSON,
-    //   }),
+    $.ajax({
+      url: `/${financeType}/edit`,
+      type: "POST",
+      dataType: "json",
+      data: JSON.stringify({
+        date: date,
+        income: income,
+        list: itemizedItemsJSON,
+      }),
 
-    //   // contentType json is essential to make server
-    //   //understand that data is JSON
-    //   contentType: "application/json",
+      // contentType json is essential to make server
+      //understand that data is JSON
+      contentType: "application/json",
 
-    //   // Here, success is a callback function
-    //   //after we get a response from server side
-    //   success: function (res) {
-    //     // res is data that we get from server side
-    //     //in our case, from controller
-    //     // console.log(res);
+      // Here, success is a callback function
+      //after we get a response from server side
+      success: function (res) {
+        // res is data that we get from server side
+        //in our case, from controller
+        // console.log(res);
 
-    //     // Show success toastr message on current page
-    //     //and redirect after 1 second
-    //     toastr.options.onHidden = function () {
-    //       window.location.assign(`/${financeType}?start=${start}&end=${end}`);
-    //     };
-    //     toastr.success(`The ${financeType} is edited!`, "Success", {
-    //       timeOut: 1000,
-    //     });
-    //   },
-    //   error: function (jqXHR, textStatus, errorThrown) {
-    //     // Redirecting to new budget page again to display
-    //     //error message.
-    //     // TODO research if there is any way to display error
-    //     //message not redirecting
-    //     // window.location.assign("/budget/new");
-    //   },
-    // });
+        // Show success toastr message on current page
+        //and redirect after 1 second
+        toastr.options.onHidden = function () {
+          window.location.assign(`/${financeType}?start=${start}&end=${end}`);
+        };
+        toastr.success(`The ${financeType} is edited!`, "Success", {
+          timeOut: 1000,
+        });
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        // Redirecting to new budget page again to display
+        //error message.
+        // TODO research if there is any way to display error
+        //message not redirecting
+        // window.location.assign("/budget/new");
+      },
+    });
   });
 };
 

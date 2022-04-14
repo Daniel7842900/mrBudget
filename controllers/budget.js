@@ -483,6 +483,7 @@ exports.update = async (req, res) => {
   let itemizedIncome = {
     amount: income,
     category: _.toLower("income"),
+    description: _.toLower("income"),
   };
 
   // Add income obj to the list
@@ -496,6 +497,9 @@ exports.update = async (req, res) => {
   //a new array
   let itemizedList = [];
   list.forEach((obj) => {
+    // Delete idx that was used in front-end
+    delete obj.idx;
+
     catToCatId(obj);
     subCatToId(obj);
     itemizedList.push(obj);
@@ -527,108 +531,41 @@ exports.update = async (req, res) => {
   startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");
   endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
 
+  console.log("this is itemizedList: ");
+  console.log(itemizedList);
+  console.log("each element of itemizedList");
+  itemizedList.forEach((element) => {
+    console.log(element);
+  });
+
   Promise.all([budgets, budget])
-    .then((res) => {
-      const budgetInsts = res[0];
+    .then(async (response) => {
+      const budgetInsts = response[0];
       budgetInsts.forEach((budgetInst) => {
         let budgetInstData = budgetInst.get();
         budgetsArr.push(budgetInstData);
       });
-      const budgetInst = res[1];
+      const budgetInst = response[1];
       budgetData = budgetInst.get();
       if (budgetData === null) {
         throw "error";
       }
-      return Item.findAll({
-        where: { financeId: budgetData.id },
-      });
-    })
-    .then(async (itemInsts) => {
-      // Set up the list with items that originally existed in db
-      const originalList = [];
-      itemInsts.forEach((itemInst) => {
-        let itemData = itemInst.get();
-        originalList.push(itemData);
+
+      // Delete item records that are associated with the budget
+      await Item.destroy({
+        where: {
+          financeId: budgetData.id,
+        },
       });
 
-      const originalListSize = originalList.length;
-      const newListSize = itemizedList.length;
+      // Create items with the given details
+      const newItems = await Item.bulkCreate(itemizedList);
 
-      // If new list is empty send error message
-      if (newListSize === 0) {
-        req.flash(
-          "edit_empty_err_message",
-          "Please delete the budget instead of editing!"
-        );
-        return res.status(400).send({
-          message: "Please delete the budget instead of editing!",
-        });
-      }
+      // Associate items with the budget
+      await budgetInst.addItems(newItems);
 
-      // Compare original list and new list based on new list
-      // for (let i = 0; i < newListSize; i++) {
-      //   let newItem = itemizedList[i];
-      //   for (let j = 0; j < originalListSize; j++) {
-      //     let oldItem = originalList[j];
-
-      //     if (newItem.categoryId === oldItem.categoryId) {
-      //       let updateItemProm = await Item.update(
-      //         { amount: newItem.amount },
-      //         {
-      //           where: {
-      //             financeId: budgetData.id,
-      //             categoryId: oldItem.categoryId,
-      //           },
-      //         }
-      //       );
-      //       itemPromises.push(updateItemProm);
-      //       break;
-      //     } else if (
-      //       newItem.categoryId !== oldItem.categoryId &&
-      //       j === originalListSize - 1
-      //     ) {
-      //       let createItemProm = await Item.create({
-      //         amount: newItem.amount,
-      //         categoryId: newItem.categoryId,
-      //         financeId: budgetData.id,
-      //       });
-      //       itemPromises.push(createItemProm);
-      //     } else if (
-      //       newItem.categoryId !== oldItem.categoryId &&
-      //       j !== originalListSize - 1
-      //     ) {
-      //     }
-      //   }
-      // }
-
-      // // Compare original list and new list based on original list
-      // for (let i = 0; i < originalListSize; i++) {
-      //   let oldItem = originalList[i];
-      //   for (let j = 0; j < newListSize; j++) {
-      //     let newItem = itemizedList[j];
-      //     if (oldItem.categoryId === newItem.categoryId) {
-      //       break;
-      //     } else if (
-      //       oldItem.categoryId !== newItem.categoryId &&
-      //       j === newListSize - 1
-      //     ) {
-      //       let itemDestroyProm = await Item.destroy({
-      //         where: {
-      //           categoryId: oldItem.categoryId,
-      //           financeId: budgetData.id,
-      //         },
-      //       });
-      //       itemPromises.push(itemDestroyProm);
-      //     } else if (
-      //       oldItem.categoryId !== newItem.categoryId &&
-      //       j !== newListSize - 1
-      //     ) {
-      //     }
-      //   }
-      // }
-
-      // Promise.all(itemPromises);
-      // res.send(itemizedList);
+      // Send the response back to front-end
+      res.send(itemizedList);
     })
     .catch((err) => {
       console.log(err);
