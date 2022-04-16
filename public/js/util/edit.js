@@ -7,22 +7,6 @@ let idx = 0;
 let itemizedItemsJSON = JSON.parse(itemizedItems);
 let start = param.start;
 let end = param.end;
-let catMap = new Map([
-  [_.toLower("grocery"), false],
-  [_.toLower("rent"), false],
-  [_.toLower("utility"), false],
-  [_.toLower("dine out"), false],
-  [_.toLower("investment"), false],
-  [_.toLower("shopping"), false],
-  [_.toLower("alcohol"), false],
-  [_.toLower("leisure"), false],
-  [_.toLower("insurance"), false],
-  [_.toLower("loan"), false],
-  [_.toLower("subscription"), false],
-  [_.toLower("transportation"), false],
-  [_.toLower("etc"), false],
-  [_.toLower("personal maintenance"), false],
-]);
 
 // Remove "Income" from the list
 for (let i = itemizedItemsJSON.length - 1; i >= 0; i -= 1) {
@@ -32,9 +16,6 @@ for (let i = itemizedItemsJSON.length - 1; i >= 0; i -= 1) {
 }
 
 itemizedItemsJSON.forEach((itemObj) => {
-  // Mark existing category
-  // catMap.set(itemObj.category, true);
-
   // Assign idx to already existing items
   itemObj.idx = idx;
   idx++;
@@ -63,7 +44,6 @@ let onClickAdd = (
   targetBtn,
   event,
   financeType,
-  // catMap,
   itemizedItemsJSON
 ) => {
   $(targetBtn).on(event, function (e) {

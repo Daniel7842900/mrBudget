@@ -13,7 +13,6 @@ exports.create = async (req, res) => {
   let itemizedItems = [];
   let budgetsArr = [];
   let user = req.user;
-  console.log(user);
 
   // Retrieve every budget records to display on the calendar
   const budgets = await Finance.findAll({

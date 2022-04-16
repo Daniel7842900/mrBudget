@@ -1,4 +1,7 @@
 $(function () {
+  // Onchange event for dynamically rendering subcategories
+  onChangeCategory("#category", "change", "#sub-category");
+
   // Onclick event for adding an object to the list
   onClickAdd("#summary_data", "#add_btn", "click", "expense");
 

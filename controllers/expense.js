@@ -6,6 +6,7 @@ const moment = require("moment");
 const _ = require("lodash");
 const { Op } = require("sequelize");
 const { catToCatId, catIdToCat } = require("./util/convertCategories");
+const { subCatToId, subCatIdToSubCat } = require("./util/convertSubcategories");
 
 // Controller for displaying a new expense page
 exports.create = async (req, res) => {

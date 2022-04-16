@@ -1,22 +1,5 @@
 let list = [];
 let idx = 0;
-let catMap = new Map([
-  [_.toLower("food"), false],
-  [_.toLower("housing"), false],
-  [_.toLower("shopping"), false],
-  [_.toLower("personal care"), false],
-  [_.toLower("health"), false],
-  [_.toLower("fee"), false],
-  [_.toLower("utility"), false],
-  [_.toLower("investment"), false],
-  [_.toLower("entertainment"), false],
-  [_.toLower("travel"), false],
-  [_.toLower("transportation"), false],
-  [_.toLower("gift"), false],
-  [_.toLower("business service"), false],
-  [_.toLower("tax"), false],
-  [_.toLower("tax"), false],
-]);
 
 // Onchange event for dynamically displaying subcategories
 let onChangeCategory = (sourceElement, event, targetElement) => {
@@ -67,8 +50,6 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
       });
       return false;
     } else {
-      // catMap.set(objCat, true);
-
       obj.category = _.startCase(objCat);
       obj.subCategory = _.startCase(objSubCat);
       obj.idx = idx;

@@ -1,6 +1,7 @@
 $(function () {
   const financeType = "budget";
 
+  // Onchange event for dynamically rendering subcategories
   onChangeCategory("#category", "change", "#sub-category");
 
   // Onclick event for adding an object to the list
@@ -9,8 +10,7 @@ $(function () {
     "#add_btn",
     "click",
     financeType,
-    itemizedItemsJSON,
-    idx
+    itemizedItemsJSON
   );
 
   // Onclick event for removing an object to the list
@@ -19,8 +19,7 @@ $(function () {
     ".remove_btn",
     "click",
     financeType,
-    itemizedItemsJSON,
-    idx
+    itemizedItemsJSON
   );
 
   // Onclick event for submiting the list
