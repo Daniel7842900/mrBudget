@@ -99,22 +99,43 @@
                         id="category"
                         class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md"
                       >
-                        <option value="grocery">Grocery</option>
-                        <option value="rent">Rent</option>
-                        <option value="utility">Utility</option>
-                        <option value="dine out">Dine out</option>
-                        <option value="investment">Investment</option>
+                        <option value="food">Food & Dining</option>
+                        <option value="housing">Housing</option>
                         <option value="shopping">Shopping</option>
-                        <option value="alcohol">Alcohol</option>
-                        <option value="leisure">Leisure</option>
-                        <option value="insurance">Insurance</option>
-                        <option value="loan">Loan</option>
-                        <option value="subscription">Subscription</option>
+                        <option value="personal care">Personal Care</option>
+                        <option value="health">Health & fitness</option>
+                        <option value="fee">Fees & Charges</option>
+                        <option value="utility">Bills & Utility</option>
+                        <option value="investment">Investment</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="travel">Travel</option>
                         <option value="transportation">Transportation</option>
-                        <option value="etc">Etc</option>
-                        <option value="personal maintenance">
-                          Personal Maintenance
+                        <option value="gift">Gifts & Donations</option>
+                        <option value="business service">
+                          Business Services
                         </option>
+                        <option value="tax">Taxes</option>
+                        <option value="etc">Etc</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- Sub Category for item being added -->
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pt-4 pb-1">
+                    <label for="sub-category">Sub Category</label>
+                    <div class="w-auto m-auto">
+                      <select
+                        name="sub-category"
+                        id="sub-category"
+                        class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md"
+                      >
+                        <option value=""></option>
+                        <option value="grocery">Groceries</option>
+                        <option value="coffee">Coffee Shop</option>
+                        <option value="fast">Fast Food</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="take out">Take Out</option>
+                        <option value="delivery">Delivery</option>
+                        <option value="alcohol">Alcohol</option>
                       </select>
                     </div>
                   </div>
@@ -145,6 +166,19 @@
                           CAD
                         </span>
                       </div>
+                    </div>
+                  </div>
+                  <!-- Description of item being added -->
+                  <div class="w-auto m-auto md:w-6/12 lg:w-6/12 pb-4 pt-1">
+                    <label for="amount">Description</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        name="description"
+                        id="description"
+                        class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md block"
+                        placeholder="Short description here"
+                      />
                     </div>
                   </div>
                   <!-- Add button for an item -->
@@ -185,6 +219,12 @@
                                 >
                                   Amount
                                 </th>
+                                <th
+                                  scope="col"
+                                  class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Description
+                                </th>
                                 <th scope="col" class="px-4 py-3 relative">
                                   <span class="sr-only">Remove</span>
                                 </th>
@@ -196,18 +236,26 @@
                             >
                               <% if(itemizedItems.length != 0) { let idx = 0; %>
                               <% itemizedItems.forEach((obj) => { %> <%
-                              if(obj.category !== _.toLower("income")) {
-                              obj.category = _.startCase(obj.category) %>
+                              if(obj.category !== _.toLower("income")) { %>
                               <tr>
                                 <td
                                   class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                                 >
-                                  <%= obj.category %>
+                                  <% if(obj.subCategory === "") { obj.category =
+                                  _.startCase(obj.category) %> <%= obj.category
+                                  %> <% } else { obj.subCategory =
+                                  _.startCase(obj.subCategory) %> <%=
+                                  obj.subCategory %> <% } %>
                                 </td>
                                 <td
                                   class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
                                 >
                                   $<%= obj.amount %>
+                                </td>
+                                <td
+                                  class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                                >
+                                  <%= obj.description %>
                                 </td>
                                 <td>
                                   <button
@@ -218,7 +266,7 @@
                                   </button>
                                 </td>
                               </tr>
-                              <% }%> <% }) %> <% idx++; } %>
+                              <% }%> <% idx++; }) %> <% } %>
                             </tbody>
                           </table>
                         </div>
