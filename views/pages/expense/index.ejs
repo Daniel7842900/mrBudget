@@ -122,24 +122,37 @@
                               >
                                 Amount
                               </th>
+                              <th
+                                scope="col"
+                                class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                              >
+                                Description
+                              </th>
                             </tr>
                           </thead>
                           <tbody class="bg-white divide-y divide-gray-200">
                             <% if(itemizedItems.length != 0) { %> <%
                             itemizedItems.forEach((obj) => { %> <%
-                            if(obj.category !== _.toLower("income")) {
-                            obj.category = _.startCase(obj.category);
-                            console.log(obj.category) %>
+                            if(obj.category !== _.toLower("income")) { %>
                             <tr>
                               <td
                                 class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                               >
-                                <%= obj.category %>
+                                <% if(obj.subCategory === "") { obj.category =
+                                _.startCase(obj.category) %> <%= obj.category %>
+                                <% } else { obj.subCategory =
+                                _.startCase(obj.subCategory) %> <%=
+                                obj.subCategory %> <% } %>
                               </td>
                               <td
                                 class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
                               >
                                 $<%= obj.amount %>
+                              </td>
+                              <td
+                                class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                              >
+                                <%= obj.description %>
                               </td>
                             </tr>
                             <% }%> <% }) %> <% } %>
