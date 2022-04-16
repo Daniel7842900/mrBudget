@@ -140,8 +140,15 @@ exports.store = async (req, res) => {
 
     let itemizedList = [];
 
+    // Perform modification on an item object in order to match with db
     list.forEach((obj) => {
+      // Delete idx that was used in front-end
+      delete obj.idx;
+
+      // Change category & subCategory values to ids
       catToCatId(obj);
+      subCatToId(obj);
+
       itemizedList.push(obj);
     });
 
@@ -156,7 +163,7 @@ exports.store = async (req, res) => {
       items: itemizedList,
     };
 
-    Finance.create(expense, {
+    await Finance.create(expense, {
       include: [Item],
     })
       .then((data) => {

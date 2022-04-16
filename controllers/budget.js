@@ -55,8 +55,6 @@ exports.store = async (req, res) => {
   startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
 
-  console.log(list);
-
   // Condition to check if there is already a budget/budgets within the input date range.
   //This filter is to FIND a budget/budgets
   let filter = {
@@ -71,11 +69,6 @@ exports.store = async (req, res) => {
                 [Op.or]: [startDate, endDate],
               },
             },
-            // {
-            //   endDate: {
-            //     [Op.or]: [startDate, endDate],
-            //   },
-            // },
           ],
         },
         // second case, input startDate < startDate < input endDate
