@@ -215,7 +215,6 @@ exports.findOne = async (req, res) => {
 
   if (_.isEmpty(req.query)) {
     var budgetData = {};
-    console.log(budgetData);
 
     // Retrieve every budget records to display on the calendar
     const budgets = await Finance.findAll({
@@ -299,7 +298,6 @@ exports.findOne = async (req, res) => {
 
           // item record from db
           const itemData = itemInst.get();
-          console.log(itemData);
 
           // Assign amount to a new obj
           itemizedItem.amount = parseFloat(itemData["amount"]);
