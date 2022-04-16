@@ -438,7 +438,11 @@ exports.update = async (req, res) => {
   //a new array
   let itemizedList = [];
   list.forEach((obj) => {
+    // Delete idx that was used in front-end
+    delete obj.idx;
+
     catToCatId(obj);
+    subCatToId(obj);
     itemizedList.push(obj);
   });
 
@@ -469,106 +473,32 @@ exports.update = async (req, res) => {
   endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
 
   Promise.all([expenses, expense])
-    .then((res) => {
-      const expenseInsts = res[0];
+    .then(async (response) => {
+      const expenseInsts = response[0];
       expenseInsts.forEach((expenseInst) => {
         let expenseInstData = expenseInst.get();
         expensesArr.push(expenseInstData);
       });
-      const expenseInst = res[1];
+      const expenseInst = response[1];
       expenseData = expenseInst.get();
       if (expenseData === null) {
         throw "error";
       }
-      return Item.findAll({
-        where: { financeId: expenseData.id },
-      });
-    })
-    .then(async (itemInsts) => {
-      // Set up the list with items that originally existed in db
-      const originalList = [];
-      itemInsts.forEach((itemInst) => {
-        let itemData = itemInst.get();
-        originalList.push(itemData);
+
+      // Delete item records that are associated with the budget
+      await Item.destroy({
+        where: {
+          financeId: expenseData.id,
+        },
       });
 
-      const originalListSize = originalList.length;
-      const newListSize = itemizedList.length;
+      // Create items with the given details
+      const newItems = await Item.bulkCreate(itemizedList);
 
-      // If new list is empty send error message
-      if (newListSize === 0) {
-        req.flash(
-          "edit_empty_err_message",
-          "Please delete the expense instead of editing!"
-        );
-        return res.status(400).send({
-          message: "Please delete the expense instead of editing!",
-        });
-      }
+      // Associate items with the budget
+      await expenseInst.addItems(newItems);
 
-      // Compare original list and new list based on new list
-      for (let i = 0; i < newListSize; i++) {
-        let newItem = itemizedList[i];
-        for (let j = 0; j < originalListSize; j++) {
-          let oldItem = originalList[j];
-
-          if (newItem.categoryId === oldItem.categoryId) {
-            let updateItemProm = await Item.update(
-              { amount: newItem.amount },
-              {
-                where: {
-                  financeId: expenseData.id,
-                  categoryId: oldItem.categoryId,
-                },
-              }
-            );
-            itemPromises.push(updateItemProm);
-            break;
-          } else if (
-            newItem.categoryId !== oldItem.categoryId &&
-            j === originalListSize - 1
-          ) {
-            let createItemProm = await Item.create({
-              amount: newItem.amount,
-              categoryId: newItem.categoryId,
-              financeId: expenseData.id,
-            });
-            itemPromises.push(createItemProm);
-          } else if (
-            newItem.categoryId !== oldItem.categoryId &&
-            j !== originalListSize - 1
-          ) {
-          }
-        }
-      }
-
-      // Compare original list and new list based on original list
-      for (let i = 0; i < originalListSize; i++) {
-        let oldItem = originalList[i];
-        for (let j = 0; j < newListSize; j++) {
-          let newItem = itemizedList[j];
-          if (oldItem.categoryId === newItem.categoryId) {
-            break;
-          } else if (
-            oldItem.categoryId !== newItem.categoryId &&
-            j === newListSize - 1
-          ) {
-            let itemDestroyProm = await Item.destroy({
-              where: {
-                categoryId: oldItem.categoryId,
-                financeId: expenseData.id,
-              },
-            });
-            itemPromises.push(itemDestroyProm);
-          } else if (
-            oldItem.categoryId !== newItem.categoryId &&
-            j !== newListSize - 1
-          ) {
-          }
-        }
-      }
-
-      Promise.all(itemPromises);
+      // Send the response back to front-end
       res.send(itemizedList);
     })
     .catch((err) => {

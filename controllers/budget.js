@@ -513,18 +513,11 @@ exports.update = async (req, res) => {
 
   // Retrieve one budget to display on edit page
   const budget = await Finance.findOne(filter);
-  let budgetData;
+  // let budgetData;
 
   // Change the date format to use in URL
   startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");
   endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
-
-  console.log("this is itemizedList: ");
-  console.log(itemizedList);
-  console.log("each element of itemizedList");
-  itemizedList.forEach((element) => {
-    console.log(element);
-  });
 
   Promise.all([budgets, budget])
     .then(async (response) => {
