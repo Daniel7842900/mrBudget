@@ -407,8 +407,6 @@ exports.edit = async (req, res) => {
         catIdToCat(itemData, itemizedItem);
         subCatIdToSubCat(itemData, itemizedItem);
 
-        console.log(itemizedItem);
-
         // Add a new obj to the list
         itemizedItems.push(itemizedItem);
       });
