@@ -513,7 +513,7 @@ exports.update = async (req, res) => {
 
   // Retrieve one budget to display on edit page
   const budget = await Finance.findOne(filter);
-  // let budgetData;
+  let budgetData;
 
   // Change the date format to use in URL
   startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");

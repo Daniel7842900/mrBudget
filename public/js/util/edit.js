@@ -122,11 +122,12 @@ let onClickAdd = (
                       text-gray-900
                     "
                   >
-                  <% if(obj.subCategory === "") { %>
-                    <%= obj.category %>
-                  <% } else { %>
-                    <%= obj.subCategory %>
-                  <% } %>
+                  <% if(obj.subCategory === "" || obj.subCategory
+                  === undefined) { obj.category =
+                  _.startCase(obj.category) %> <%= obj.category %>
+                  <% } else { obj.subCategory =
+                  _.startCase(obj.subCategory) %> <%=
+                  obj.subCategory %> <% } %>
                   </td>
                   <td
                     class="
@@ -236,11 +237,12 @@ let onClickRemove = (
                       text-gray-900
                     "
                   >
-                  <% if(obj.subCategory === "") { %>
-                    <%= obj.category %>
-                  <% } else { %>
-                    <%= obj.subCategory %>
-                  <% } %>
+                  <% if(obj.subCategory === "" || obj.subCategory
+                  === undefined) { obj.category =
+                  _.startCase(obj.category) %> <%= obj.category %>
+                  <% } else { obj.subCategory =
+                  _.startCase(obj.subCategory) %> <%=
+                  obj.subCategory %> <% } %>
                   </td>
                   <td
                     class="

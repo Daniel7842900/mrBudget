@@ -138,7 +138,8 @@
                               <td
                                 class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                               >
-                                <% if(obj.subCategory === "") { obj.category =
+                                <% if(obj.subCategory === "" || obj.subCategory
+                                === undefined) { obj.category =
                                 _.startCase(obj.category) %> <%= obj.category %>
                                 <% } else { obj.subCategory =
                                 _.startCase(obj.subCategory) %> <%=
