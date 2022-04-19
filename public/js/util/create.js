@@ -85,9 +85,9 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                 >
                 <% if(obj.subCategory === "" || obj.subCategory
                 === undefined) { obj.category =
-                _.startCase(obj.category) %> <%= obj.category %>
+                _.startCase(obj.category); %> <%= obj.category %>
                 <% } else { obj.subCategory =
-                _.startCase(obj.subCategory) %> <%=
+                _.startCase(obj.subCategory); %> <%=
                 obj.subCategory %> <% } %>
                 </td>
                 <td
@@ -199,9 +199,9 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
             >
             <% if(obj.subCategory === "" || obj.subCategory
             === undefined) { obj.category =
-            _.startCase(obj.category) %> <%= obj.category %>
+            _.startCase(obj.category); %> <%= obj.category %>
             <% } else { obj.subCategory =
-            _.startCase(obj.subCategory) %> <%=
+            _.startCase(obj.subCategory); %> <%=
             obj.subCategory %> <% } %>
             </td>
             <td
