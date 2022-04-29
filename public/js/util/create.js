@@ -28,7 +28,12 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
     // Create a js object for category & amount
     let obj = {};
     let objCat = $("#category").children("option:selected").val();
+    let objCatDisplay = $("#category").children("option:selected").text();
+    console.log(objCatDisplay);
     let objSubCat = $("#sub-category").children("option:selected").val();
+    let objSubCatDisplay = $("#sub-category")
+      .children("option:selected")
+      .text();
     objCat = _.toLower(objCat);
     objSubCat = _.toLower(objSubCat);
     let amount = $("#amount").val();
@@ -51,7 +56,9 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
       return false;
     } else {
       obj.category = _.startCase(objCat);
+      obj.categoryDisplay = objCatDisplay;
       obj.subCategory = _.startCase(objSubCat);
+      obj.subCategoryDisplay = objSubCatDisplay;
       obj.idx = idx;
       obj.amount = amount;
       obj.description = description;
@@ -84,11 +91,9 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                   "
                 >
                 <% if(obj.subCategory === "" || obj.subCategory
-                === undefined) { obj.category =
-                _.startCase(obj.category); %> <%= obj.category %>
-                <% } else { obj.subCategory =
-                _.startCase(obj.subCategory); %> <%=
-                obj.subCategory %> <% } %>
+                === undefined) { %> <%= obj.categoryDisplay %>
+                <% } else {  %> <%=
+                obj.subCategoryDisplay %> <% } %>
                 </td>
                 <td
                 scope="col"
@@ -162,7 +167,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
 // Onclick event for removing an object from the list
 let onClickRemove = (parentElement, targetBtn, event, financeType) => {
   $(parentElement).on(event, targetBtn, function (e) {
-    // Prevent onClick event
+    // Prevent default onClick event
     e.preventDefault();
     if (list.length !== 0) {
       let rIdx = parseInt($(this).attr("id").split("_")[2]);
@@ -184,8 +189,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
         idx--;
 
         html = ejs.render(
-          `<% list.forEach(function(obj) {
-            obj.category = _.startCase(obj.category) %>
+          `<% list.forEach(function(obj) { %>
           <tr>
             <td
               class="
@@ -198,11 +202,9 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
               "
             >
             <% if(obj.subCategory === "" || obj.subCategory
-            === undefined) { obj.category =
-            _.startCase(obj.category); %> <%= obj.category %>
-            <% } else { obj.subCategory =
-            _.startCase(obj.subCategory); %> <%=
-            obj.subCategory %> <% } %>
+            === undefined) {  %> <%= obj.categoryDisplay %>
+            <% } else {  %> <%=
+            obj.subCategoryDisplay %> <% } %>
             </td>
             <td
               class="
@@ -270,17 +272,17 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
 // Onclick event for submiting the list
 let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
   $(targetBtn).on(event, function (e) {
+    e.preventDefault();
     let date = $("#datepicker").val();
-
     let income = incomeExist ? $("#income").val() : null;
 
     list.forEach((obj) => {
+      delete obj.categoryDisplay;
+      delete obj.subCategoryDisplay;
       obj.category = obj.category.trim();
       obj.subCategory = obj.subCategory.trim();
-      console.log(obj);
     });
 
-    e.preventDefault();
     $.ajax({
       url: `/${financeType}/new`,
       type: "POST",
@@ -301,7 +303,6 @@ let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
         // res is data that we get from server side
         //in our case, from controller
         // console.log(res);
-
         // Show success toastr message on current page
         //and redirect after 1 second
         toastr.options.onHidden = function () {
