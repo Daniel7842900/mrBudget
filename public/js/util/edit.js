@@ -5,6 +5,7 @@ const param = Object.fromEntries(urlParam.entries());
 
 let idx = 0;
 let itemizedItemsJSON = JSON.parse(itemizedItems);
+console.log(itemizedItemsJSON);
 let start = param.start;
 let end = param.end;
 
@@ -43,8 +44,8 @@ let onClickAdd = (
   parentElement,
   targetBtn,
   event,
-  financeType,
-  itemizedItemsJSON
+  financeType
+  // itemizedItemsJSON
 ) => {
   $(targetBtn).on(event, function (e) {
     e.preventDefault();
@@ -199,8 +200,8 @@ let onClickRemove = (
   parentElement,
   targetBtn,
   event,
-  financeType,
-  itemizedItemsJSON
+  financeType
+  // itemizedItemsJSON
 ) => {
   $(parentElement).on(event, targetBtn, function (e) {
     e.preventDefault();
@@ -311,20 +312,23 @@ let onClickSubmit = (
   targetBtn,
   event,
   financeType,
-  itemizedItemsJSON,
+  // itemizedItemsJSON,
   incomeExist
 ) => {
   $(targetBtn).on(event, function (e) {
+    e.preventDefault();
     let date = $("#datepicker").val();
     let income = incomeExist ? $("#income").val() : null;
 
     itemizedItemsJSON.forEach((obj) => {
       obj.category = obj.category.trim();
-      obj.subCategory = obj.subCategory.trim();
-      console.log(obj);
+      if (obj.subCategory) {
+        obj.subCategory = obj.subCategory.trim();
+      } else {
+        obj.subCategory = null;
+      }
     });
 
-    e.preventDefault();
     $.ajax({
       url: `/${financeType}/edit`,
       type: "POST",
@@ -345,7 +349,6 @@ let onClickSubmit = (
         // res is data that we get from server side
         //in our case, from controller
         // console.log(res);
-
         // Show success toastr message on current page
         //and redirect after 1 second
         toastr.options.onHidden = function () {
@@ -360,6 +363,7 @@ let onClickSubmit = (
         //error message.
         // TODO research if there is any way to display error
         //message not redirecting
+        toastr.error(jqXHR.responseJSON["message"], "Error", { timeOut: 1000 });
         // window.location.assign("/budget/new");
       },
     });

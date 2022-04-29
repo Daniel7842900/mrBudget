@@ -9,8 +9,8 @@ $(function () {
     "#summary_data",
     "#add_btn",
     "click",
-    financeType,
-    itemizedItemsJSON
+    financeType
+    // itemizedItemsJSON
   );
 
   // Onclick event for removing an object to the list
@@ -18,10 +18,16 @@ $(function () {
     "#summary_data",
     ".remove_btn",
     "click",
-    financeType,
-    itemizedItemsJSON
+    financeType
+    // itemizedItemsJSON
   );
 
   // Onclick event for submiting the list
-  onClickSubmit("#submit_btn", "click", financeType, itemizedItemsJSON, false);
+  onClickSubmit(
+    "#submit_btn",
+    "click",
+    financeType,
+    // itemizedItemsJSON,
+    false
+  );
 });

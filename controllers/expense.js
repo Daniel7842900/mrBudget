@@ -416,9 +416,9 @@ exports.update = async (req, res) => {
   let date = req.body.date,
     list = req.body.list,
     user = req.user;
+
   let itemPromises = [];
   let expensesArr = [];
-
   let dateArr = date.split("-");
   let startDate = dateArr[0].trim(),
     endDate = dateArr[1].trim();
