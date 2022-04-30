@@ -280,7 +280,11 @@ let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
       delete obj.categoryDisplay;
       delete obj.subCategoryDisplay;
       obj.category = obj.category.trim();
-      obj.subCategory = obj.subCategory.trim();
+      if (obj.subCategory) {
+        obj.subCategory = obj.subCategory.trim();
+      } else {
+        obj.subCategory = null;
+      }
     });
 
     $.ajax({

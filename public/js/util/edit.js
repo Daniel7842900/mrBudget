@@ -40,29 +40,24 @@ let onChangeCategory = (sourceElement, event, targetElement) => {
 };
 
 // Onclick event for adding an object to the list
-let onClickAdd = (
-  parentElement,
-  targetBtn,
-  event,
-  financeType
-  // itemizedItemsJSON
-) => {
+let onClickAdd = (parentElement, targetBtn, event, financeType) => {
   $(targetBtn).on(event, function (e) {
     e.preventDefault();
     // Create a js object for category & amount
     let obj = {};
-    let objCatVal = $("#category").children("option:selected").val();
-    let objCatText = $("#category").children("option:selected").text();
-    let objSubCatVal = $("#sub-category").children("option:selected").val();
-    let objSubCatText = $("#sub-category").children("option:selected").text();
-    let displayCat;
-    objCatVal = _.toLower(objCatVal);
-    objSubCatVal = _.toLower(objSubCatVal);
+    let objCat = $("#category").children("option:selected").val();
+    let objCatDisplay = $("#category").children("option:selected").text();
+    let objSubCat = $("#sub-category").children("option:selected").val();
+    let objSubCatDisplay = $("#sub-category")
+      .children("option:selected")
+      .text();
+    objCat = _.toLower(objCat);
+    objSubCat = _.toLower(objSubCat);
     let amount = $("#amount").val();
     let description = $("#description").val().trim();
 
-    console.log("cat: " + objCatText);
-    console.log("sub: " + objSubCatText);
+    console.log("cat: " + objCatDisplay);
+    console.log("sub: " + objSubCatDisplay);
 
     // Change the text to number
     amount = parseFloat(amount);
@@ -83,18 +78,13 @@ let onClickAdd = (
       });
       return false;
     } else {
-      // if (objSubCatText === "") {
-      //   displayCat = objCatText;
-      // } else {
-      //   displayCat = objSubCatText;
-      // }
-
       obj.idx = idx;
-      obj.category = _.startCase(objCatVal);
-      obj.subCategory = _.startCase(objSubCatVal);
+      obj.category = _.startCase(objCat);
+      obj.categoryDisplay = objCatDisplay;
+      obj.subCategory = _.startCase(objSubCat);
+      obj.subCategoryDisplay = objSubCatDisplay;
       obj.amount = amount;
       obj.description = description;
-      // obj.displayCat = displayCat;
 
       // Push the object into the list
       itemizedItemsJSON.push(obj);
@@ -124,11 +114,9 @@ let onClickAdd = (
                     "
                   >
                   <% if(obj.subCategory === "" || obj.subCategory
-                  === undefined) { obj.category =
-                  _.startCase(obj.category); %> <%= obj.category %>
-                  <% } else { obj.subCategory =
-                  _.startCase(obj.subCategory); %> <%=
-                  obj.subCategory %> <% } %>
+                  === undefined) { %> <%= obj.categoryDisplay %>
+                  <% } else { %> <%=
+                  obj.subCategoryDisplay %> <% } %>
                   </td>
                   <td
                     class="
@@ -196,13 +184,7 @@ let onClickAdd = (
 };
 
 // Onclick event for removing an object from the list
-let onClickRemove = (
-  parentElement,
-  targetBtn,
-  event,
-  financeType
-  // itemizedItemsJSON
-) => {
+let onClickRemove = (parentElement, targetBtn, event, financeType) => {
   $(parentElement).on(event, targetBtn, function (e) {
     e.preventDefault();
     if (itemizedItemsJSON.length !== 0) {
@@ -239,11 +221,9 @@ let onClickRemove = (
                     "
                   >
                   <% if(obj.subCategory === "" || obj.subCategory
-                  === undefined) { obj.category =
-                  _.startCase(obj.category); %> <%= obj.category %>
-                  <% } else { obj.subCategory =
-                  _.startCase(obj.subCategory); %> <%=
-                  obj.subCategory %> <% } %>
+                  === undefined) { %> <%= obj.categoryDisplay %>
+                  <% } else { %> <%=
+                  obj.subCategoryDisplay %> <% } %>
                   </td>
                   <td
                     class="
@@ -308,19 +288,15 @@ let onClickRemove = (
   });
 };
 
-let onClickSubmit = (
-  targetBtn,
-  event,
-  financeType,
-  // itemizedItemsJSON,
-  incomeExist
-) => {
+let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
   $(targetBtn).on(event, function (e) {
     e.preventDefault();
     let date = $("#datepicker").val();
     let income = incomeExist ? $("#income").val() : null;
 
     itemizedItemsJSON.forEach((obj) => {
+      delete obj.categoryDisplay;
+      delete obj.subCategoryDisplay;
       obj.category = obj.category.trim();
       if (obj.subCategory) {
         obj.subCategory = obj.subCategory.trim();
