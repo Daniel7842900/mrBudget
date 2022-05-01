@@ -1,5 +1,113 @@
 const _ = require("lodash");
 
+const subCategory = {
+  food: {
+    grocery: "Groceries",
+    coffee: "Coffee Shops",
+    fast: "Fast Food",
+    restaurant: "Restaurants",
+    "take out": "Take Out",
+    delivery: "Delivery",
+    alcohol: "Alcohol",
+  },
+  housing: {
+    rent: "Rent",
+    mortgage: "Mortgage",
+    "property insurance": "Property Insurance",
+    "maintenance good": "Maintenance Goods",
+    "maintenance service": "Maintenance Service",
+  },
+  shopping: {
+    clothing: "Clothing",
+    book: "Books",
+    electronic: "Electronics & Software",
+    hobby: "Hobbies",
+    "sporting good": "Sporting Goods",
+  },
+  "personal care": {
+    laundry: "Laundry",
+    hair: "Hair",
+    massage: "Spa & Massage",
+  },
+  health: {
+    dentist: "Dentist",
+    doctor: "Doctor",
+    eye: "Eye Care",
+    pharmacy: "Pharmacy",
+    "health insurance": "Health insurance",
+    gym: "Gym",
+    sports: "Sports",
+  },
+  fee: {
+    "service fee": "Service Fee",
+    late: "Late Fee",
+    finance: "Finance Fee",
+    atm: "ATM Fee",
+    bank: "Bank Fee",
+    commission: "Commissions",
+  },
+  utility: {
+    television: "Television",
+    phone: "Phone bill",
+    internet: "Internet",
+    gas: "Gas",
+    electricity: "Electricity",
+    other: "Others",
+  },
+  investment: {
+    deposit: "Deposit",
+    withdrawal: "Withdrawal",
+    dividend: "Dividends",
+    cap: "Capital Gains",
+    buy: "Buy",
+    sell: "Sell",
+  },
+  entertainment: {
+    art: "Arts",
+    music: "Music",
+    movie: "Movies & DVDs",
+    newspaper: "Newspaper & Magazines",
+  },
+  travel: {
+    air: "Air Travel",
+    hotel: "Hotel",
+    rental: "Rental Car & Taxi",
+    vacation: "Vacation",
+  },
+  transportation: {
+    gasoline: "Gas & Fuel",
+    parking: "Parking",
+    service: "Service",
+    parts: "Auto Parts",
+    payment: "Auto Payment",
+    "auto insurance": "Auto insurance",
+    transit: "Transit",
+    taxi: "Uber & Taxi",
+  },
+  gift: {
+    gift: "Gift",
+    charity: "Charity",
+  },
+  "business service": {
+    advertising: "Advertising",
+    "office supply": "Office Supplies",
+    printing: "Printing",
+    shipping: "Shipping",
+    legal: "Legal",
+  },
+  tax: {
+    federal: "Federal Tax",
+    state: "State Tax",
+    local: "Local Tax",
+    sales: "Sales Tax",
+    property: "Property Tax",
+  },
+};
+
+const getSubCatDisplay = (objCat, objSubCat) => {
+  return subCategory[objCat][objSubCat];
+};
+
 const convertSubCatToId = (obj) => {
   switch (_.toLower(obj.subCategory)) {
     case _.toLower("grocery"):
@@ -525,6 +633,7 @@ const convertSubCatIdToCat = (dbObj, newObj) => {
 };
 
 module.exports = {
+  getSubCatDisplay: getSubCatDisplay,
   subCatToId: convertSubCatToId,
   subCatIdToSubCat: convertSubCatIdToCat,
 };

@@ -20,7 +20,16 @@ itemizedItemsJSON.forEach((itemObj) => {
   // Assign idx to already existing items
   itemObj.idx = idx;
   idx++;
+  itemObj.categoryDisplay = getCatDisplay(itemObj.category);
+  if (_.has(itemObj, `subCategory`)) {
+    itemObj.subCategoryDisplay = getSubCatDisplay(
+      itemObj.category,
+      itemObj.subCategory
+    );
+  }
 });
+
+console.log(itemizedItemsJSON);
 
 let onChangeCategory = (sourceElement, event, targetElement) => {
   $(sourceElement).on(event, function (e) {
@@ -45,19 +54,14 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
     e.preventDefault();
     // Create a js object for category & amount
     let obj = {};
-    let objCat = $("#category").children("option:selected").val();
-    let objCatDisplay = $("#category").children("option:selected").text();
-    let objSubCat = $("#sub-category").children("option:selected").val();
-    let objSubCatDisplay = $("#sub-category")
-      .children("option:selected")
-      .text();
-    objCat = _.toLower(objCat);
-    objSubCat = _.toLower(objSubCat);
-    let amount = $("#amount").val();
-    let description = $("#description").val().trim();
-
-    console.log("cat: " + objCatDisplay);
-    console.log("sub: " + objSubCatDisplay);
+    let objCat = _.toLower($("#category").children("option:selected").val()),
+      objSubCat = _.toLower(
+        $("#sub-category").children("option:selected").val()
+      ),
+      amount = $("#amount").val(),
+      description = $("#description").val().trim();
+    let objCatDisplay = getCatDisplay(objCat);
+    let objSubCatDisplay = getSubCatDisplay(objCat, objSubCat);
 
     // Change the text to number
     amount = parseFloat(amount);
@@ -96,6 +100,10 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
 
       // Increment the index
       idx++;
+
+      itemizedItemsJSON.forEach((element) => {
+        console.log(element);
+      });
 
       // Render table rows using the list that contains js objects.
       //this is done in client-side because we can't pass the list

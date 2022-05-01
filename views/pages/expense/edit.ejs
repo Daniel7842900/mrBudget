@@ -103,7 +103,7 @@
                         <option value="housing">Housing</option>
                         <option value="shopping">Shopping</option>
                         <option value="personal care">Personal Care</option>
-                        <option value="health">Health & fitness</option>
+                        <option value="health">Health & Fitness</option>
                         <option value="fee">Fees & Charges</option>
                         <option value="utility">Bills & Utility</option>
                         <option value="investment">Investment</option>
@@ -242,11 +242,13 @@
                                   class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                                 >
                                   <% if(obj.subCategory === "" ||
-                                  obj.subCategory === undefined) { obj.category
-                                  = _.startCase(obj.category); %> <%=
-                                  obj.category %> <% } else { obj.subCategory =
-                                  _.startCase(obj.subCategory); %> <%=
-                                  obj.subCategory %> <% } %>
+                                  obj.subCategory === undefined) { let
+                                  objCatDisplay = getCatDisplay(obj.category);
+                                  %> <%= objCatDisplay %> <% } else { let
+                                  objSubCatDisplay =
+                                  getSubCatDisplay(obj.category,
+                                  obj.subCategory) %> <%= objSubCatDisplay %> <%
+                                  } %>
                                 </td>
                                 <td
                                   class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"

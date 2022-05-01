@@ -139,11 +139,12 @@
                                 class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                               >
                                 <% if(obj.subCategory === "" || obj.subCategory
-                                === undefined) { obj.category =
-                                _.startCase(obj.category); %> <%= obj.category
-                                %> <% } else { obj.subCategory =
-                                _.startCase(obj.subCategory); %> <%=
-                                obj.subCategory %> <% } %>
+                                === undefined) { let objCatDisplay =
+                                getCatDisplay(obj.category); %> <%=
+                                objCatDisplay %> <% } else { let
+                                objSubCatDisplay =
+                                getSubCatDisplay(obj.category, obj.subCategory)
+                                %> <%= objSubCatDisplay %> <% } %>
                               </td>
                               <td
                                 class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"

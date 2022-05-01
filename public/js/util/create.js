@@ -27,17 +27,14 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
 
     // Create a js object for category & amount
     let obj = {};
-    let objCat = $("#category").children("option:selected").val();
-    let objCatDisplay = $("#category").children("option:selected").text();
-    console.log(objCatDisplay);
-    let objSubCat = $("#sub-category").children("option:selected").val();
-    let objSubCatDisplay = $("#sub-category")
-      .children("option:selected")
-      .text();
-    objCat = _.toLower(objCat);
-    objSubCat = _.toLower(objSubCat);
-    let amount = $("#amount").val();
-    let description = $("#description").val().trim();
+    let objCat = _.toLower($("#category").children("option:selected").val()),
+      objSubCat = _.toLower(
+        $("#sub-category").children("option:selected").val()
+      ),
+      amount = $("#amount").val(),
+      description = $("#description").val().trim();
+    let objCatDisplay = getCatDisplay(objCat);
+    let objSubCatDisplay = getSubCatDisplay(objCat, objSubCat);
 
     // Change the text to number
     amount = parseFloat(amount);
@@ -55,6 +52,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
       });
       return false;
     } else {
+      // Add properties into obj
       obj.category = _.startCase(objCat);
       obj.categoryDisplay = objCatDisplay;
       obj.subCategory = _.startCase(objSubCat);

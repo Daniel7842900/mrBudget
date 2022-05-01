@@ -1,3 +1,21 @@
+const category = {
+  food: "Food & Dining",
+  housing: "Housing",
+  shopping: "Shopping",
+  "personal care": "Personal Care",
+  health: "Health & Fitness",
+  fee: "Fees & Charges",
+  utility: "Bills & Utility",
+  investment: "Investment",
+  entertainment: "Entertainment",
+  travel: "Travel",
+  transportation: "Transportation",
+  gift: "Gifts & Donations",
+  "business service": "Business Services",
+  tax: "Taxes",
+  etc: "Etc",
+};
+
 const subCategory = {
   food: {
     grocery: "Groceries",
@@ -100,4 +118,16 @@ const subCategory = {
     sales: "Sales Tax",
     property: "Property Tax",
   },
+  etc: null,
+};
+
+const getCatDisplay = (objCat) => {
+  return category[objCat];
+};
+
+const getSubCatDisplay = (objCat, objSubCat) => {
+  if (subCategory[objCat] != null) {
+    return subCategory[objCat][objSubCat];
+  }
+  return null;
 };

@@ -1,7 +1,28 @@
 const _ = require("lodash");
 
+const category = {
+  food: "Food & Dining",
+  housing: "Housing",
+  shopping: "Shopping",
+  "personal care": "Personal Care",
+  health: "Health & Fitness",
+  fee: "Fees & Charges",
+  utility: "Bills & Utility",
+  investment: "Investment",
+  entertainment: "Entertainment",
+  travel: "Travel",
+  transportation: "Transportation",
+  gift: "Gifts & Donations",
+  "business service": "Business Services",
+  tax: "Taxes",
+  etc: "Etc",
+};
+
+const getCatDisplay = (objCat) => {
+  return category[objCat];
+};
+
 const convertCatToCatId = (obj) => {
-  // delete obj.idx;
   switch (_.toLower(obj.category)) {
     case _.toLower("income"):
       obj.categoryId = 1;
@@ -161,6 +182,7 @@ const convertCatIdToCat = (dbObj, newObj) => {
 };
 
 module.exports = {
+  getCatDisplay: getCatDisplay,
   catToCatId: convertCatToCatId,
   catIdToCat: convertCatIdToCat,
 };

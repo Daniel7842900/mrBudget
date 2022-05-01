@@ -5,8 +5,16 @@ const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
 const { Op } = require("sequelize");
-const { catToCatId, catIdToCat } = require("./util/convertCategories");
-const { subCatToId, subCatIdToSubCat } = require("./util/convertSubcategories");
+const {
+  catToCatId,
+  catIdToCat,
+  getCatDisplay,
+} = require("./util/convertCategories");
+const {
+  subCatToId,
+  subCatIdToSubCat,
+  getSubCatDisplay,
+} = require("./util/convertSubcategories");
 
 // Controller for displaying a new expense page
 exports.create = async (req, res) => {
@@ -296,6 +304,8 @@ exports.findOne = async (req, res) => {
           itemizedItems: itemizedItems,
           startDate: startDate,
           endDate: endDate,
+          getCatDisplay: getCatDisplay,
+          getSubCatDisplay: getSubCatDisplay,
           error: req.flash("expense_err"),
         });
       })
@@ -308,6 +318,8 @@ exports.findOne = async (req, res) => {
           itemizedItems: itemizedItems,
           startDate: startDate,
           endDate: endDate,
+          getCatDisplay: getCatDisplay,
+          getSubCatDisplay: getSubCatDisplay,
           error: req.flash("expense_err"),
         });
       });
@@ -393,6 +405,8 @@ exports.edit = async (req, res) => {
         itemizedItems: itemizedItems,
         startDate: startDate,
         endDate: endDate,
+        getCatDisplay: getCatDisplay,
+        getSubCatDisplay: getSubCatDisplay,
         error: req.flash("expense_err"),
         err_message: req.flash("err_message"),
       });
@@ -405,6 +419,8 @@ exports.edit = async (req, res) => {
         itemizedItems: itemizedItems,
         startDate: startDate,
         endDate: endDate,
+        getCatDisplay: getCatDisplay,
+        getSubCatDisplay: getSubCatDisplay,
         error: req.flash("expense_err"),
         err_message: req.flash("err_message"),
       });
