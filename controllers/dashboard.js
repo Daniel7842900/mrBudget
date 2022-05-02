@@ -10,7 +10,6 @@ const { catIdToCat } = require("./util/convertCategories");
 
 // Controller for getting all finance information
 exports.findAll = async (req, res) => {
-  console.log("this is dashboard findAll controller");
   let user = req.user;
   let monthExpItemArr = [];
   let monthBudItemArr = [];
@@ -41,11 +40,6 @@ exports.findAll = async (req, res) => {
 
   // Get the end date of the current week
   const endDateOfWeek = parsedLocalTime2.endOf("week").format("YYYY-MM-DD");
-
-  console.log("start date of month: " + startDateOfMonth);
-  console.log("end date of month: " + endDateOfMonth);
-  console.log("start date of week: " + startDateOfWeek);
-  console.log("end date of week: " + endDateOfWeek);
 
   // Find all expense items in the current month
   const monthExpenseItems = await Item.findAll({
@@ -134,28 +128,24 @@ exports.findAll = async (req, res) => {
       // Re-format instances to data format for month expense items
       monthExpItemInsts.forEach((monthExpItemInst) => {
         let monthExpItemData = monthExpItemInst.get();
-        // console.log(monthExpItemData);
         monthExpItemArr.push(monthExpItemData);
       });
 
       // Re-format instances to data format for month budget items
       monthBudItemInsts.forEach((budgetItemInst) => {
         let monthBudItemData = budgetItemInst.get();
-        // console.log(monthBudItemData);
         monthBudItemArr.push(monthBudItemData);
       });
 
       // Re-format instances to data format for week expense items
       weekExpItemInsts.forEach((weekExpItemInst) => {
         let weekExpItemData = weekExpItemInst.get();
-        // console.log(weekExpItemData);
         weekExpItemArr.push(weekExpItemData);
       });
 
       // Re-format instances to data format for week budget items
       weekBudItemInsts.forEach((weekBudgetItemInst) => {
         let weekBudItemData = weekBudgetItemInst.get();
-        // console.log(weekBudItemData);
         weekBudItemArr.push(weekBudItemData);
       });
 
@@ -182,22 +172,26 @@ exports.findAll = async (req, res) => {
         // Add each amount to monthly expense total
         monthExpTotal += parseFloat(monthExpItem.amount);
 
+        let newMonthExpItem = {};
+        newMonthExpItem.amount = monthExpItem.amount;
+
         // Convert category id to category
-        // catIdToCat(monthExpItem);
+        catIdToCat(monthExpItem, newMonthExpItem);
 
         // Add formatted item object to a new array
-        newMonthExpItemArr.push(monthExpItem);
+        newMonthExpItemArr.push(newMonthExpItem);
       });
-      console.log("month expense total except income" + monthExpTotal);
-      console.log(monthExpTotal);
 
       // Re-format the month budget objects and put them into a new array
       monthBudItemArr.forEach((monthBudItem) => {
+        let newMonthBudItem = {};
+        newMonthBudItem.amount = monthBudItem.amount;
+
         // Convert category id to category
-        // catIdToCat(monthBudItem);
+        catIdToCat(monthBudItem, newMonthBudItem);
 
         // Add formatted item object to a new array
-        newMonthBudItemArr.push(monthBudItem);
+        newMonthBudItemArr.push(newMonthBudItem);
       });
 
       // Get monthly budget income and budget total except "income"
@@ -208,12 +202,9 @@ exports.findAll = async (req, res) => {
           monthBudTotal += newBudItem.amount;
         }
       });
-      console.log("month budget total except income" + monthBudTotal);
-      console.log("month budget income: " + monthBudIncome);
 
       // Create a new associative array with categories and summed up amount on each category for monthly expense
       newMonthExpItemArr.forEach((monthExpNewItem) => {
-        // console.log(monthExpNewItem);
         const cat = _.upperFirst(monthExpNewItem.category);
         const amount = monthExpNewItem.amount;
 
@@ -229,7 +220,6 @@ exports.findAll = async (req, res) => {
 
       //  Create a new associative array with categories and summed up amount on each category for monthly budget
       newMonthBudItemArr.forEach((monthBudNewItem) => {
-        // console.log(monthBudNewItem);
         const cat = _.upperFirst(monthBudNewItem.category);
         const amount = monthBudNewItem.amount;
 
@@ -250,21 +240,26 @@ exports.findAll = async (req, res) => {
         // Add each amount to monthly expense total
         weekExpTotal += parseFloat(weekExpItem.amount);
 
+        let newWeekExpItem = {};
+        newWeekExpItem.amount = weekExpItem.amount;
+
         // Convert category id to category
-        // catIdToCat(weekExpItem);
+        catIdToCat(weekExpItem, newWeekExpItem);
 
         // Add formatted item object to a new array
-        newWeekExpItemArr.push(weekExpItem);
+        newWeekExpItemArr.push(newWeekExpItem);
       });
-      console.log("week expense total except income: " + weekExpTotal);
 
       // Re-format the month budget objects and put them into a new array
       weekBudItemArr.forEach((weekBudItem) => {
+        let newWeekBudItem = {};
+        newWeekBudItem.amount = weekBudItem.amount;
+
         // Convert category id to category
-        // catIdToCat(weekBudItem);
+        catIdToCat(weekBudItem, newWeekBudItem);
 
         // Add formatted item object to a new array
-        newWeekBudItemArr.push(weekBudItem);
+        newWeekBudItemArr.push(newWeekBudItem);
       });
 
       // Get monthly budget income and budget total except "income"
@@ -275,12 +270,9 @@ exports.findAll = async (req, res) => {
           weekBudTotal += newBudItem.amount;
         }
       });
-      console.log("week budget total except income" + weekBudTotal);
-      console.log("week budget income: " + weekBudIncome);
 
       // Create a new associative array with categories and summed up amount on each category for monthly expense
       newWeekExpItemArr.forEach((weekExpNewItem) => {
-        // console.log(weekExpNewItem);
         const cat = _.upperFirst(weekExpNewItem.category);
         const amount = weekExpNewItem.amount;
 
@@ -296,7 +288,6 @@ exports.findAll = async (req, res) => {
 
       //  Create a new associative array with categories and summed up amount on each category for monthly budget
       newWeekBudItemArr.forEach((weekBudNewItem) => {
-        // console.log(weekBudNewItem);
         const cat = _.upperFirst(weekBudNewItem.category);
         const amount = weekBudNewItem.amount;
 
