@@ -84,12 +84,14 @@ const authRouter = require("./routes/auth.js");
 const budgetRouter = require("./routes/budget.js");
 const expenseRouter = require("./routes/expense.js");
 const dashboardRouter = require("./routes/dashboard.js");
+const reportRouter = require("./routes/report.js");
 
 // Call routers
 authRouter.loadRouter(app, passport);
 budgetRouter.loadRouter(app);
 expenseRouter.loadRouter(app);
 dashboardRouter.loadRouter(app);
+reportRouter.loadRouter(app);
 
 app.get("/", function (req, res) {
   const viewPath = req.isAuthenticated() ? "/dashboard" : "/login";
