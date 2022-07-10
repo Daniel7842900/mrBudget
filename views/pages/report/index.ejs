@@ -17,6 +17,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
+    <script src="/js/ejs.min.js"></script>
   </head>
   <body>
     <div class="bg-cyan-600 h-screen">
@@ -43,7 +44,7 @@
                 <div
                   class="mt-2 grid grid-cols-1 gap-5 items-start sm:grid-cols-2 lg:grid-cols-3"
                 >
-                  <!-- Card -->
+                  <!-- Cashflow -->
                   <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
@@ -86,7 +87,7 @@
                     </div>
                   </div>
 
-                  <!-- More items... -->
+                  <!-- Expense -->
                   <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
@@ -119,7 +120,7 @@
                       <div class="text-sm">
                         <a
                           id="expense-expand"
-                          class="font-medium text-cyan-700 hover:text-cyan-900"
+                          class="font-medium text-cyan-700 hover:text-cyan-900 cursor-pointer"
                         >
                           View all
                         </a>
@@ -127,7 +128,7 @@
                     </div>
                   </div>
 
-                  <!-- more item -->
+                  <!-- Income -->
                   <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
@@ -160,7 +161,7 @@
                       <div class="text-sm">
                         <a
                           id="income-expand"
-                          class="font-medium text-cyan-700 hover:text-cyan-900"
+                          class="font-medium text-cyan-700 hover:text-cyan-900 cursor-pointer"
                         >
                           View all
                         </a>
@@ -173,29 +174,80 @@
               <div
                 class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 gap-5 sm:grid-cols-1 lg:grid-cols-2"
               >
-                <!-- expense by categories -->
+                <!-- Expense by categories -->
                 <div class="mt-2">
                   <!-- Card -->
                   <h2 class="text-lg mt-5 leading-6 font-medium text-gray-900">
-                    Expense By Category
+                    By Category
                   </h2>
                   <div class="mt-2 bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
-                        <div class="flex-shrink-0">
+                        <!-- <div class="flex-shrink-0">
                           <i class="far fa-money-bill-alt fa-2x"></i>
-                        </div>
+                        </div> -->
                         <div class="ml-5 w-0 flex-1">
-                          <dl>
+                          <dl id="expense-category-data">
                             <dt
-                              class="text-sm font-medium text-gray-500 truncate"
+                              class="text-md font-medium text-gray-500 truncate mb-3"
                             >
-                              <span>Cash Flow</span>
+                              <span>Expense</span>
+                              <span class="float-right">
+                                <div
+                                  id="expense-category-filter"
+                                  class="border-2 border-gray-500 bg-gray-50 text-gray-500 hover:border-cyan-700 text-sm hover:bg-cyan-50 py-1 px-2 rounded-lg"
+                                >
+                                  <% let thisYear = new Date().getFullYear(); %>
+                                  <div class="hover:text-cyan-700">
+                                    <span id="expense-category-selected-year"
+                                      ><%= thisYear;%></span
+                                    >
+                                    <i class="fas fa-caret-down"></i>
+                                  </div>
+                                </div>
+                                <div
+                                  id="expense-category-options"
+                                  class="border-2 rounded-lg border-gray-500 text-gray-500 text-sm text-center hidden"
+                                >
+                                  <ul>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50"
+                                    >
+                                      <%= thisYear-1;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear-2;%>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </span>
                             </dt>
                             <dd>
                               <div class="text-lg font-medium text-gray-900">
-                                <span>Total</span>
-                                <span class="float-right">$30,659.45</span>
+                                <% if(curYrExpenseByCatResult.length == 0) { %>
+                                <div class="text-center">
+                                  <span>Not Available!</span>
+                                </div>
+                                <% } else { %>
+                                <div id="expense-category-detail">
+                                  <span
+                                    ><%= curYrExpenseByCatResult[0]["category"]
+                                    %></span
+                                  >
+                                  <span class="float-right"
+                                    >$<%=
+                                    _.round(curYrExpenseByCatResult[0]["total"],2)
+                                    %></span
+                                  >
+                                </div>
+                                <% } %>
                               </div>
                             </dd>
                           </dl>
@@ -205,7 +257,7 @@
                     <div class="bg-gray-50 px-5 py-3">
                       <div class="text-sm">
                         <a
-                          href="#"
+                          id="expense-category-expand"
                           class="font-medium text-cyan-700 hover:text-cyan-900"
                         >
                           View all
@@ -215,28 +267,79 @@
                   </div>
                 </div>
 
-                <div class="mt-2">
+                <!-- Budget by categories -->
+                <div class="mt-2 2xl:mt-3 xl:mt-3 lg:mt-3">
                   <!-- Card -->
-                  <h2 class="text-lg mt-5 leading-6 font-medium text-gray-900">
-                    Budget By Category
-                  </h2>
+                  <h2
+                    class="text-lg mt-5 2xl:mt-12 xl:mt-12 lg:mt-12 leading-6 font-medium text-gray-900"
+                  ></h2>
                   <div class="mt-2 bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
-                        <div class="flex-shrink-0">
+                        <!-- <div class="flex-shrink-0">
                           <i class="far fa-money-bill-alt fa-2x"></i>
-                        </div>
+                        </div> -->
                         <div class="ml-5 w-0 flex-1">
-                          <dl>
+                          <dl id="budget-category-data">
                             <dt
-                              class="text-sm font-medium text-gray-500 truncate"
+                              class="text-md font-medium text-gray-500 truncate mb-3"
                             >
-                              <span>Cash Flow</span>
+                              <span>Budget</span>
+                              <span class="float-right">
+                                <div
+                                  id="budget-category-filter"
+                                  class="border-2 border-gray-500 bg-gray-50 text-gray-500 hover:border-cyan-700 text-sm hover:bg-cyan-50 py-1 px-2 rounded-lg"
+                                >
+                                  <div class="hover:text-cyan-700">
+                                    <span id="budget-category-selected-year"
+                                      ><%= thisYear;%></span
+                                    >
+                                    <i class="fas fa-caret-down"></i>
+                                  </div>
+                                </div>
+                                <div
+                                  id="budget-category-options"
+                                  class="border-2 rounded-lg border-gray-500 text-gray-500 text-sm text-center hidden"
+                                >
+                                  <ul>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50"
+                                    >
+                                      <%= thisYear-1;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear-2;%>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </span>
                             </dt>
                             <dd>
                               <div class="text-lg font-medium text-gray-900">
-                                <span>Total</span>
-                                <span class="float-right">$30,659.45</span>
+                                <% if(curYrBudgetByCatResult.length == 0) { %>
+                                <div class="text-center">
+                                  <span>Not Available!</span>
+                                </div>
+                                <% } else { %>
+                                <div id="budget-category-detail">
+                                  <span
+                                    ><%= curYrBudgetByCatResult[0]["category"]
+                                    %></span
+                                  >
+                                  <span class="float-right"
+                                    >$<%=
+                                    _.round(curYrBudgetByCatResult[0]["total"],2)
+                                    %></span
+                                  >
+                                </div>
+                                <% } %>
                               </div>
                             </dd>
                           </dl>
@@ -246,7 +349,7 @@
                     <div class="bg-gray-50 px-5 py-3">
                       <div class="text-sm">
                         <a
-                          href="#"
+                          id="budget-category-expand"
                           class="font-medium text-cyan-700 hover:text-cyan-900"
                         >
                           View all
@@ -356,6 +459,12 @@
       const curYearIncomeResult = `<%- JSON.stringify(curYearIncomeResult); %>`;
       const curYearExpenseResult = `<%- JSON.stringify(curYearExpenseResult); %>`;
       const curYearCashFlowResult = `<%- JSON.stringify(curYearCashFlowResult); %>`;
+      const curYrExpenseByCatResult = `<%- JSON.stringify(curYrExpenseByCatResult); %>`;
+      const oneYrExpenseByCatResult = `<%- JSON.stringify(oneYrExpenseByCatResult); %>`;
+      const twoYrExpenseByCatResult = `<%- JSON.stringify(twoYrExpenseByCatResult); %>`;
+      const curYrBudgetByCatResult = `<%- JSON.stringify(curYrBudgetByCatResult); %>`;
+      const oneYrBudgetByCatResult = `<%- JSON.stringify(oneYrBudgetByCatResult); %>`;
+      const twoYrBudgetByCatResult = `<%- JSON.stringify(twoYrBudgetByCatResult); %>`;
     </script>
     <script src="/js/util/overview.js"></script>
     <script src="/js/report/overview.js"></script>

@@ -7,7 +7,6 @@ let end = param.end;
 
 let onClickShow = (targetBtn, event, modal) => {
   $(targetBtn).on(event, function () {
-    console.log("hello");
     modal.removeClass("hidden");
   });
 };

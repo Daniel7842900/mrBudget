@@ -4,7 +4,7 @@ const Finance = db.finance;
 const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
-const { Op } = require("sequelize");
+const { Op, QueryTypes } = require("sequelize");
 const { sequelize } = require("../models");
 const { catIdToCat } = require("./util/convertCategories");
 
@@ -12,6 +12,19 @@ exports.findAll = async (req, res) => {
   let user = req.user;
   const budgetTypeId = 1;
   const expenseTypeId = 2;
+  let curYear = moment().year();
+  let curYrExpenseByCat = [];
+  let oneYrExpenseByCat = [];
+  let twoYrExpenseByCat = [];
+  let curYrBudgetByCat = [];
+  let oneYrBudgetByCat = [];
+  let twoYrBudgetByCat = [];
+  let curYrExpenseBySubCat = [];
+  let oneYrExpenseBySubCat = [];
+  let twoYrExpenseBySubCat = [];
+  let curYrBudgetBySubCat = [];
+  let oneYrBudgetBySubCat = [];
+  let twoYrBudgetBySubCat = [];
   let curYearIncomeResult = new Map([
     [1, "N/A"],
     [2, "N/A"],
@@ -135,12 +148,110 @@ exports.findAll = async (req, res) => {
     },
   });
 
-  Promise.all([totalIncome, curYearIncomes, totalExpense, curYearExpenses])
+  // Get the sum of each category for expenses within 3 years
+  const expenseByCat = await sequelize.query(
+    `
+    SELECT sum(i.amount) AS total, c.type AS category, YEAR(f.startDate) AS year FROM items i
+    JOIN finances f
+    ON i.financeId = f.id
+    LEFT JOIN categories c
+    ON i.categoryId = c.id
+    where f.userId = ?
+    AND f.financeTypeId = ?
+    AND YEAR(f.startDate) between YEAR(SYSDATE())-2 AND YEAR(SYSDATE())
+    GROUP BY i.categoryId, YEAR(f.startDate)
+    ORDER BY YEAR(f.startDate) DESC, SUM(i.amount) DESC;`,
+    {
+      replacements: [user.id, expenseTypeId],
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  // Get the sum of each category for budgets within 3 years
+  const budgetByCat = await sequelize.query(
+    `
+    SELECT sum(i.amount) AS total, c.type AS category, YEAR(f.startDate) AS year FROM items i
+    JOIN finances f
+    ON i.financeId = f.id
+    LEFT JOIN categories c
+    ON i.categoryId = c.id
+    where f.userId = ?
+    AND f.financeTypeId = ?
+    AND i.categoryId <> ?
+    AND YEAR(f.startDate) between YEAR(SYSDATE())-2 AND YEAR(SYSDATE())
+    GROUP BY i.categoryId, YEAR(f.startDate)
+    ORDER BY YEAR(f.startDate) DESC, SUM(i.amount) DESC;`,
+    {
+      replacements: [user.id, budgetTypeId, "1"],
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  // Get the sum of each category for expenses within 3 years
+  const expenseBySubCat = await sequelize.query(
+    `
+      SELECT sum(i.amount) AS total, sc.type AS subcategory, YEAR(f.startDate) AS year FROM items i
+      JOIN finances f
+      ON i.financeId = f.id
+      LEFT JOIN sub_categories sc
+      ON i.subCategoryId = sc.id
+      where f.userId = ?
+      AND f.financeTypeId = ?
+      AND i.subCategoryId is not null
+      AND YEAR(f.startDate) between YEAR(SYSDATE())-2 AND YEAR(SYSDATE())
+      GROUP BY i.subCategoryId, YEAR(f.startDate)
+      ORDER BY YEAR(f.startDate) DESC, SUM(i.amount) DESC;`,
+    {
+      replacements: [user.id, expenseTypeId],
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  // Get the sum of each category for budgets within 3 years
+  const budgetBySubCat = await sequelize.query(
+    `
+      SELECT sum(i.amount) AS total, sc.type AS subcategory, YEAR(f.startDate) AS year FROM items i
+      JOIN finances f
+      ON i.financeId = f.id
+      LEFT JOIN sub_categories sc
+      ON i.subCategoryId = sc.id
+      where f.userId = ?
+      AND f.financeTypeId = ?
+      AND i.subCategoryId is not null
+      AND YEAR(f.startDate) between YEAR(SYSDATE())-2 AND YEAR(SYSDATE())
+      GROUP BY i.subCategoryId, YEAR(f.startDate)
+      ORDER BY YEAR(f.startDate) DESC, SUM(i.amount) DESC;`,
+    {
+      replacements: [user.id, budgetTypeId],
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  // console.log(expenseByCat);
+  // console.log(budgetByCat);
+
+  Promise.all([
+    totalIncome,
+    curYearIncomes,
+    totalExpense,
+    curYearExpenses,
+    expenseByCat,
+    budgetByCat,
+    expenseBySubCat,
+    budgetBySubCat,
+  ])
     .then((response) => {
       totalIncomeInsts = response[0];
       curYearIncomesInsts = response[1];
       totalExpenseInsts = response[2];
       curYearExpensesInsts = response[3];
+      expenseByCatInsts = response[4];
+      budgetByCatInsts = response[5];
+      expenseBySubCatInsts = response[6];
+      budgetBySubCatInsts = response[7];
+
+      console.log(expenseByCat);
+      console.log(budgetByCat);
 
       // Re-format Objects
       const curYearIncomesStr = JSON.stringify(curYearIncomes, null, 2);
@@ -228,6 +339,99 @@ exports.findAll = async (req, res) => {
       curYearExpenseResult = Object.fromEntries(curYearExpenseResult);
       curYearCashFlowResult = Object.fromEntries(curYearCashFlowResult);
 
+      // Split the array for expense by category into 3 years - current, a year, 2 years ago
+      try {
+        let expCatIdx = 0;
+        while (expenseByCat.length != 0 && expCatIdx < expenseByCat.length) {
+          if (expenseByCat[expCatIdx]["year"] == curYear) {
+            curYrExpenseByCat.push(expenseByCat[expCatIdx]);
+          } else if (expenseByCat[expCatIdx]["year"] == curYear - 1) {
+            oneYrExpenseByCat.push(expenseByCat[expCatIdx]);
+          } else if (expenseByCat[expCatIdx]["year"] == curYear - 2) {
+            twoYrExpenseByCat.push(expenseByCat[expCatIdx]);
+          }
+          expCatIdx++;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log(curYrExpenseByCat);
+
+      // Split the array for expense by category into 3 years - current, a year, 2 years ago
+      try {
+        let budCatIdx = 0;
+        while (budgetByCat.length != 0 && budCatIdx < budgetByCat.length) {
+          if (budgetByCat[budCatIdx]["year"] == curYear) {
+            curYrBudgetByCat.push(budgetByCat[budCatIdx]);
+          } else if (budgetByCat[budCatIdx]["year"] == curYear - 1) {
+            oneYrBudgetByCat.push(budgetByCat[budCatIdx]);
+          } else if (budgetByCat[budCatIdx]["year"] == curYear - 2) {
+            twoYrBudgetByCat.push(budgetByCat[budCatIdx]);
+          }
+          budCatIdx++;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      // Split the array for expense by category into 3 years - current, a year, 2 years ago
+      try {
+        let expSubCatIdx = 0;
+        while (
+          expenseBySubCat.length != 0 &&
+          expSubCatIdx < expenseBySubCat.length
+        ) {
+          if (expenseBySubCat[expSubCatIdx]["year"] == curYear) {
+            curYrExpenseBySubCat.push(expenseBySubCat[expSubCatIdx]);
+          } else if (expenseBySubCat[expSubCatIdx]["year"] == curYear - 1) {
+            oneYrExpenseBySubCat.push(expenseBySubCat[expSubCatIdx]);
+          } else if (expenseBySubCat[expSubCatIdx]["year"] == curYear - 2) {
+            twoYrExpenseBySubCat.push(expenseBySubCat[expSubCatIdx]);
+          }
+          expSubCatIdx++;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      // Split the array for budget by subcategory into 3 years - current, a year, 2 years ago
+      try {
+        let budSubCatIdx = 0;
+        while (
+          budgetBySubCat.length != 0 &&
+          budSubCatIdx < budgetBySubCat.length
+        ) {
+          if (budgetBySubCat[budSubCatIdx]["year"] == curYear) {
+            curYrBudgetBySubCat.push(budgetBySubCat[budSubCatIdx]);
+          } else if (budgetBySubCat[budSubCatIdx]["year"] == curYear - 1) {
+            oneYrBudgetBySubCat.push(budgetBySubCat[budSubCatIdx]);
+          } else if (budgetBySubCat[budSubCatIdx]["year"] == curYear - 2) {
+            twoYrBudgetBySubCat.push(budgetBySubCat[budSubCatIdx]);
+          }
+          budSubCatIdx++;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      // Split the array for expense by category into 3 years - current, a year, 2 years ago
+      // try {
+      //   let expCatIdx = 0;
+      //   while (expenseByCat.length != 0 && expCatIdx < expenseByCat.length) {
+      //     if (expenseByCat[expCatIdx]["year"] == curYear) {
+      //       curYrExpenseByCat.push(expenseByCat[expCatIdx]);
+      //     } else if (expenseByCat[expCatIdx]["year"] == curYear - 1) {
+      //       oneYrExpenseByCat.push(expenseByCat[expCatIdx]);
+      //     } else if (expenseByCat[expCatIdx]["year"] == curYear - 2) {
+      //       twoYrExpenseByCat.push(expenseByCat[expCatIdx]);
+      //     }
+      //     expCatIdx++;
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      // }
+
       res.render("pages/report", {
         user: user,
         totalIncomeResult: totalIncome,
@@ -235,6 +439,18 @@ exports.findAll = async (req, res) => {
         totalExpenseResult: totalExpense,
         curYearExpenseResult: curYearExpenseResult,
         curYearCashFlowResult: curYearCashFlowResult,
+        curYrExpenseByCatResult: curYrExpenseByCat,
+        oneYrExpenseByCatResult: oneYrExpenseByCat,
+        twoYrExpenseByCatResult: twoYrExpenseByCat,
+        curYrBudgetByCatResult: curYrBudgetByCat,
+        oneYrBudgetByCatResult: oneYrBudgetByCat,
+        twoYrBudgetByCatResult: twoYrBudgetByCat,
+        curYrExpenseBySubCatResult: curYrExpenseBySubCat,
+        oneYrExpenseBySubCatResult: oneYrExpenseBySubCat,
+        twoYrExpenseBySubCatResult: twoYrExpenseBySubCat,
+        curYrBudgetBySubCatResult: curYrBudgetBySubCat,
+        oneYrBudgetBySubCatResult: oneYrBudgetBySubCat,
+        twoYrBudgetBySubCatResult: twoYrBudgetBySubCat,
       });
     })
     .catch((err) => {
