@@ -12,6 +12,14 @@ $(function () {
   const oneYrBudgetByCat = JSON.parse(oneYrBudgetByCatResult);
   const twoYrBudgetByCat = JSON.parse(twoYrBudgetByCatResult);
 
+  const curYrExpenseBySubCat = JSON.parse(curYrExpenseBySubCatResult);
+  const oneYrExpenseBySubCat = JSON.parse(oneYrExpenseBySubCatResult);
+  const twoYrExpenseBySubCat = JSON.parse(twoYrExpenseBySubCatResult);
+
+  const curYrBudgetBySubCat = JSON.parse(curYrBudgetBySubCatResult);
+  const oneYrBudgetBySubCat = JSON.parse(oneYrBudgetBySubCatResult);
+  const twoYrBudgetBySubCat = JSON.parse(twoYrBudgetBySubCatResult);
+
   const expenseByCat = new Map([
     [0, curYrExpenseByCat],
     [1, oneYrExpenseByCat],
@@ -22,6 +30,18 @@ $(function () {
     [0, curYrBudgetByCat],
     [1, oneYrBudgetByCat],
     [2, twoYrBudgetByCat],
+  ]);
+
+  const expenseBySubCat = new Map([
+    [0, curYrExpenseBySubCat],
+    [1, oneYrExpenseBySubCat],
+    [2, twoYrExpenseBySubCat],
+  ]);
+
+  const budgetBySubCat = new Map([
+    [0, curYrBudgetBySubCat],
+    [1, oneYrBudgetBySubCat],
+    [2, twoYrBudgetBySubCat],
   ]);
 
   const monthMap = new Map([
@@ -64,19 +84,20 @@ $(function () {
     totalExpense
   );
 
-  onClickCategoryFilter("expense");
-  onClickCategoryFilter("budget");
+  onClickCatSubcatFilter("expense", false);
+  onClickCatSubcatFilter("budget", false);
+  onClickCatSubcatFilter("expense", true);
+  onClickCatSubcatFilter("budget", true);
 
-  // onClickCategoryExpand("expense", false, expenseByCat);
-  // onClickCategoryYear("expense", expenseByCat);
+  onClickYear("expense", expenseByCat, expenseBySubCat, false);
+  onClickExpand("expense", false, expenseByCat, expenseBySubCat, false);
 
-  onClickCategoryYear("expense", expenseByCat);
-  onClickCategoryExpand("expense", false, expenseByCat);
+  onClickYear("budget", budgetByCat, budgetBySubCat, false);
+  onClickExpand("budget", false, budgetByCat, budgetBySubCat, false);
 
-  onClickCategoryYear("budget", budgetByCat);
-  onClickCategoryExpand("budget", false, budgetByCat);
+  onClickYear("expense", expenseByCat, expenseBySubCat, true);
+  onClickExpand("expense", false, expenseByCat, expenseBySubCat, true);
 
-  // onClickCategoryYear(curYrExpenseByCat, oneYrExpenseByCat, twoYrExpenseByCat);
-
-  // onClickCategoryExpand("budget", false);
+  onClickYear("budget", budgetByCat, budgetBySubCat, true);
+  onClickExpand("budget", false, budgetByCat, budgetBySubCat, true);
 });

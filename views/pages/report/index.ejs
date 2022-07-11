@@ -364,29 +364,81 @@
               <div
                 class="max-w-6xl mx-auto px-4 mb-5 sm:px-6 lg:px-8 grid grid-cols-1 gap-5 sm:grid-cols-1 lg:grid-cols-2"
               >
-                <!-- expense by categories -->
+                <!-- Expense by subcategories -->
                 <div class="mt-2">
                   <!-- Card -->
                   <h2 class="text-lg mt-5 leading-6 font-medium text-gray-900">
-                    Expense By Subcategory
+                    By Subcategory
                   </h2>
                   <div class="mt-2 bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
-                        <div class="flex-shrink-0">
+                        <!-- <div class="flex-shrink-0">
                           <i class="far fa-money-bill-alt fa-2x"></i>
-                        </div>
+                        </div> -->
                         <div class="ml-5 w-0 flex-1">
-                          <dl>
+                          <dl id="expense-subcategory-data">
                             <dt
-                              class="text-sm font-medium text-gray-500 truncate"
+                              class="text-md font-medium text-gray-500 truncate mb-3"
                             >
-                              <span>Cash Flow</span>
+                              <span>Expense</span>
+                              <span class="float-right">
+                                <div
+                                  id="expense-subcategory-filter"
+                                  class="border-2 border-gray-500 bg-gray-50 text-gray-500 hover:border-cyan-700 text-sm hover:bg-cyan-50 py-1 px-2 rounded-lg"
+                                >
+                                  <div class="hover:text-cyan-700">
+                                    <span id="expense-subcategory-selected-year"
+                                      ><%= thisYear;%></span
+                                    >
+                                    <i class="fas fa-caret-down"></i>
+                                  </div>
+                                </div>
+                                <div
+                                  id="expense-subcategory-options"
+                                  class="border-2 rounded-lg border-gray-500 text-gray-500 text-sm text-center hidden"
+                                >
+                                  <ul>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50"
+                                    >
+                                      <%= thisYear-1;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear-2;%>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </span>
                             </dt>
                             <dd>
                               <div class="text-lg font-medium text-gray-900">
-                                <span>Total</span>
-                                <span class="float-right">$30,659.45</span>
+                                <% if(curYrExpenseBySubCatResult.length == 0) {
+                                %>
+                                <div class="text-center">
+                                  <span>Not Available!</span>
+                                </div>
+                                <% } else { %>
+                                <div id="expense-subcategory-detail">
+                                  <span
+                                    ><%=
+                                    curYrExpenseBySubCatResult[0]["subcategory"]
+                                    %></span
+                                  >
+                                  <span class="float-right"
+                                    >$<%=
+                                    _.round(curYrExpenseBySubCatResult[0]["total"],2)
+                                    %></span
+                                  >
+                                </div>
+                                <% } %>
                               </div>
                             </dd>
                           </dl>
@@ -396,7 +448,7 @@
                     <div class="bg-gray-50 px-5 py-3">
                       <div class="text-sm">
                         <a
-                          href="#"
+                          id="expense-subcategory-expand"
                           class="font-medium text-cyan-700 hover:text-cyan-900"
                         >
                           View all
@@ -406,28 +458,83 @@
                   </div>
                 </div>
 
+                <!-- Budget by subcategories -->
                 <div class="mt-2">
                   <!-- Card -->
-                  <h2 class="text-lg mt-5 leading-6 font-medium text-gray-900">
-                    Budget By Subcategory
+                  <h2
+                    class="text-lg mt-5 2xl:mt-12 xl:mt-12 lg:mt-12 leading-6 font-medium text-gray-900"
+                  >
+                    <!-- Budget By Subcategory -->
                   </h2>
                   <div class="mt-2 bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                       <div class="flex items-center">
-                        <div class="flex-shrink-0">
+                        <!-- <div class="flex-shrink-0">
                           <i class="far fa-money-bill-alt fa-2x"></i>
-                        </div>
+                        </div> -->
                         <div class="ml-5 w-0 flex-1">
-                          <dl>
+                          <dl id="budget-subcategory-data">
                             <dt
-                              class="text-sm font-medium text-gray-500 truncate"
+                              class="text-md font-medium text-gray-500 truncate mb-3"
                             >
-                              <span>Cash Flow</span>
+                              <span>Budget</span>
+                              <span class="float-right">
+                                <div
+                                  id="budget-subcategory-filter"
+                                  class="border-2 border-gray-500 bg-gray-50 text-gray-500 hover:border-cyan-700 text-sm hover:bg-cyan-50 py-1 px-2 rounded-lg"
+                                >
+                                  <div class="hover:text-cyan-700">
+                                    <span id="budget-category-selected-year"
+                                      ><%= thisYear;%></span
+                                    >
+                                    <i class="fas fa-caret-down"></i>
+                                  </div>
+                                </div>
+                                <div
+                                  id="budget-subcategory-options"
+                                  class="border-2 rounded-lg border-gray-500 text-gray-500 text-sm text-center hidden"
+                                >
+                                  <ul>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50"
+                                    >
+                                      <%= thisYear-1;%>
+                                    </li>
+                                    <li
+                                      class="hover:text-cyan-900 hover:bg-cyan-50 rounded-lg"
+                                    >
+                                      <%= thisYear-2;%>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </span>
                             </dt>
                             <dd>
                               <div class="text-lg font-medium text-gray-900">
-                                <span>Total</span>
-                                <span class="float-right">$30,659.45</span>
+                                <% if(curYrBudgetBySubCatResult.length == 0) {
+                                %>
+                                <div class="text-center">
+                                  <span>Not Available!</span>
+                                </div>
+                                <% } else { %>
+                                <div id="budget-subcategory-detail">
+                                  <span
+                                    ><%=
+                                    curYrBudgetBySubCatResult[0]["subcategory"]
+                                    %></span
+                                  >
+                                  <span class="float-right"
+                                    >$<%=
+                                    _.round(curYrBudgetBySubCatResult[0]["total"],2)
+                                    %></span
+                                  >
+                                </div>
+                                <% } %>
                               </div>
                             </dd>
                           </dl>
@@ -465,6 +572,12 @@
       const curYrBudgetByCatResult = `<%- JSON.stringify(curYrBudgetByCatResult); %>`;
       const oneYrBudgetByCatResult = `<%- JSON.stringify(oneYrBudgetByCatResult); %>`;
       const twoYrBudgetByCatResult = `<%- JSON.stringify(twoYrBudgetByCatResult); %>`;
+      const curYrExpenseBySubCatResult = `<%- JSON.stringify(curYrExpenseBySubCatResult); %>`;
+      const oneYrExpenseBySubCatResult = `<%- JSON.stringify(oneYrExpenseBySubCatResult); %>`;
+      const twoYrExpenseBySubCatResult = `<%- JSON.stringify(twoYrExpenseBySubCatResult); %>`;
+      const curYrBudgetBySubCatResult = `<%- JSON.stringify(curYrBudgetBySubCatResult); %>`;
+      const oneYrBudgetBySubCatResult = `<%- JSON.stringify(oneYrBudgetBySubCatResult); %>`;
+      const twoYrBudgetBySubCatResult = `<%- JSON.stringify(twoYrBudgetBySubCatResult); %>`;
     </script>
     <script src="/js/util/overview.js"></script>
     <script src="/js/report/overview.js"></script>

@@ -250,8 +250,8 @@ exports.findAll = async (req, res) => {
       expenseBySubCatInsts = response[6];
       budgetBySubCatInsts = response[7];
 
-      console.log(expenseByCat);
-      console.log(budgetByCat);
+      console.log(expenseBySubCat);
+      console.log(budgetBySubCat);
 
       // Re-format Objects
       const curYearIncomesStr = JSON.stringify(curYearIncomes, null, 2);

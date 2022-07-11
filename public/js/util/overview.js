@@ -8,7 +8,6 @@ let onClickOverview = (
 ) => {
   $(`#${overviewType}-expand`).on("click", function (e) {
     e.preventDefault();
-    console.log("clicked");
     $(`#${overviewType}-detail`).empty();
     if (!isClicked) {
       $(`#${overviewType}-expand`).text("Collapse");
@@ -54,89 +53,128 @@ let onClickOverview = (
   });
 };
 
-//expenseByCat, budgetByCat
-// View all & Collapse details of categories
-let onClickCategoryExpand = (financeType, isClicked, expenseByCat) => {
-  $(`#${financeType}-category-expand`).on("click", function (e) {
+// View all & Collapse details of categories and subcategories
+let onClickExpand = (
+  financeType,
+  isClicked,
+  financeTypeByCat,
+  financeTypeBySubCat,
+  isSub
+) => {
+  let catOrSubcat = isSub ? "subcategory" : "category";
+  $(`#${financeType}-${catOrSubcat}-expand`).on("click", function (e) {
     e.preventDefault();
-    $(`#${financeType}-category-detail`).empty();
-    let selectedYear = $(`#${financeType}-category-selected-year`)
+    $(`#${financeType}-${catOrSubcat}-detail`).empty();
+    let selectedYear = $(`#${financeType}-${catOrSubcat}-selected-year`)
       .text()
       .trim();
     let curYear = moment().year();
-    let yearData = expenseByCat.get(0);
-    if (curYear - selectedYear == 0) {
-      yearData = expenseByCat.get(0);
-    } else if (curYear - selectedYear == 1) {
-      yearData = expenseByCat.get(1);
-    } else {
-      yearData = expenseByCat.get(2);
+    let yearData = isSub ? financeTypeBySubCat.get(0) : financeTypeByCat.get(0);
+
+    if (!isSub) {
+      if (curYear - selectedYear == 0) {
+        yearData = financeTypeByCat.get(0);
+      } else if (curYear - selectedYear == 1) {
+        yearData = financeTypeByCat.get(1);
+      } else {
+        yearData = financeTypeByCat.get(2);
+      }
+    } else if (isSub) {
+      // let yearData = financeTypeByCat.get(0);
+      if (curYear - selectedYear == 0) {
+        yearData = financeTypeBySubCat.get(0);
+      } else if (curYear - selectedYear == 1) {
+        yearData = financeTypeBySubCat.get(1);
+      } else {
+        yearData = financeTypeBySubCat.get(2);
+      }
     }
+
     if (!isClicked) {
-      $(`#${financeType}-category-expand`).text("Collapse");
+      $(`#${financeType}-${catOrSubcat}-expand`).text("Collapse");
       yearData.forEach((category) => {
         const $div = $("<div>");
-        $div.append($("<span>", { text: category["category"] }));
+        $div.append($("<span>", { text: category[catOrSubcat] }));
         $div.append(
           $("<span>", { text: "$" + _.round(category["total"], 2) }).addClass(
             "float-right"
           )
         );
-        $(`#${financeType}-category-detail`).append($div);
+        $(`#${financeType}-${catOrSubcat}-detail`).append($div);
       });
       isClicked = true;
     } else {
-      $(`#${financeType}-category-expand`).text("View all");
+      $(`#${financeType}-${catOrSubcat}-expand`).text("View all");
       const $div = $("<div>");
-      $div.append($("<span>", { text: yearData[0]["category"] }));
+      $div.append($("<span>", { text: yearData[0][catOrSubcat] }));
       $div.append(
         $("<span>", {
           text: "$" + _.round(yearData[0]["total"], 2),
         }).addClass("float-right")
       );
-      $(`#${financeType}-category-detail`).append($div);
+      $(`#${financeType}-${catOrSubcat}-detail`).append($div);
       isClicked = false;
     }
   });
 };
 
 // Expand year filter
-let onClickCategoryFilter = (financeType) => {
-  $(`#${financeType}-category-data`).on(
+let onClickCatSubcatFilter = (financeType, isSub) => {
+  let catOrSubcat = isSub ? "subcategory" : "category";
+  $(`#${financeType}-${catOrSubcat}-data`).on(
     "click",
-    `#${financeType}-category-filter`,
+    `#${financeType}-${catOrSubcat}-filter`,
     function (e) {
       console.log("clicked");
       // Prevent onClick event
       // e.preventDefault();
-      if ($(`#${financeType}-category-options`).hasClass("hidden")) {
-        $(`#${financeType}-category-options`).removeClass("hidden");
+      if ($(`#${financeType}-${catOrSubcat}-options`).hasClass("hidden")) {
+        $(`#${financeType}-${catOrSubcat}-options`).removeClass("hidden");
       } else {
-        $(`#${financeType}-category-options`).addClass("hidden");
+        $(`#${financeType}-${catOrSubcat}-options`).addClass("hidden");
       }
     }
   );
 };
 
 // Change category data depending on selected year
-let onClickCategoryYear = (financeType, expenseByCat) => {
-  $(`#${financeType}-category-data`).on(
+let onClickYear = (
+  financeType,
+  financeTypeByCat,
+  financeTypeBySubCat,
+  isSub
+) => {
+  let catOrSubcat = isSub ? "subcategory" : "category";
+  $(`#${financeType}-${catOrSubcat}-data`).on(
     "click",
-    `#${financeType}-category-options ul li`,
+    `#${financeType}-${catOrSubcat}-options ul li`,
     function (e) {
       let $selectedElement = $(this);
       let curYear = moment().year();
       let selectedYear = $selectedElement.text().trim();
-      let yearData = expenseByCat.get(0);
-      if (curYear - selectedYear == 0) {
-        yearData = expenseByCat.get(0);
-      } else if (curYear - selectedYear == 1) {
-        yearData = expenseByCat.get(1);
-      } else {
-        yearData = expenseByCat.get(2);
+      let yearData = isSub
+        ? financeTypeBySubCat.get(0)
+        : financeTypeByCat.get(0);
+      if (!isSub) {
+        if (curYear - selectedYear == 0) {
+          yearData = financeTypeByCat.get(0);
+        } else if (curYear - selectedYear == 1) {
+          yearData = financeTypeByCat.get(1);
+        } else {
+          yearData = financeTypeByCat.get(2);
+        }
+      } else if (isSub) {
+        // let yearData = financeTypeByCat.get(0);
+        if (curYear - selectedYear == 0) {
+          yearData = financeTypeBySubCat.get(0);
+        } else if (curYear - selectedYear == 1) {
+          yearData = financeTypeBySubCat.get(1);
+        } else {
+          yearData = financeTypeBySubCat.get(2);
+        }
       }
-      // $("#expense-category-selected-year").text(selectedYear);
-      $(`#${financeType}-category-options`).addClass("hidden");
+
+      $(`#${financeType}-${catOrSubcat}-options`).addClass("hidden");
 
       html = ejs.render(
         `<dt
@@ -146,19 +184,19 @@ let onClickCategoryYear = (financeType, expenseByCat) => {
       <span> <%= fType %></span>
       <span class="float-right">
         <div
-          id="<%= financeType %>-category-filter"
+          id="<%= financeType %>-<%= catOrSubcat %>-filter"
           class="border-2 border-gray-500 bg-gray-50 text-gray-500 hover:border-cyan-700 text-sm hover:bg-cyan-50 py-1 px-2 rounded-lg"
         >
           <% let thisYear = new Date().getFullYear(); %>
           <div class="hover:text-cyan-700">
-            <span id="<%= financeType %>-category-selected-year"
+            <span id="<%= financeType %>-<%= catOrSubcat %>-selected-year"
               ><%= selectedYear %></span
             >
             <i class="fas fa-caret-down"></i>
           </div>
         </div>
         <div
-          id="<%= financeType %>-category-options"
+          id="<%= financeType %>-<%= catOrSubcat %>-options"
           class="border-2 rounded-lg border-gray-500 text-gray-500 text-sm text-center hidden"
         >
           <ul>
@@ -188,9 +226,10 @@ let onClickCategoryYear = (financeType, expenseByCat) => {
           <span>Not Available!</span>
         </div>
         <% } else { %>
-        <div id="<%= financeType %>-category-detail">
+        <div id="<%= financeType %>-<%= catOrSubcat %>-detail">
+        <% let catType = catOrSubcat; %>
           <span
-            ><%= yearData[0]["category"]
+            ><%= yearData[0][catType]
             %></span
           >
           <span class="float-right"
@@ -206,11 +245,12 @@ let onClickCategoryYear = (financeType, expenseByCat) => {
           selectedYear: selectedYear,
           yearData: yearData,
           financeType: financeType,
+          catOrSubcat: catOrSubcat,
         }
       );
 
       $.get(`/report`, function () {
-        $(`#${financeType}-category-data`).html(html);
+        $(`#${financeType}-${catOrSubcat}-data`).html(html);
       });
     }
   );
