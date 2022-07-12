@@ -125,7 +125,6 @@ let onClickCatSubcatFilter = (financeType, isSub) => {
     "click",
     `#${financeType}-${catOrSubcat}-filter`,
     function (e) {
-      console.log("clicked");
       // Prevent onClick event
       // e.preventDefault();
       if ($(`#${financeType}-${catOrSubcat}-options`).hasClass("hidden")) {
