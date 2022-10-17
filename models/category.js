@@ -16,3 +16,7 @@ module.exports = (sequelize, Sequelize) => {
 
   return Category;
 };
+
+// class Category extends Model {
+
+// }
