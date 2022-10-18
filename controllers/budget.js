@@ -20,34 +20,20 @@ const financeService = require("../services/finance");
 // Controller for displaying a new budget page
 exports.create = async (req, res) => {
   let itemizedItems = [];
-  let budgetsArr = [];
   let user = req.user;
+  let budgets;
+  try {
+    budgets = await financeService.findAll(req, res);
+  } catch (error) {
+    console.log(error);
+  }
 
-  // Retrieve every budget records to display on the calendar
-  const budgets = await Finance.findAll({
-    where: {
-      financeTypeId: 1,
-      userId: user.id,
-    },
+  res.render("pages/budget/create", {
+    user: user,
+    budgets: budgets,
+    itemizedItems: itemizedItems,
+    err_message: req.flash("err_message"),
   });
-
-  Promise.all([budgets])
-    .then((responses) => {
-      const budgetInsts = responses[0];
-      budgetInsts.forEach((budgetInst) => {
-        let budgetData = budgetInst.get();
-        budgetsArr.push(budgetData);
-      });
-      res.render("pages/budget/create", {
-        user: user,
-        budgets: budgetsArr,
-        itemizedItems: itemizedItems,
-        err_message: req.flash("err_message"),
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 // Controller for saving a new budget
