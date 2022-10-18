@@ -38,168 +38,23 @@ exports.create = async (req, res) => {
 
 // Controller for saving a new budget
 exports.store = async (req, res) => {
-  let date = req.body.date,
-    income = parseFloat(req.body.income),
-    list = req.body.list,
-    user = req.user;
-
-  let dateArr = date.split("-");
-  let startDate = dateArr[0].trim(),
-    endDate = dateArr[1].trim();
-
-  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
-  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
-
-  // Condition to check if there is already a budget/budgets within the input date range.
-  //This filter is to FIND a budget/budgets
-  let filter = {
-    where: {
-      [Op.or]: [
-        // first case, input startDate or input endDate is equal to startDate
-        //OR input startDate or input endDate is equal to endDate
-        {
-          [Op.or]: [
-            {
-              startDate: {
-                [Op.or]: [startDate, endDate],
-              },
-            },
-          ],
-        },
-        // second case, input startDate < startDate < input endDate
-        {
-          [Op.and]: [
-            {
-              startDate: {
-                [Op.gt]: startDate,
-              },
-            },
-            {
-              startDate: {
-                [Op.lt]: endDate,
-              },
-            },
-          ],
-        },
-        // third case, startDate < input startDate AND input endDate < endDate
-        {
-          [Op.and]: [
-            {
-              startDate: {
-                [Op.lt]: startDate,
-              },
-            },
-            {
-              endDate: {
-                [Op.gt]: endDate,
-              },
-            },
-          ],
-        },
-        // forth case, startDate < input startDate AND endDate < input endDate
-        {
-          [Op.and]: [
-            {
-              startDate: {
-                [Op.lt]: startDate,
-              },
-            },
-            {
-              endDate: {
-                [Op.gt]: startDate,
-              },
-            },
-          ],
-        },
-      ],
-      financeTypeId: 1,
-      userId: user.id,
-    },
-  };
-
-  // Check if there is a budget on selected dates
-  const budgetCount = await Finance.count(filter);
-  if (budgetCount === 0) {
-    // Validate request
-    if (_.isNaN(income) || income === 0) {
-      if (_.isNaN(income)) {
-        req.flash("income_err_message", "If there is no income, enter 0!");
-        return res.status(400).send({
-          message: "If there is no income, enter 0!",
-        });
-      }
-      if (list.length === 0) {
-        req.flash("err_message", "Please fill out the form!");
-        return res.status(400).send({
-          message: "Please fill out the form!",
-        });
-      }
-    }
-
-    // TODO there must be better way to do this...
-    let itemizedIncome = {
-      amount: income,
-      category: _.toLower("income"),
-      description: _.toLower("income"),
-    };
-
-    list.push(itemizedIncome);
-
-    let itemizedList = [];
-
-    // Perform modification on an item object in order to match with db
-    list.forEach((obj) => {
-      // Delete idx that was used in front-end
-      delete obj.idx;
-
-      // Change category & subCategory values to ids
-      catToCatId(obj);
-      subCatToId(obj);
-
-      itemizedList.push(obj);
-    });
-
-    // TODO complete the creating an object.
-    // We need start date, end date, finance_type,
-    //items.
-    const budget = {
-      startDate: startDate,
-      endDate: endDate,
-      financeTypeId: 1,
-      userId: user.id,
-      items: itemizedList,
-    };
-
-    console.log("budget is:");
-    console.log(budget);
-
-    await Finance.create(budget, {
-      include: [Item],
-    })
-      .then((data) => {
-        req.flash("success_message", "New budget is created!");
-        res.send(data);
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || "Something wrong while creating budget",
-        });
+  let newBudget;
+  try {
+    newBudget = await financeService.store(req, res);
+  } catch (error) {
+    if (error.type == "invalid-input") {
+      res.status(400).send({
+        message: error.message,
       });
-  } else {
-    req.flash("budget_err_message", "No more budget on these dates!");
-    return res.status(400).send({
-      message: "No more budget on these dates!",
-    });
+    } else {
+      res.status(500).send({
+        message: error.message || "Something wrong while creating budget",
+      });
+    }
   }
 
-  // TODO figure out what these 2 lines mean
-  // res.set("Content-Type", "application/json");
-  // var jsonData = JSON.stringify(req.body);
-
-  // We should return the resonse otherwise the POST request
-  //on client side will get stuck (pending).
-  // status 201 is "Created"
-  // return res.status(201).json(req.body);
+  req.flash("success_message", "New budget is created!");
+  res.send(newBudget);
 };
 
 // Controller for displaying a budget
