@@ -59,7 +59,7 @@ exports.store = async (req, res) => {
 
 // Controller for displaying a budget
 exports.findOne = async (req, res) => {
-  let user = req.user;
+  let { user } = req;
   const budgets = await financeService.findAll(req, res);
   let itemizedItems = [];
 
@@ -73,21 +73,9 @@ exports.findOne = async (req, res) => {
   } else {
     let startDate = req.query.start,
       endDate = req.query.end;
-    startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");
-    endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
+    let items;
     try {
-      const items = await financeService.findOne(req, res);
-
-      res.render("pages/budget", {
-        user: user,
-        budgets: budgets,
-        itemizedItems: items,
-        startDate: startDate,
-        endDate: endDate,
-        getCatDisplay: getCatDisplay,
-        getSubCatDisplay: getSubCatDisplay,
-        error: req.flash("budget_err"),
-      });
+      items = await financeService.findOne(req, res);
     } catch (error) {
       console.log(error);
       req.flash("budget_err", "Budget doesn't exist!");
@@ -102,108 +90,63 @@ exports.findOne = async (req, res) => {
         error: req.flash("budget_err"),
       });
     }
+
+    res.render("pages/budget", {
+      user: user,
+      budgets: budgets,
+      itemizedItems: items,
+      startDate: startDate,
+      endDate: endDate,
+      getCatDisplay: getCatDisplay,
+      getSubCatDisplay: getSubCatDisplay,
+      error: req.flash("budget_err"),
+    });
   }
 };
 
 // Controller for editing a budget
 exports.edit = async (req, res) => {
   let itemizedItems = [];
-  let budgetsArr = [];
+  let { user } = req;
   let startDate = req.query.start,
-    endDate = req.query.end,
-    user = req.user;
+    endDate = req.query.end;
 
-  startDate = moment(startDate, "MM-DD-YYYY").format("YYYY-MM-DD");
-  endDate = moment(endDate, "MM-DD-YYYY").format("YYYY-MM-DD");
+  let budgets;
+  try {
+    budgets = await financeService.findAll(req, res);
+  } catch (error) {
+    console.log(error);
+  }
 
-  // Retrieve every budget records to display on the calendar
-  const budgets = await Finance.findAll({
-    where: {
-      financeTypeId: 1,
-      userId: user.id,
-    },
-  });
-
-  // Condition for finding a budget
-  let filter = {
-    where: {
+  let items;
+  try {
+    items = await financeService.findOne(req, res);
+  } catch (error) {
+    console.log(error);
+    res.render("pages/budget/edit", {
+      user: user,
+      budgets: budgets,
+      itemizedItems: itemizedItems,
       startDate: startDate,
       endDate: endDate,
-      financeTypeId: 1,
-      userId: user.id,
-    },
-  };
-
-  startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");
-  endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
-
-  // Retrieve one budget to display on edit page
-  const budget = await Finance.findOne(filter);
-
-  Promise.all([budgets, budget])
-    .then((responses) => {
-      const budgetInsts = responses[0];
-      budgetInsts.forEach((budgetInst) => {
-        let budgetData = budgetInst.get();
-        budgetsArr.push(budgetData);
-      });
-      const budgetInst = responses[1];
-      const budgetData = budgetInst.get();
-      if (budgetData === null) {
-        throw "error";
-      }
-      return Item.findAll({
-        where: { financeId: budgetData.id },
-      });
-    })
-    .then((itemInsts) => {
-      itemInsts.forEach((itemInst) => {
-        // new obj for formatted data
-        let itemizedItem = {};
-
-        // item record from db
-        const itemData = itemInst.get();
-
-        // Assign amount to a new obj
-        itemizedItem.amount = parseFloat(itemData["amount"]);
-
-        // Assign description to a new obj
-        itemizedItem.description = itemData["description"];
-
-        // Convert category id & subCategory id to category value & subCategory value
-        catIdToCat(itemData, itemizedItem);
-        subCatIdToSubCat(itemData, itemizedItem);
-
-        // Add a new obj to the list
-        itemizedItems.push(itemizedItem);
-      });
-
-      res.render("pages/budget/edit", {
-        user: user,
-        budgets: budgetsArr,
-        itemizedItems: itemizedItems,
-        startDate: startDate,
-        endDate: endDate,
-        getCatDisplay: getCatDisplay,
-        getSubCatDisplay: getSubCatDisplay,
-        error: req.flash("budget_err"),
-        err_message: req.flash("err_message"),
-      });
-    })
-    .catch((err) => {
-      req.flash("budget_err", "Budget doesn't exist!");
-      res.render("pages/budget/edit", {
-        user: user,
-        budgets: budgetsArr,
-        itemizedItems: itemizedItems,
-        startDate: startDate,
-        endDate: endDate,
-        getCatDisplay: getCatDisplay,
-        getSubCatDisplay: getSubCatDisplay,
-        error: req.flash("budget_err"),
-        err_message: req.flash("err_message"),
-      });
+      getCatDisplay: getCatDisplay,
+      getSubCatDisplay: getSubCatDisplay,
+      error: req.flash("budget_err"),
+      err_message: req.flash("err_message"),
     });
+  }
+
+  res.render("pages/budget/edit", {
+    user: user,
+    budgets: budgets,
+    itemizedItems: items,
+    startDate: startDate,
+    endDate: endDate,
+    getCatDisplay: getCatDisplay,
+    getSubCatDisplay: getSubCatDisplay,
+    error: req.flash("budget_err"),
+    err_message: req.flash("err_message"),
+  });
 };
 
 // Controller for updating a budget
