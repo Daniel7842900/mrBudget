@@ -206,7 +206,6 @@ exports.store = async (req, res) => {
   if (budgetCount === 0) {
     // Validate request
     if (_.isNaN(income) || (income === 0 && list.length === 0)) {
-      // req.flash("income_err_message", "If there is no income, enter 0!");
       if (_.isNaN(income)) error = new Error("If there is no income, enter 0!");
       if (income === 0 && list.length === 0)
         error = new Error("Please fill out the form!");
@@ -237,6 +236,7 @@ exports.store = async (req, res) => {
       itemizedList.push(obj);
     });
 
+    // Condition to create a budget
     const budget = {
       startDate: startDate,
       endDate: endDate,
@@ -259,4 +259,114 @@ exports.store = async (req, res) => {
     error.type = "invalid-input";
     throw error;
   }
+};
+
+exports.update = async (req, res) => {
+  let { date, income, list } = req.body;
+  let { user } = req;
+  income = parseFloat(income);
+
+  let dateArr = date.split("-");
+  let startDate = dateArr[0].trim(),
+    endDate = dateArr[1].trim();
+
+  /**
+   *  Change the date format to match with the format from db
+   */
+  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
+  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
+
+  // Validate request
+  let error;
+  if (_.isNaN(income) || (income === 0 && list.length === 0)) {
+    if (_.isNaN(income)) error = new Error("If there is no income, enter 0!");
+    if (income === 0 && list.length === 0)
+      error = new Error("Please fill out the form!");
+    error.type = "invalid-input";
+    throw error;
+  }
+
+  /**
+   *  Re-format the income object to match with the format of other objects
+   */
+  let itemizedIncome = {
+    amount: income,
+    category: _.toLower("income"),
+    description: _.toLower("income"),
+  };
+
+  // Add income obj to the list
+  list.push(itemizedIncome);
+
+  /**
+   *  Format the records from db and push it to a new array
+   */
+  let itemizedList = [];
+  list.forEach((obj) => {
+    // Delete idx that was used in front-end
+    delete obj.idx;
+
+    // Change category & subCategory values to ids
+    catToCatId(obj);
+    subCatToId(obj);
+
+    itemizedList.push(obj);
+  });
+
+  // Condition to find a budget
+  let filter = {
+    where: {
+      startDate: startDate,
+      endDate: endDate,
+      financeTypeId: 1,
+      userId: user.id,
+    },
+  };
+
+  // Retrieve one budget to display on edit page
+  let budgetInstance;
+  try {
+    budgetInstance = await Finance.findOne(filter);
+  } catch (error) {
+    console.log(error);
+  }
+
+  const budget = budgetInstance.get();
+
+  let destroyedItems;
+  try {
+    /**
+     *  Destroy items that have the budget id.
+     *  @return Number of destroyed items
+     */
+    destroyedItems = await Item.destroy({
+      where: {
+        financeId: budget.id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  let newItems;
+  try {
+    /**
+     *  Create items with the given list
+     *  @return An array of Sequelize Item objects
+     */
+    newItems = await Item.bulkCreate(itemizedList);
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    /**
+     *  Add Sequelize Item objects to the budget
+     */
+    await budgetInstance.addItems(newItems);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return newItems;
 };
