@@ -52,6 +52,22 @@ let onChangeCategory = (sourceElement, event, targetElement) => {
 let onClickAdd = (parentElement, targetBtn, event, financeType) => {
   $(targetBtn).on(event, function (e) {
     e.preventDefault();
+
+    /**
+     *  Attach display properties again to the existing items
+     *  when submit doesn't go through
+     *
+     */
+    if (itemizedItemsJSON.length != 0) {
+      itemizedItemsJSON.forEach((entry) => {
+        entry.categoryDisplay = getCatDisplay(_.toLower(entry.category));
+        entry.subCategoryDisplay = getSubCatDisplay(
+          _.toLower(entry.category),
+          _.toLower(entry.subCategory)
+        );
+      });
+    }
+
     // Create a js object for category & amount
     let obj = {};
     let objCat = _.toLower($("#category").children("option:selected").val()),
@@ -122,9 +138,10 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     "
                   >
                   <% if(obj.subCategory === "" || obj.subCategory
-                  === undefined) { %> <%= obj.categoryDisplay %>
-                  <% } else { %> <%=
-                  obj.subCategoryDisplay %> <% } %>
+                  === undefined || obj.subCategory === null) { %> 
+                    <%= obj.categoryDisplay %>
+                  <% } else { %> 
+                    <%= obj.subCategoryDisplay %> <% } %>
                   </td>
                   <td
                     class="
@@ -215,6 +232,21 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
         // Decrement idx for future adding
         idx--;
 
+        /**
+         *  Attach display properties again to the existing items
+         *  when submit doesn't go through
+         *
+         */
+        if (itemizedItemsJSON.length != 0) {
+          itemizedItemsJSON.forEach((entry) => {
+            entry.categoryDisplay = getCatDisplay(_.toLower(entry.category));
+            entry.subCategoryDisplay = getSubCatDisplay(
+              _.toLower(entry.category),
+              _.toLower(entry.subCategory)
+            );
+          });
+        }
+
         html = ejs.render(
           `<% list.forEach(function(obj) { %>
                 <tr>
@@ -229,9 +261,10 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                     "
                   >
                   <% if(obj.subCategory === "" || obj.subCategory
-                  === undefined) { %> <%= obj.categoryDisplay %>
-                  <% } else { %> <%=
-                  obj.subCategoryDisplay %> <% } %>
+                  === undefined || obj.subCategory === null) { %> 
+                    <%= obj.categoryDisplay %>
+                  <% } else { %> 
+                    <%= obj.subCategoryDisplay %> <% } %>
                   </td>
                   <td
                     class="
