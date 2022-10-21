@@ -370,3 +370,34 @@ exports.update = async (req, res) => {
 
   return newItems;
 };
+
+exports.delete = async (req, res) => {
+  let { date } = req.body;
+  let { user } = req;
+
+  let dateArr = date.split("-");
+  let startDate = dateArr[0].trim(),
+    endDate = dateArr[1].trim();
+
+  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
+  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
+
+  // Condition for finding a budget
+  let filter = {
+    where: {
+      startDate: startDate,
+      endDate: endDate,
+      financeTypeId: 1,
+      userId: user.id,
+    },
+    raw: true,
+  };
+
+  /**
+   *  Delete the budget
+   *  @return Number of deleted budget
+   */
+  const destroyedBudget = await Finance.destroy(filter);
+
+  return destroyedBudget;
+};

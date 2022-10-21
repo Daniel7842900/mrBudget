@@ -161,49 +161,31 @@ exports.update = async (req, res) => {
         message: error.message,
       });
     } else {
-      res.status(500).send({
+      return res.status(500).send({
         message: error.message || "Something wrong while creating budget",
       });
     }
   }
 
-  res.send(updatedItems);
+  // return res.send(updatedItems);
+  return res
+    .status(204)
+    .send({ message: "The budget is successfully updated!" });
 };
 
 // Controller for deleting a budget
 exports.delete = async (req, res) => {
-  let date = req.body.date,
-    user = req.user;
-
-  let dateArr = date.split("-");
-  let startDate = dateArr[0].trim(),
-    endDate = dateArr[1].trim();
-
-  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
-  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
-
-  // Condition for finding a budget
-  let filter = {
-    where: {
-      startDate: startDate,
-      endDate: endDate,
-      financeTypeId: 1,
-      userId: user.id,
-    },
-  };
-
-  const budget = await Finance.findOne(filter);
-  const destroyedBudget = await Finance.destroy(filter);
-
-  Promise.all([budget, destroyedBudget])
-    .then((response) => {
-      const budgetInst = response[0];
-      const budgetData = budgetInst.get();
-      res.send(budgetData);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Something wrong while deleting budget",
-      });
+  let destroyedBudget;
+  try {
+    destroyedBudget = await financeService.delete(req, res);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      message: err.message || "Something wrong while deleting budget",
     });
+  }
+
+  return res
+    .status(200)
+    .send({ message: "The budget is successfully deleted!" });
 };
