@@ -1,4 +1,5 @@
 const budget = require("../controllers/budget.js");
+const finance = require("../controllers/finance.js");
 const auth = require("./auth.js");
 let router = require("express").Router();
 
@@ -13,7 +14,7 @@ let loadRouter = (app) => {
 
   router.delete("/delete", auth.isLoggedIn, budget.delete);
 
-  router.get("/", auth.isLoggedIn, budget.findOne);
+  router.get("/", auth.isLoggedIn, finance.findOne);
 
   app.use("/budget", router);
 };

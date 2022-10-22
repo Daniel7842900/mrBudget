@@ -219,7 +219,7 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
         }
 
         html = ejs.render(
-          `<% list.forEach(function(obj) { console.log(obj); %>
+          `<% list.forEach(function(obj) { %>
           <tr>
             <td
               class="

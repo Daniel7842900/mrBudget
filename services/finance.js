@@ -1,5 +1,6 @@
 const db = require("../models/index");
 const Finance = db.finance;
+const FinanceType = db.finance_type;
 const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
@@ -7,39 +8,55 @@ const { Op } = require("sequelize");
 const {
   catToCatId,
   catIdToCat,
-  getCatDisplay,
 } = require("../controllers/util/convertCategories");
 const {
   subCatToId,
   subCatIdToSubCat,
-  getSubCatDisplay,
 } = require("../controllers/util/convertSubcategories");
 
 exports.findAll = async (req, res) => {
-  let user = req.user;
+  let { user, originalUrl } = req;
+  originalUrl = originalUrl.split("?")[0];
+  let financeTypeUrl = originalUrl.slice(1).trim();
+
+  let financeType;
+  try {
+    financeType = await FinanceType.findOne({
+      where: {
+        type: _.upperFirst(financeTypeUrl),
+      },
+      raw: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  let result;
   try {
     /**
      *  Retrieve every budget records to display on the calendar
      *  @return An array of budget objects
      */
-    const budgets = await Finance.findAll({
+    result = await Finance.findAll({
       where: {
-        financeTypeId: 1,
+        financeTypeId: financeType.id,
         userId: user.id,
       },
       raw: true,
     });
-    return budgets;
   } catch (error) {
     console.log(error);
     return req.flash("budget_err");
   }
+
+  return result;
 };
 
 exports.findOne = async (req, res) => {
   let itemizedItems = [];
-  let user = req.user;
-  let budget;
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("?")[0].slice(1).trim();
+  let finance;
   let items;
   let startDate = req.query.start,
     endDate = req.query.end;
@@ -47,12 +64,24 @@ exports.findOne = async (req, res) => {
   startDate = moment(startDate, "MM-DD-YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MM-DD-YYYY").format("YYYY-MM-DD");
 
-  // Condition for finding a budget
+  let financeType;
+  try {
+    financeType = await FinanceType.findOne({
+      where: {
+        type: _.upperFirst(financeTypeUrl),
+      },
+      raw: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  // Condition for finding a finance
   let filter = {
     where: {
       startDate: startDate,
       endDate: endDate,
-      financeTypeId: 1,
+      financeTypeId: financeType.id,
       userId: user.id,
     },
     raw: true,
@@ -60,21 +89,21 @@ exports.findOne = async (req, res) => {
 
   try {
     /**
-     *  Retrieve one budget to display on edit page
+     *  Retrieve one finance to display on edit page
      *  @return An object
      */
-    budget = await Finance.findOne(filter);
+    finance = await Finance.findOne(filter);
   } catch (error) {
     console.log(error);
   }
 
   try {
     /**
-     *  Retrieve all items that belong to the budget
+     *  Retrieve all items that belong to the finance
      *  @return An array of item objects
      */
     items = await Item.findAll({
-      where: { financeId: budget.id },
+      where: { financeId: finance.id },
       raw: true,
     });
   } catch (error) {

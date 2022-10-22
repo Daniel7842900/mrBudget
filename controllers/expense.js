@@ -5,6 +5,7 @@ const Item = db.item;
 const moment = require("moment");
 const _ = require("lodash");
 const { Op } = require("sequelize");
+const financeService = require("../services/finance");
 const {
   catToCatId,
   catIdToCat,
@@ -193,137 +194,165 @@ exports.store = async (req, res) => {
 
 // Controller for displaying an expense
 exports.findOne = async (req, res) => {
+  let { user, originalUrl } = req;
+
+  const finances = await financeService.findAll(req, res);
   let itemizedItems = [];
-  let expensesArr = [];
-  let user = req.user;
 
   if (_.isEmpty(req.query)) {
-    var expenseData = {};
-
-    // Retrieve every expense records to display on the calendar
-    const expenses = await Finance.findAll({
-      where: {
-        financeTypeId: 2,
-        userId: user.id,
-      },
+    res.render(`pages${originalUrl}`, {
+      user: user,
+      finances: finances,
+      itemizedItems: itemizedItems,
+      error: req.flash("budget_err"),
     });
-
-    Promise.all([expenses])
-      .then((responses) => {
-        const expenseInsts = responses[0];
-        expenseInsts.forEach((expenseInst) => {
-          let expenseData = expenseInst.get();
-          expensesArr.push(expenseData);
-        });
-        res.render("pages/expense", {
-          user: user,
-          expenses: expensesArr,
-          expense: expenseData,
-          itemizedItems: itemizedItems,
-          error: req.flash("expense_err"),
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   } else {
     let startDate = req.query.start,
       endDate = req.query.end;
-
-    startDate = moment(startDate, "MM-DD-YYYY").format("YYYY-MM-DD");
-    endDate = moment(endDate, "MM-DD-YYYY").format("YYYY-MM-DD");
-
-    // Condition for finding an expense
-    let filter = {
-      where: {
+    let items;
+    try {
+      items = await financeService.findOne(req, res);
+    } catch (error) {
+      console.log(error);
+      req.flash("budget_err", "Budget doesn't exist!");
+      res.render(`pages${originalUrl}`, {
+        user: user,
+        finances: finances,
+        itemizedItems: itemizedItems,
         startDate: startDate,
         endDate: endDate,
-        financeTypeId: 2,
-        userId: user.id,
-      },
-    };
-
-    // Retrieve every expense records to display on the calendar
-    const expenses = await Finance.findAll({
-      where: {
-        financeTypeId: 2,
-        userId: user.id,
-      },
-    });
-
-    // Retrieve one expense to display on edit page
-    const expense = await Finance.findOne(filter);
-
-    var expenseData = {};
-
-    startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");
-    endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
-
-    Promise.all([expenses, expense])
-      .then((responses) => {
-        const expenseInsts = responses[0];
-        expenseInsts.forEach((expenseInst) => {
-          let expenseData = expenseInst.get();
-          expensesArr.push(expenseData);
-        });
-        const expenseInst = responses[1];
-        expenseData = expenseInst.get();
-        if (expenseData === null) {
-          throw "error";
-        }
-        return Item.findAll({
-          where: { financeId: expenseData.id },
-        });
-      })
-      .then((itemInsts) => {
-        itemInsts.forEach((itemInst) => {
-          // new obj for formatted data
-          let itemizedItem = {};
-
-          // item record from db
-          const itemData = itemInst.get();
-
-          // Assign amount to a new obj
-          itemizedItem.amount = parseFloat(itemData["amount"]);
-
-          // Assign description to a new obj
-          itemizedItem.description = itemData["description"];
-
-          // Convert category id & subCategory id to category value & subCategory value
-          catIdToCat(itemData, itemizedItem);
-          subCatIdToSubCat(itemData, itemizedItem);
-
-          // Add a new obj to the list
-          itemizedItems.push(itemizedItem);
-        });
-
-        res.render("pages/expense", {
-          user: user,
-          expenses: expensesArr,
-          expense: expenseData,
-          itemizedItems: itemizedItems,
-          startDate: startDate,
-          endDate: endDate,
-          getCatDisplay: getCatDisplay,
-          getSubCatDisplay: getSubCatDisplay,
-          error: req.flash("expense_err"),
-        });
-      })
-      .catch((err) => {
-        req.flash("expense_err", "Expense doesn't exist!");
-        res.render("pages/expense", {
-          user: user,
-          expenses: expensesArr,
-          expense: expenseData,
-          itemizedItems: itemizedItems,
-          startDate: startDate,
-          endDate: endDate,
-          getCatDisplay: getCatDisplay,
-          getSubCatDisplay: getSubCatDisplay,
-          error: req.flash("expense_err"),
-        });
+        getCatDisplay: getCatDisplay,
+        getSubCatDisplay: getSubCatDisplay,
+        error: req.flash("budget_err"),
       });
+    }
+
+    res.render(`pages${originalUrl}`, {
+      user: user,
+      finances: finances,
+      itemizedItems: items,
+      startDate: startDate,
+      endDate: endDate,
+      getCatDisplay: getCatDisplay,
+      getSubCatDisplay: getSubCatDisplay,
+      error: req.flash("budget_err"),
+    });
   }
+  // let itemizedItems = [];
+  // let expensesArr = [];
+  // let user = req.user;
+  // if (_.isEmpty(req.query)) {
+  //   var expenseData = {};
+  //   // Retrieve every expense records to display on the calendar
+  //   const expenses = await Finance.findAll({
+  //     where: {
+  //       financeTypeId: 2,
+  //       userId: user.id,
+  //     },
+  //   });
+  //   Promise.all([expenses])
+  //     .then((responses) => {
+  //       const expenseInsts = responses[0];
+  //       expenseInsts.forEach((expenseInst) => {
+  //         let expenseData = expenseInst.get();
+  //         expensesArr.push(expenseData);
+  //       });
+  //       res.render("pages/expense", {
+  //         user: user,
+  //         expenses: expensesArr,
+  //         expense: expenseData,
+  //         itemizedItems: itemizedItems,
+  //         error: req.flash("expense_err"),
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // } else {
+  //   let startDate = req.query.start,
+  //     endDate = req.query.end;
+  //   startDate = moment(startDate, "MM-DD-YYYY").format("YYYY-MM-DD");
+  //   endDate = moment(endDate, "MM-DD-YYYY").format("YYYY-MM-DD");
+  //   // Condition for finding an expense
+  //   let filter = {
+  //     where: {
+  //       startDate: startDate,
+  //       endDate: endDate,
+  //       financeTypeId: 2,
+  //       userId: user.id,
+  //     },
+  //   };
+  //   // Retrieve every expense records to display on the calendar
+  //   const expenses = await Finance.findAll({
+  //     where: {
+  //       financeTypeId: 2,
+  //       userId: user.id,
+  //     },
+  //   });
+  //   // Retrieve one expense to display on edit page
+  //   const expense = await Finance.findOne(filter);
+  //   var expenseData = {};
+  //   startDate = moment(startDate, "YYYY-MM-DD").format("MM-DD-YYYY");
+  //   endDate = moment(endDate, "YYYY-MM-DD").format("MM-DD-YYYY");
+  //   Promise.all([expenses, expense])
+  //     .then((responses) => {
+  //       const expenseInsts = responses[0];
+  //       expenseInsts.forEach((expenseInst) => {
+  //         let expenseData = expenseInst.get();
+  //         expensesArr.push(expenseData);
+  //       });
+  //       const expenseInst = responses[1];
+  //       expenseData = expenseInst.get();
+  //       if (expenseData === null) {
+  //         throw "error";
+  //       }
+  //       return Item.findAll({
+  //         where: { financeId: expenseData.id },
+  //       });
+  //     })
+  //     .then((itemInsts) => {
+  //       itemInsts.forEach((itemInst) => {
+  //         // new obj for formatted data
+  //         let itemizedItem = {};
+  //         // item record from db
+  //         const itemData = itemInst.get();
+  //         // Assign amount to a new obj
+  //         itemizedItem.amount = parseFloat(itemData["amount"]);
+  //         // Assign description to a new obj
+  //         itemizedItem.description = itemData["description"];
+  //         // Convert category id & subCategory id to category value & subCategory value
+  //         catIdToCat(itemData, itemizedItem);
+  //         subCatIdToSubCat(itemData, itemizedItem);
+  //         // Add a new obj to the list
+  //         itemizedItems.push(itemizedItem);
+  //       });
+  //       res.render("pages/expense", {
+  //         user: user,
+  //         expenses: expensesArr,
+  //         expense: expenseData,
+  //         itemizedItems: itemizedItems,
+  //         startDate: startDate,
+  //         endDate: endDate,
+  //         getCatDisplay: getCatDisplay,
+  //         getSubCatDisplay: getSubCatDisplay,
+  //         error: req.flash("expense_err"),
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       req.flash("expense_err", "Expense doesn't exist!");
+  //       res.render("pages/expense", {
+  //         user: user,
+  //         expenses: expensesArr,
+  //         expense: expenseData,
+  //         itemizedItems: itemizedItems,
+  //         startDate: startDate,
+  //         endDate: endDate,
+  //         getCatDisplay: getCatDisplay,
+  //         getSubCatDisplay: getSubCatDisplay,
+  //         error: req.flash("expense_err"),
+  //       });
+  //     });
+  // }
 };
 
 // Controller for editing an expense

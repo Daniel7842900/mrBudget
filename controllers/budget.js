@@ -1,20 +1,8 @@
 // Create database connection
 const db = require("../models");
-const Finance = db.finance;
-const Item = db.item;
-const moment = require("moment");
 const _ = require("lodash");
-const { Op } = require("sequelize");
-const {
-  catToCatId,
-  catIdToCat,
-  getCatDisplay,
-} = require("./util/convertCategories");
-const {
-  subCatToId,
-  subCatIdToSubCat,
-  getSubCatDisplay,
-} = require("./util/convertSubcategories");
+const { getCatDisplay } = require("./util/convertCategories");
+const { getSubCatDisplay } = require("./util/convertSubcategories");
 const financeService = require("../services/finance");
 
 // Controller for displaying a new budget page
@@ -55,52 +43,58 @@ exports.store = async (req, res) => {
   }
 
   req.flash("success_message", "New budget is created!");
-  res.send(newBudget);
+  res.status(201).send(newBudget);
 };
 
 // Controller for displaying a budget
 exports.findOne = async (req, res) => {
-  let { user } = req;
-  const budgets = await financeService.findAll(req, res);
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("?")[0].slice(1).trim();
+
+  const finances = await financeService.findAll(req, res);
   let itemizedItems = [];
 
   if (_.isEmpty(req.query)) {
-    res.render("pages/budget", {
+    res.render(`pages/${financeTypeUrl}`, {
       user: user,
-      budgets: budgets,
+      finances: finances,
       itemizedItems: itemizedItems,
-      error: req.flash("budget_err"),
+      error: req.flash("finance_err"),
     });
   } else {
     let startDate = req.query.start,
       endDate = req.query.end;
     let items;
+
     try {
       items = await financeService.findOne(req, res);
     } catch (error) {
       console.log(error);
-      req.flash("budget_err", "Budget doesn't exist!");
-      res.render("pages/budget", {
+      req.flash(
+        "finance_err",
+        `${_.upperFirst(financeTypeUrl)} doesn't exist!`
+      );
+      res.render(`pages/${financeTypeUrl}`, {
         user: user,
-        budgets: budgets,
+        finances: finances,
         itemizedItems: itemizedItems,
         startDate: startDate,
         endDate: endDate,
         getCatDisplay: getCatDisplay,
         getSubCatDisplay: getSubCatDisplay,
-        error: req.flash("budget_err"),
+        error: req.flash("finance_err"),
       });
     }
 
-    res.render("pages/budget", {
+    res.render(`pages/${financeTypeUrl}`, {
       user: user,
-      budgets: budgets,
+      finances: finances,
       itemizedItems: items,
       startDate: startDate,
       endDate: endDate,
       getCatDisplay: getCatDisplay,
       getSubCatDisplay: getSubCatDisplay,
-      error: req.flash("budget_err"),
+      error: req.flash("finance_err"),
     });
   }
 };
@@ -167,7 +161,6 @@ exports.update = async (req, res) => {
     }
   }
 
-  // return res.send(updatedItems);
   return res
     .status(204)
     .send({ message: "The budget is successfully updated!" });
