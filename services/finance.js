@@ -16,8 +16,8 @@ const {
 
 exports.findAll = async (req, res) => {
   let { user, originalUrl } = req;
-  originalUrl = originalUrl.split("?")[0];
-  let financeTypeUrl = originalUrl.slice(1).trim();
+  let financeTypeUrl = originalUrl.split("/")[1];
+  if (_.includes(financeTypeUrl, "?")) financeTypeUrl.split("?")[0].trim();
 
   let financeType;
   try {
@@ -56,8 +56,7 @@ exports.findOne = async (req, res) => {
   let itemizedItems = [];
   let { user, originalUrl } = req;
   let financeTypeUrl = originalUrl.split("?")[0].slice(1).trim();
-  let finance;
-  let items;
+  let finance, items;
   let startDate = req.query.start,
     endDate = req.query.end;
 

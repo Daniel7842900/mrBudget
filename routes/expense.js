@@ -6,7 +6,7 @@ let router = require("express").Router();
 let loadRouter = (app) => {
   router.post("/new", auth.isLoggedIn, expense.store);
 
-  router.get("/new", auth.isLoggedIn, expense.create);
+  router.get("/new", auth.isLoggedIn, finance.create);
 
   router.get("/edit", auth.isLoggedIn, expense.edit);
 

@@ -3,7 +3,7 @@ const { getCatDisplay } = require("./util/convertCategories");
 const { getSubCatDisplay } = require("./util/convertSubcategories");
 const financeService = require("../services/finance");
 
-// Controller for displaying a budget
+// Controller for displaying a finance
 exports.findOne = async (req, res) => {
   let { user, originalUrl } = req;
   let financeTypeUrl = originalUrl.split("?")[0].slice(1).trim();
@@ -54,4 +54,25 @@ exports.findOne = async (req, res) => {
       error: req.flash("finance_err"),
     });
   }
+};
+
+// Controller for displaying a new finance page
+exports.create = async (req, res) => {
+  let itemizedItems = [];
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].trim();
+
+  let finances;
+  try {
+    finances = await financeService.findAll(req, res);
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.render(`pages/${financeTypeUrl}/create`, {
+    user: user,
+    finances: finances,
+    itemizedItems: itemizedItems,
+    err_message: req.flash("err_message"),
+  });
 };

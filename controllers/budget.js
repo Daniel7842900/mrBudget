@@ -1,5 +1,4 @@
 // Create database connection
-const db = require("../models");
 const _ = require("lodash");
 const { getCatDisplay } = require("./util/convertCategories");
 const { getSubCatDisplay } = require("./util/convertSubcategories");
@@ -8,17 +7,19 @@ const financeService = require("../services/finance");
 // Controller for displaying a new budget page
 exports.create = async (req, res) => {
   let itemizedItems = [];
-  let user = req.user;
-  let budgets;
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].trim();
+
+  let finances;
   try {
-    budgets = await financeService.findAll(req, res);
+    finances = await financeService.findAll(req, res);
   } catch (error) {
     console.log(error);
   }
 
-  res.render("pages/budget/create", {
+  res.render(`pages/${financeTypeUrl}/create`, {
     user: user,
-    budgets: budgets,
+    finances: finances,
     itemizedItems: itemizedItems,
     err_message: req.flash("err_message"),
   });
