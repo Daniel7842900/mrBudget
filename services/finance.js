@@ -133,7 +133,8 @@ exports.findOne = async (req, res) => {
 exports.store = async (req, res) => {
   let { date, income, list } = req.body;
   income = parseFloat(income);
-  let { user } = req;
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].trim();
 
   let dateArr = date.split("-");
   let startDate = dateArr[0].trim(),
@@ -141,6 +142,18 @@ exports.store = async (req, res) => {
 
   startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
+
+  let financeType;
+  try {
+    financeType = await FinanceType.findOne({
+      where: {
+        type: _.upperFirst(financeTypeUrl),
+      },
+      raw: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
   /**
    *  Condition to check if there is already a budget/budgets within the input date range.
@@ -214,41 +227,48 @@ exports.store = async (req, res) => {
           ],
         },
       ],
-      financeTypeId: 1,
+      financeTypeId: financeType.id,
       userId: user.id,
     },
   };
 
-  let budgetCount;
+  let financeCount;
   try {
     /**
      *  Check if there is a budget on selected dates
      *  @return number
      */
-    budgetCount = await Finance.count(filter);
+    financeCount = await Finance.count(filter);
   } catch (error) {
     console.log(error);
   }
 
   let error;
-  if (budgetCount === 0) {
+  if (financeCount === 0) {
+    if (financeTypeUrl === "budget") {
+      // Validate request
+      if (_.isNaN(income)) {
+        if (_.isNaN(income))
+          error = new Error("If there is no income, enter 0!");
+        error.type = "invalid-input";
+        throw error;
+      }
+
+      // TODO there must be better way to do this...
+      let itemizedIncome = {
+        amount: income,
+        category: _.toLower("income"),
+        description: _.toLower("income"),
+      };
+
+      list.push(itemizedIncome);
+    }
     // Validate request
-    if (_.isNaN(income) || (income === 0 && list.length === 0)) {
-      if (_.isNaN(income)) error = new Error("If there is no income, enter 0!");
-      if (income === 0 && list.length === 0)
-        error = new Error("Please fill out the form!");
+    if (list.length === 0) {
+      error = new Error("Please fill out the form!");
       error.type = "invalid-input";
       throw error;
     }
-
-    // TODO there must be better way to do this...
-    let itemizedIncome = {
-      amount: income,
-      category: _.toLower("income"),
-      description: _.toLower("income"),
-    };
-
-    list.push(itemizedIncome);
 
     let itemizedList = [];
 
@@ -265,25 +285,25 @@ exports.store = async (req, res) => {
     });
 
     // Condition to create a budget
-    const budget = {
+    const finance = {
       startDate: startDate,
       endDate: endDate,
-      financeTypeId: 1,
+      financeTypeId: financeType.id,
       userId: user.id,
       items: itemizedList,
     };
 
     /**
-     *  Create a budget with a list of items
+     *  Create a finance with a list of items
      *  @return Sequelize finance object
      */
-    const newBudget = await Finance.create(budget, {
+    const newFinance = await Finance.create(finance, {
       include: [Item],
     });
 
-    return newBudget;
+    return newFinance;
   } else {
-    error = new Error("No more budget on these dates!");
+    error = new Error(`No more ${financeTypeUrl} on these dates!`);
     error.type = "invalid-input";
     throw error;
   }

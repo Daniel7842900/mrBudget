@@ -4,7 +4,7 @@ const auth = require("./auth.js");
 let router = require("express").Router();
 
 let loadRouter = (app) => {
-  router.post("/new", auth.isLoggedIn, expense.store);
+  router.post("/new", auth.isLoggedIn, finance.store);
 
   router.get("/new", auth.isLoggedIn, finance.create);
 

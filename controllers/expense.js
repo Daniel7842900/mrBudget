@@ -40,143 +40,24 @@ exports.create = async (req, res) => {
 
 // Controller for saving a new expense
 exports.store = async (req, res) => {
-  let date = req.body.date,
-    list = req.body.list,
-    user = req.user;
-
-  let dateArr = date.split("-");
-  let startDate = dateArr[0].trim(),
-    endDate = dateArr[1].trim();
-
-  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
-  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
-
-  // Condition for finding an expense
-  let filter = {
-    where: {
-      [Op.or]: [
-        // first case, input s is equal or s or e or
-        {
-          [Op.or]: [
-            {
-              startDate: {
-                [Op.or]: [startDate, endDate],
-              },
-            },
-            {
-              endDate: {
-                [Op.or]: [startDate, endDate],
-              },
-            },
-          ],
-        },
-        // second case, input s is smaller than s
-        {
-          [Op.and]: [
-            {
-              startDate: {
-                [Op.gt]: startDate,
-              },
-            },
-            {
-              startDate: {
-                [Op.lt]: endDate,
-              },
-            },
-          ],
-        },
-        //third case, input s is greater than s
-        {
-          [Op.or]: [
-            {
-              [Op.and]: [
-                {
-                  startDate: {
-                    [Op.lt]: startDate,
-                  },
-                },
-                {
-                  endDate: {
-                    [Op.gt]: endDate,
-                  },
-                },
-              ],
-            },
-            {
-              [Op.and]: [
-                {
-                  startDate: {
-                    [Op.lt]: startDate,
-                  },
-                },
-                {
-                  endDate: {
-                    [Op.gt]: startDate,
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      financeTypeId: 2,
-      userId: user.id,
-    },
-  };
-
-  const expenseCount = await Finance.count(filter);
-  if (expenseCount === 0) {
-    // Check if there is an expense on selected dates
-    if (list.length === 0) {
-      req.flash("err_message", "Please fill out the form!");
-      return res.status(400).send({
-        message: "Please fill out the form!",
+  let newFinance;
+  try {
+    newFinance = await financeService.store(req, res);
+  } catch (error) {
+    console.log("newFinance catching error");
+    if (error.type == "invalid-input") {
+      res.status(400).send({
+        message: error.message,
+      });
+    } else {
+      res.status(500).send({
+        message: error.message || "Something wrong while creating budget",
       });
     }
-
-    let itemizedList = [];
-
-    // Perform modification on an item object in order to match with db
-    list.forEach((obj) => {
-      // Delete idx that was used in front-end
-      delete obj.idx;
-
-      // Change category & subCategory values to ids
-      catToCatId(obj);
-      subCatToId(obj);
-
-      itemizedList.push(obj);
-    });
-
-    // TODO complete the creating an object.
-    // We need start date, end date, finance_type,
-    //items.
-    const expense = {
-      startDate: startDate,
-      endDate: endDate,
-      financeTypeId: 2,
-      userId: user.id,
-      items: itemizedList,
-    };
-
-    await Finance.create(expense, {
-      include: [Item],
-    })
-      .then((data) => {
-        req.flash("success_message", "New expense is created!");
-        res.send(data);
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || "Something wrong while creating expense",
-        });
-      });
-  } else {
-    req.flash("expense_err_message", "No more expense on these dates!");
-    return res.status(400).send({
-      message: "No more expense on these dates!",
-    });
   }
+
+  req.flash("success_message", "New budget is created!");
+  res.status(201).send(newFinance);
 };
 
 // Controller for displaying an expense

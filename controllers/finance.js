@@ -76,3 +76,27 @@ exports.create = async (req, res) => {
     err_message: req.flash("err_message"),
   });
 };
+
+// Controller for saving a new finance
+exports.store = async (req, res) => {
+  let { originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].trim();
+  let newFinance;
+  try {
+    newFinance = await financeService.store(req, res);
+  } catch (error) {
+    if (error.type == "invalid-input") {
+      res.status(400).send({
+        message: error.message,
+      });
+    } else {
+      res.status(500).send({
+        message:
+          error.message || `Something wrong while creating ${financeTypeUrl}`,
+      });
+    }
+  }
+
+  req.flash("success_message", `New ${financeTypeUrl} is created!`);
+  res.status(201).send(newFinance);
+};
