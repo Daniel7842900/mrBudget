@@ -1,4 +1,3 @@
-const budget = require("../controllers/budget.js");
 const finance = require("../controllers/finance.js");
 const auth = require("./auth.js");
 let router = require("express").Router();
