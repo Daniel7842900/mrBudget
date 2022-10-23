@@ -16,8 +16,7 @@ const {
 
 exports.findAll = async (req, res) => {
   let { user, originalUrl } = req;
-  let financeTypeUrl = originalUrl.split("/")[1];
-  if (_.includes(financeTypeUrl, "?")) financeTypeUrl.split("?")[0].trim();
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
 
   let financeType;
   try {
@@ -55,7 +54,7 @@ exports.findAll = async (req, res) => {
 exports.findOne = async (req, res) => {
   let itemizedItems = [];
   let { user, originalUrl } = req;
-  let financeTypeUrl = originalUrl.split("?")[0].slice(1).trim();
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
   let finance, items;
   let startDate = req.query.start,
     endDate = req.query.end;
@@ -270,9 +269,8 @@ exports.store = async (req, res) => {
       throw error;
     }
 
-    let itemizedList = [];
-
     // Perform modification on an item object in order to match with db
+    let itemizedList = [];
     list.forEach((obj) => {
       // Delete idx that was used in front-end
       delete obj.idx;
@@ -311,7 +309,8 @@ exports.store = async (req, res) => {
 
 exports.update = async (req, res) => {
   let { date, income, list } = req.body;
-  let { user } = req;
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
   income = parseFloat(income);
 
   let dateArr = date.split("-");
@@ -324,27 +323,34 @@ exports.update = async (req, res) => {
   startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
 
-  // Validate request
   let error;
-  if (_.isNaN(income) || (income === 0 && list.length === 0)) {
-    if (_.isNaN(income)) error = new Error("If there is no income, enter 0!");
-    if (income === 0 && list.length === 0)
-      error = new Error("Please fill out the form!");
+  if (financeTypeUrl === "budget") {
+    // Validate request
+    if (_.isNaN(income)) {
+      if (_.isNaN(income)) error = new Error("If there is no income, enter 0!");
+      error.type = "invalid-input";
+      throw error;
+    }
+
+    /**
+     *  Re-format the income object to match with the format of other objects
+     */
+    let itemizedIncome = {
+      amount: income,
+      category: _.toLower("income"),
+      description: _.toLower("income"),
+    };
+
+    // Add income obj to the list
+    list.push(itemizedIncome);
+  }
+
+  // Validate request
+  if (list.length === 0) {
+    error = new Error("Please fill out the form!");
     error.type = "invalid-input";
     throw error;
   }
-
-  /**
-   *  Re-format the income object to match with the format of other objects
-   */
-  let itemizedIncome = {
-    amount: income,
-    category: _.toLower("income"),
-    description: _.toLower("income"),
-  };
-
-  // Add income obj to the list
-  list.push(itemizedIncome);
 
   /**
    *  Format the records from db and push it to a new array
@@ -361,12 +367,24 @@ exports.update = async (req, res) => {
     itemizedList.push(obj);
   });
 
+  let financeType;
+  try {
+    financeType = await FinanceType.findOne({
+      where: {
+        type: _.upperFirst(financeTypeUrl),
+      },
+      raw: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
   // Condition to find a budget
   let filter = {
     where: {
       startDate: startDate,
       endDate: endDate,
-      financeTypeId: 1,
+      financeTypeId: financeType.id,
       userId: user.id,
     },
   };

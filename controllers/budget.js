@@ -4,49 +4,6 @@ const { getCatDisplay } = require("./util/convertCategories");
 const { getSubCatDisplay } = require("./util/convertSubcategories");
 const financeService = require("../services/finance");
 
-// Controller for displaying a new budget page
-exports.create = async (req, res) => {
-  let itemizedItems = [];
-  let { user, originalUrl } = req;
-  let financeTypeUrl = originalUrl.split("/")[1].trim();
-
-  let finances;
-  try {
-    finances = await financeService.findAll(req, res);
-  } catch (error) {
-    console.log(error);
-  }
-
-  res.render(`pages/${financeTypeUrl}/create`, {
-    user: user,
-    finances: finances,
-    itemizedItems: itemizedItems,
-    err_message: req.flash("err_message"),
-  });
-};
-
-// Controller for saving a new budget
-exports.store = async (req, res) => {
-  let newBudget;
-  try {
-    newBudget = await financeService.store(req, res);
-  } catch (error) {
-    console.log("newBudget catching error");
-    if (error.type == "invalid-input") {
-      res.status(400).send({
-        message: error.message,
-      });
-    } else {
-      res.status(500).send({
-        message: error.message || "Something wrong while creating budget",
-      });
-    }
-  }
-
-  req.flash("success_message", "New budget is created!");
-  res.status(201).send(newBudget);
-};
-
 // Controller for displaying a budget
 exports.findOne = async (req, res) => {
   let { user, originalUrl } = req;
@@ -100,16 +57,60 @@ exports.findOne = async (req, res) => {
   }
 };
 
+// Controller for displaying a new budget page
+exports.create = async (req, res) => {
+  let itemizedItems = [];
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].trim();
+
+  let finances;
+  try {
+    finances = await financeService.findAll(req, res);
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.render(`pages/${financeTypeUrl}/create`, {
+    user: user,
+    finances: finances,
+    itemizedItems: itemizedItems,
+    err_message: req.flash("err_message"),
+  });
+};
+
+// Controller for saving a new budget
+exports.store = async (req, res) => {
+  let newBudget;
+  try {
+    newBudget = await financeService.store(req, res);
+  } catch (error) {
+    console.log("newBudget catching error");
+    if (error.type == "invalid-input") {
+      res.status(400).send({
+        message: error.message,
+      });
+    } else {
+      res.status(500).send({
+        message: error.message || "Something wrong while creating budget",
+      });
+    }
+  }
+
+  req.flash("success_message", "New budget is created!");
+  res.status(201).send(newBudget);
+};
+
 // Controller for editing a budget
 exports.edit = async (req, res) => {
   let itemizedItems = [];
-  let { user } = req;
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
   let startDate = req.query.start,
     endDate = req.query.end;
 
-  let budgets;
+  let finances;
   try {
-    budgets = await financeService.findAll(req, res);
+    finances = await financeService.findAll(req, res);
   } catch (error) {
     console.log(error);
   }
@@ -119,9 +120,9 @@ exports.edit = async (req, res) => {
     items = await financeService.findOne(req, res);
   } catch (error) {
     console.log(error);
-    res.render("pages/budget/edit", {
+    res.render(`pages/${financeTypeUrl}/edit`, {
       user: user,
-      budgets: budgets,
+      finances: finances,
       itemizedItems: itemizedItems,
       startDate: startDate,
       endDate: endDate,
@@ -131,10 +132,10 @@ exports.edit = async (req, res) => {
       err_message: req.flash("err_message"),
     });
   }
-
-  res.render("pages/budget/edit", {
+  console.log(itemizedItems);
+  res.render(`pages/${financeTypeUrl}/edit`, {
     user: user,
-    budgets: budgets,
+    finances: finances,
     itemizedItems: items,
     startDate: startDate,
     endDate: endDate,

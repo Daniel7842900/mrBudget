@@ -4,13 +4,13 @@ const auth = require("./auth.js");
 let router = require("express").Router();
 
 let loadRouter = (app) => {
-  router.post("/new", auth.isLoggedIn, budget.store);
+  router.post("/new", auth.isLoggedIn, finance.store);
 
   router.get("/new", auth.isLoggedIn, finance.create);
 
-  router.get("/edit", auth.isLoggedIn, budget.edit);
+  router.get("/edit", auth.isLoggedIn, finance.edit);
 
-  router.post("/edit", auth.isLoggedIn, budget.update);
+  router.post("/edit", auth.isLoggedIn, finance.update);
 
   router.delete("/delete", auth.isLoggedIn, budget.delete);
 

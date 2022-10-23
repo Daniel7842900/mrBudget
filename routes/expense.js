@@ -8,9 +8,9 @@ let loadRouter = (app) => {
 
   router.get("/new", auth.isLoggedIn, finance.create);
 
-  router.get("/edit", auth.isLoggedIn, expense.edit);
+  router.get("/edit", auth.isLoggedIn, finance.edit);
 
-  router.post("/edit", auth.isLoggedIn, expense.update);
+  router.post("/edit", auth.isLoggedIn, finance.update);
 
   router.delete("/delete", auth.isLoggedIn, expense.delete);
 
