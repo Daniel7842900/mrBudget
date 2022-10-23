@@ -33,8 +33,8 @@ exports.findAll = async (req, res) => {
   let result;
   try {
     /**
-     *  Retrieve every budget records to display on the calendar
-     *  @return An array of budget objects
+     *  Retrieve every finance records to display on the calendar
+     *  @return An array of finance objects
      */
     result = await Finance.findAll({
       where: {
@@ -45,7 +45,7 @@ exports.findAll = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return req.flash("budget_err");
+    return req.flash("finance_err");
   }
 
   return result;
@@ -155,8 +155,8 @@ exports.store = async (req, res) => {
   }
 
   /**
-   *  Condition to check if there is already a budget/budgets within the input date range.
-   *  This filter is to FIND a budget/budgets
+   *  Condition to check if there is already a finance/finances within the input date range.
+   *  This filter is to FIND a finance/finances
    */
   let filter = {
     where: {
@@ -234,7 +234,7 @@ exports.store = async (req, res) => {
   let financeCount;
   try {
     /**
-     *  Check if there is a budget on selected dates
+     *  Check if there is a finance on selected dates
      *  @return number
      */
     financeCount = await Finance.count(filter);
@@ -282,7 +282,7 @@ exports.store = async (req, res) => {
       itemizedList.push(obj);
     });
 
-    // Condition to create a budget
+    // Condition to create a finance
     const finance = {
       startDate: startDate,
       endDate: endDate,
@@ -379,7 +379,7 @@ exports.update = async (req, res) => {
     console.log(error);
   }
 
-  // Condition to find a budget
+  // Condition to find a finance
   let filter = {
     where: {
       startDate: startDate,
@@ -389,25 +389,25 @@ exports.update = async (req, res) => {
     },
   };
 
-  // Retrieve one budget to display on edit page
-  let budgetInstance;
+  // Retrieve one finance to display on edit page
+  let financeInstance;
   try {
-    budgetInstance = await Finance.findOne(filter);
+    financeInstance = await Finance.findOne(filter);
   } catch (error) {
     console.log(error);
   }
 
-  const budget = budgetInstance.get();
+  const finance = financeInstance.get();
 
   let destroyedItems;
   try {
     /**
-     *  Destroy items that have the budget id.
+     *  Destroy items that have the finance id.
      *  @return Number of destroyed items
      */
     destroyedItems = await Item.destroy({
       where: {
-        financeId: budget.id,
+        financeId: finance.id,
       },
     });
   } catch (error) {
@@ -427,9 +427,9 @@ exports.update = async (req, res) => {
 
   try {
     /**
-     *  Add Sequelize Item objects to the budget
+     *  Add Sequelize Item objects to the finance
      */
-    await budgetInstance.addItems(newItems);
+    await financeInstance.addItems(newItems);
   } catch (error) {
     console.log(error);
   }
@@ -439,7 +439,8 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   let { date } = req.body;
-  let { user } = req;
+  let { user, originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
 
   let dateArr = date.split("-");
   let startDate = dateArr[0].trim(),
@@ -448,22 +449,34 @@ exports.delete = async (req, res) => {
   startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
   endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
 
-  // Condition for finding a budget
+  let financeType;
+  try {
+    financeType = await FinanceType.findOne({
+      where: {
+        type: _.upperFirst(financeTypeUrl),
+      },
+      raw: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  // Condition for finding a finance
   let filter = {
     where: {
       startDate: startDate,
       endDate: endDate,
-      financeTypeId: 1,
+      financeTypeId: financeType.id,
       userId: user.id,
     },
     raw: true,
   };
 
   /**
-   *  Delete the budget
-   *  @return Number of deleted budget
+   *  Delete the finance
+   *  @return Number of deleted finance
    */
-  const destroyedBudget = await Finance.destroy(filter);
+  const destroyedFinance = await Finance.destroy(filter);
 
-  return destroyedBudget;
+  return destroyedFinance;
 };

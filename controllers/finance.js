@@ -129,7 +129,7 @@ exports.edit = async (req, res) => {
       endDate: endDate,
       getCatDisplay: getCatDisplay,
       getSubCatDisplay: getSubCatDisplay,
-      error: req.flash("budget_err"),
+      error: req.flash("finance_err"),
       err_message: req.flash("err_message"),
     });
   }
@@ -142,7 +142,7 @@ exports.edit = async (req, res) => {
     endDate: endDate,
     getCatDisplay: getCatDisplay,
     getSubCatDisplay: getSubCatDisplay,
-    error: req.flash("budget_err"),
+    error: req.flash("finance_err"),
     err_message: req.flash("err_message"),
   });
 };
@@ -150,6 +150,8 @@ exports.edit = async (req, res) => {
 // Controller for updating an expense
 exports.update = async (req, res) => {
   let updatedItems;
+  let { originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
   try {
     updatedItems = await financeService.update(req, res);
   } catch (error) {
@@ -159,12 +161,33 @@ exports.update = async (req, res) => {
       });
     } else {
       return res.status(500).send({
-        message: error.message || "Something wrong while creating budget",
+        message:
+          error.message || `Something wrong while creating ${financeTypeUrl}`,
       });
     }
   }
 
   return res
     .status(204)
-    .send({ message: "The budget is successfully updated!" });
+    .send({ message: `The ${financeTypeUrl} is successfully updated!` });
+};
+
+// Controller for deleting a finance
+exports.delete = async (req, res) => {
+  let destroyedFinance;
+  let { originalUrl } = req;
+  let financeTypeUrl = originalUrl.split("/")[1].split("?")[0].trim();
+  try {
+    destroyedFinance = await financeService.delete(req, res);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      message:
+        err.message || `Something wrong while deleting ${financeTypeUrl}`,
+    });
+  }
+
+  return res
+    .status(200)
+    .send({ message: `The ${financeTypeUrl} is successfully deleted!` });
 };

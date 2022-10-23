@@ -178,38 +178,17 @@ exports.update = async (req, res) => {
 
 // Controller for deleting an expense
 exports.delete = async (req, res) => {
-  let date = req.body.date,
-    user = req.user;
-
-  let dateArr = date.split("-");
-  let startDate = dateArr[0].trim(),
-    endDate = dateArr[1].trim();
-
-  startDate = moment(startDate, "MMM DD YYYY").format("YYYY-MM-DD");
-  endDate = moment(endDate, "MMM DD YYYY").format("YYYY-MM-DD");
-
-  // Condition for finding a budget
-  let filter = {
-    where: {
-      startDate: startDate,
-      endDate: endDate,
-      financeTypeId: 2,
-      userId: user.id,
-    },
-  };
-
-  const expense = await Finance.findOne(filter);
-  const destroyedExpense = await Finance.destroy(filter);
-
-  Promise.all([expense, destroyedExpense])
-    .then((response) => {
-      const expenseInst = response[0];
-      const expenseData = expenseInst.get();
-      res.send(expenseData);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Something wrong while deleting expense",
-      });
+  let destroyedExpense;
+  try {
+    destroyedExpense = await financeService.delete(req, res);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      message: err.message || "Something wrong while deleting budget",
     });
+  }
+
+  return res
+    .status(200)
+    .send({ message: "The budget is successfully deleted!" });
 };

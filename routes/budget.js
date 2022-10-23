@@ -12,7 +12,7 @@ let loadRouter = (app) => {
 
   router.post("/edit", auth.isLoggedIn, finance.update);
 
-  router.delete("/delete", auth.isLoggedIn, budget.delete);
+  router.delete("/delete", auth.isLoggedIn, finance.delete);
 
   router.get("/", auth.isLoggedIn, finance.findOne);
 
