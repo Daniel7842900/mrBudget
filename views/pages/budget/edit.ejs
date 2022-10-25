@@ -98,7 +98,7 @@
                       name="income"
                       id="income"
                       class="border-2 border-solid border-gray-200 text-center w-full mt-2 rounded-md block"
-                      value="<% if(itemizedItems.length != 0) { let idx = 0; %><% itemizedItems.forEach((obj) => { %><% if(obj.category === 'income') {%><%= obj.amount %><% } %><% idx++;} ) %><% } %>"
+                      value="<% console.log(itemizedItems); if(itemizedItems.length != 0) { let idx = 0; %><% itemizedItems.forEach((obj) => { %><% if(obj.category === 'income') {%><%= obj.amount %><% } %><% idx++;} ) %><% } %>"
                       aria-describedby="income-currency"
                     />
                     <div
@@ -322,7 +322,7 @@
       </main>
     </div>
     <script>
-      let budgetData = `<%- JSON.stringify(budgets); %>`;
+      let financeData = `<%- JSON.stringify(finances); %>`;
       let itemizedItems = `<%- JSON.stringify(itemizedItems); %>`;
     </script>
     <script src="/navJs/nav.js"></script>

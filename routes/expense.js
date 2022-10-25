@@ -1,19 +1,19 @@
-const expense = require("../controllers/expense.js");
+const finance = require("../controllers/finance.js");
 const auth = require("./auth.js");
 let router = require("express").Router();
 
 let loadRouter = (app) => {
-  router.post("/new", auth.isLoggedIn, expense.store);
+  router.post("/new", auth.isLoggedIn, finance.store);
 
-  router.get("/new", auth.isLoggedIn, expense.create);
+  router.get("/new", auth.isLoggedIn, finance.create);
 
-  router.get("/edit", auth.isLoggedIn, expense.edit);
+  router.get("/edit", auth.isLoggedIn, finance.edit);
 
-  router.post("/edit", auth.isLoggedIn, expense.update);
+  router.post("/edit", auth.isLoggedIn, finance.update);
 
-  router.delete("/delete", auth.isLoggedIn, expense.delete);
+  router.delete("/delete", auth.isLoggedIn, finance.delete);
 
-  router.get("/", auth.isLoggedIn, expense.findOne);
+  router.get("/", auth.isLoggedIn, finance.findOne);
 
   app.use("/expense", router);
 };

@@ -25,6 +25,21 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
     // Prevent onClick event
     e.preventDefault();
 
+    /**
+     *  Attach display properties again to the existing items
+     *  when submit doesn't go through
+     *
+     */
+    if (list.length != 0) {
+      list.forEach((entry) => {
+        entry.categoryDisplay = getCatDisplay(_.toLower(entry.category));
+        entry.subCategoryDisplay = getSubCatDisplay(
+          _.toLower(entry.category),
+          _.toLower(entry.subCategory)
+        );
+      });
+    }
+
     // Create a js object for category & amount
     let obj = {};
     let objCat = _.toLower($("#category").children("option:selected").val()),
@@ -33,6 +48,7 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
       ),
       amount = $("#amount").val(),
       description = $("#description").val().trim();
+
     let objCatDisplay = getCatDisplay(objCat);
     let objSubCatDisplay = getSubCatDisplay(objCat, objSubCat);
 
@@ -89,9 +105,10 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                   "
                 >
                 <% if(obj.subCategory === "" || obj.subCategory
-                === undefined) { %> <%= obj.categoryDisplay %>
-                <% } else {  %> <%=
-                obj.subCategoryDisplay %> <% } %>
+                === undefined || obj.subCategory === null) { %>
+                  <%= obj.categoryDisplay %>
+                <% } else {  %>
+                   <%= obj.subCategoryDisplay %> <% } %>
                 </td>
                 <td
                 scope="col"
@@ -186,6 +203,21 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
         // Decrement idx for future adding
         idx--;
 
+        /**
+         *  Attach display properties again to the existing items
+         *  when submit doesn't go through
+         *
+         */
+        if (list.length != 0) {
+          list.forEach((entry) => {
+            entry.categoryDisplay = getCatDisplay(_.toLower(entry.category));
+            entry.subCategoryDisplay = getSubCatDisplay(
+              _.toLower(entry.category),
+              _.toLower(entry.subCategory)
+            );
+          });
+        }
+
         html = ejs.render(
           `<% list.forEach(function(obj) { %>
           <tr>
@@ -200,9 +232,10 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
               "
             >
             <% if(obj.subCategory === "" || obj.subCategory
-            === undefined) {  %> <%= obj.categoryDisplay %>
-            <% } else {  %> <%=
-            obj.subCategoryDisplay %> <% } %>
+            === undefined || obj.subCategory === null) { %>
+              <%= obj.categoryDisplay %>
+            <% } else {  %>
+              <%= obj.subCategoryDisplay %> <% } %>
             </td>
             <td
               class="
@@ -315,6 +348,7 @@ let onClickSubmit = (targetBtn, event, financeType, incomeExist) => {
         });
       },
       error: function (jqXHR, textStatus, errorThrown) {
+        console.log("hitting frontend error");
         // Redirecting to new budget page again to display
         //error message.
         // TODO research if there is any way to display error

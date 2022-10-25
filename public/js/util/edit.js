@@ -5,7 +5,6 @@ const param = Object.fromEntries(urlParam.entries());
 
 let idx = 0;
 let itemizedItemsJSON = JSON.parse(itemizedItems);
-console.log(itemizedItemsJSON);
 let start = param.start;
 let end = param.end;
 
@@ -29,8 +28,6 @@ itemizedItemsJSON.forEach((itemObj) => {
   }
 });
 
-console.log(itemizedItemsJSON);
-
 let onChangeCategory = (sourceElement, event, targetElement) => {
   $(sourceElement).on(event, function (e) {
     const subCat = $(targetElement);
@@ -52,6 +49,22 @@ let onChangeCategory = (sourceElement, event, targetElement) => {
 let onClickAdd = (parentElement, targetBtn, event, financeType) => {
   $(targetBtn).on(event, function (e) {
     e.preventDefault();
+
+    /**
+     *  Attach display properties again to the existing items
+     *  when submit doesn't go through
+     *
+     */
+    if (itemizedItemsJSON.length != 0) {
+      itemizedItemsJSON.forEach((entry) => {
+        entry.categoryDisplay = getCatDisplay(_.toLower(entry.category));
+        entry.subCategoryDisplay = getSubCatDisplay(
+          _.toLower(entry.category),
+          _.toLower(entry.subCategory)
+        );
+      });
+    }
+
     // Create a js object for category & amount
     let obj = {};
     let objCat = _.toLower($("#category").children("option:selected").val()),
@@ -101,10 +114,6 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
       // Increment the index
       idx++;
 
-      itemizedItemsJSON.forEach((element) => {
-        console.log(element);
-      });
-
       // Render table rows using the list that contains js objects.
       //this is done in client-side because we can't pass the list
       //to server-side.
@@ -122,9 +131,10 @@ let onClickAdd = (parentElement, targetBtn, event, financeType) => {
                     "
                   >
                   <% if(obj.subCategory === "" || obj.subCategory
-                  === undefined) { %> <%= obj.categoryDisplay %>
-                  <% } else { %> <%=
-                  obj.subCategoryDisplay %> <% } %>
+                  === undefined || obj.subCategory === null) { %> 
+                    <%= obj.categoryDisplay %>
+                  <% } else { %> 
+                    <%= obj.subCategoryDisplay %> <% } %>
                   </td>
                   <td
                     class="
@@ -197,8 +207,6 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
     e.preventDefault();
     if (itemizedItemsJSON.length !== 0) {
       let rIdx = parseInt($(this).attr("id").split("_")[2]);
-      console.log($(this));
-      console.log("ridx: " + rIdx);
 
       if (rIdx > -1) {
         // Remove the object at index "rIdx"
@@ -206,7 +214,6 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
 
         // Decrement idx inside of objects by 1
         itemizedItemsJSON.forEach((obj) => {
-          console.log("idx: " + obj.idx);
           if (rIdx < obj.idx) {
             obj.idx--;
           }
@@ -214,6 +221,21 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
 
         // Decrement idx for future adding
         idx--;
+
+        /**
+         *  Attach display properties again to the existing items
+         *  when submit doesn't go through
+         *
+         */
+        if (itemizedItemsJSON.length != 0) {
+          itemizedItemsJSON.forEach((entry) => {
+            entry.categoryDisplay = getCatDisplay(_.toLower(entry.category));
+            entry.subCategoryDisplay = getSubCatDisplay(
+              _.toLower(entry.category),
+              _.toLower(entry.subCategory)
+            );
+          });
+        }
 
         html = ejs.render(
           `<% list.forEach(function(obj) { %>
@@ -229,9 +251,10 @@ let onClickRemove = (parentElement, targetBtn, event, financeType) => {
                     "
                   >
                   <% if(obj.subCategory === "" || obj.subCategory
-                  === undefined) { %> <%= obj.categoryDisplay %>
-                  <% } else { %> <%=
-                  obj.subCategoryDisplay %> <% } %>
+                  === undefined || obj.subCategory === null) { %> 
+                    <%= obj.categoryDisplay %>
+                  <% } else { %> 
+                    <%= obj.subCategoryDisplay %> <% } %>
                   </td>
                   <td
                     class="
