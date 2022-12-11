@@ -103,3 +103,5 @@ db.sequelize.sync({ force: false }).then(function () {
     console.log("server is successfully running!");
   });
 });
+
+module.exports = app;
