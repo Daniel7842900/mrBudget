@@ -80,7 +80,13 @@ module.exports = function (passport, auth) {
     )
   );
 
-  //LOCAL SIGNIN
+  /**
+   * LOCAL SIGNIN
+   *
+   * This function is called when the 'passport.authenticate()' method is called.
+   *
+   *
+   */
   passport.use(
     "local-signin",
     new LocalStrategy(
@@ -97,7 +103,7 @@ module.exports = function (passport, auth) {
         let isValidPassword = function (userpass, password) {
           return bCrypt.compareSync(password, userpass);
         };
-        console.log("logged to", email);
+
         Auth.findOne({
           where: {
             email: email,
@@ -120,9 +126,10 @@ module.exports = function (passport, auth) {
             }
 
             var userinfo = user.get();
-            // console.log("user info is");
-            // console.log(userinfo);
+            console.log("user info is");
+            console.log(userinfo);
 
+            console.log("logged to", email);
             // Verify callback for user - return user info if email & password is correct
             return done(null, userinfo);
           })

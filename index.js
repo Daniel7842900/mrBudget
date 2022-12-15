@@ -98,10 +98,26 @@ app.get("/", function (req, res) {
   res.redirect(viewPath);
 });
 
-db.sequelize.sync({ force: false }).then(function () {
-  app.listen(3000, function () {
-    console.log("server is successfully running!");
-  });
+const port = process.env.PORT || 3000;
+// let server;
+// if (process.env.NODE_ENV !== "test") {
+//   db.sequelize.sync({ force: false });
+//   server = app.listen(port, function () {
+//     console.log("server is successfully running!");
+//   });
+// }
+
+db.sequelize.sync({ force: false });
+const server = app.listen(port, function () {
+  console.log("server is successfully running!");
 });
+
+// db.sequelize.sync({ force: false }).then(function () {
+//   server = app.listen(port, function () {
+//     console.log("server is successfully running!");
+//   });
+
+//   // console.log(server);
+// });
 
 module.exports = app;
