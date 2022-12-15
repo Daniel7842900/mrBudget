@@ -54,9 +54,8 @@ function highlight(data) {
     .not("td.off");
 
   // Store the value of DOM elements of left calendar dates to an array
-  leftDatesDom.each(function (index) {
+  leftDatesDom.each(function () {
     let date = $(this).text();
-    // $(this).attr("data-date", date);
     leftDates.push(date);
   });
 
@@ -85,85 +84,99 @@ function highlight(data) {
     let start = finance.startDate;
     let end = finance.endDate;
 
+    let startYear = parseInt(start.split("-")[0], 10);
     let startMonth = parseInt(start.split("-")[1], 10);
     let startDate = parseInt(start.split("-")[2], 10);
+    let endYear = parseInt(end.split("-")[0], 10);
     let endMonth = parseInt(end.split("-")[1], 10);
     let endDate = parseInt(end.split("-")[2], 10);
 
     // Check every date of left calendar
     for (let i = 0; i < leftFullDates.length; i++) {
-      // Get month and date from the full date
+      // Get year, month, and date from the full date
+      let leftFullYear = parseInt(leftFullDates[i].split("-")[0], 10);
       let leftFullMon = parseInt(leftFullDates[i].split("-")[1], 10);
       let leftFullDate = parseInt(leftFullDates[i].split("-")[2], 10);
 
-      // If start date and end date are in the same month
-      //else if start date is on left calendar and end date is on right calendar
-      if (leftFullMon === startMonth && leftFullMon === endMonth) {
-        // If dates are starting/ending dates
-        //else if dates are in between starting/ending dates
-        if (leftFullDate === startDate || leftFullDate === endDate) {
-          if (leftFullDate === startDate && leftFullDate === endDate) {
-            let occupiedBoth = leftDatesDom.get(i);
-            $(occupiedBoth).addClass("occupied-both");
-          } else if (leftFullDate === startDate && leftFullDate !== endDate) {
+      if (leftFullYear === startYear) {
+        // If start date and end date are in the same month
+        //else if start date is on left calendar and end date is on right calendar
+        if (leftFullMon === startMonth && leftFullMon === endMonth) {
+          // If dates are starting/ending dates
+          //else if dates are in between starting/ending dates
+          if (leftFullDate === startDate || leftFullDate === endDate) {
+            if (leftFullDate === startDate && leftFullDate === endDate) {
+              let occupiedBoth = leftDatesDom.get(i);
+              $(occupiedBoth).addClass("occupied-both");
+            } else if (leftFullDate === startDate && leftFullDate !== endDate) {
+              let occupiedLeft = leftDatesDom.get(i);
+              $(occupiedLeft).addClass("occupied-left");
+            } else if (leftFullDate !== startDate && leftFullDate === endDate) {
+              let occupiedRight = leftDatesDom.get(i);
+              $(occupiedRight).addClass("occupied-right");
+            }
+          } else if (leftFullDate > startDate && leftFullDate < endDate) {
+            let occupiedInRange = leftDatesDom.get(i);
+            $(occupiedInRange).addClass("occupied-in-range");
+          }
+        } else if (leftFullMon === startMonth && leftFullMon !== endMonth) {
+          // If date is starting date
+          //else if dates are after starting date
+          if (leftFullDate === startDate) {
             let occupiedLeft = leftDatesDom.get(i);
             $(occupiedLeft).addClass("occupied-left");
-          } else if (leftFullDate !== startDate && leftFullDate === endDate) {
-            let occupiedRight = leftDatesDom.get(i);
-            $(occupiedRight).addClass("occupied-right");
+          } else if (leftFullDate > startDate) {
+            let occupiedInRange = leftDatesDom.get(i);
+            $(occupiedInRange).addClass("occupied-in-range");
           }
-        } else if (leftFullDate > startDate && leftFullDate < endDate) {
-          let occupiedInRange = leftDatesDom.get(i);
-          $(occupiedInRange).addClass("occupied-in-range");
-        }
-      } else if (leftFullMon === startMonth && leftFullMon !== endMonth) {
-        // If date is starting date
-        //else if dates are after starting date
-        if (leftFullDate === startDate) {
-          let occupiedLeft = leftDatesDom.get(i);
-          $(occupiedLeft).addClass("occupied-left");
-        } else if (leftFullDate > startDate) {
-          let occupiedInRange = leftDatesDom.get(i);
-          $(occupiedInRange).addClass("occupied-in-range");
         }
       }
     }
 
     // Check every date of right calendar
     for (let i = 0; i < rightFullDates.length; i++) {
-      // Get month and date from the full date
+      // Get year, month, and date from the full date
+      let rightFullYear = parseInt(rightFullDates[i].split("-")[0], 10);
       let rightFullMon = parseInt(rightFullDates[i].split("-")[1], 10);
       let rightFullDate = parseInt(rightFullDates[i].split("-")[2], 10);
 
-      // If start date and end date are in the same month
-      //else if start date is on left calendar and end date is on right calendar
-      if (rightFullMon === startMonth && rightFullMon === endMonth) {
-        // If dates are starting/ending dates
-        //else if dates are in between starting/ending dates
-        if (rightFullDate === startDate || rightFullDate === endDate) {
-          if (rightFullDate === startDate && rightFullDate === endDate) {
-            let occupiedBoth = rightDatesDom.get(i);
-            $(occupiedBoth).addClass("occupied-both");
-          } else if (rightFullDate === startDate && rightFullDate !== endDate) {
-            let occupiedLeft = rightDatesDom.get(i);
-            $(occupiedLeft).addClass("occupied-left");
-          } else if (rightFullDate !== startDate && rightFullDate === endDate) {
+      if (rightFullYear === startYear) {
+        // If start date and end date are in the same month
+        //else if start date is on left calendar and end date is on right calendar
+        if (rightFullMon === startMonth && rightFullMon === endMonth) {
+          // If dates are starting/ending dates
+          //else if dates are in between starting/ending dates
+          if (rightFullDate === startDate || rightFullDate === endDate) {
+            if (rightFullDate === startDate && rightFullDate === endDate) {
+              let occupiedBoth = rightDatesDom.get(i);
+              $(occupiedBoth).addClass("occupied-both");
+            } else if (
+              rightFullDate === startDate &&
+              rightFullDate !== endDate
+            ) {
+              let occupiedLeft = rightDatesDom.get(i);
+              $(occupiedLeft).addClass("occupied-left");
+            } else if (
+              rightFullDate !== startDate &&
+              rightFullDate === endDate
+            ) {
+              let occupiedRight = rightDatesDom.get(i);
+              $(occupiedRight).addClass("occupied-right");
+            }
+          } else if (rightFullDate > startDate && rightFullDate < endDate) {
+            let occupiedInRange = rightDatesDom.get(i);
+            $(occupiedInRange).addClass("occupied-in-range");
+          }
+        } else if (rightFullMon !== startMonth && rightFullMon === endMonth) {
+          // If date is ending date
+          //else if dates are before ending date
+          if (rightFullDate === endDate) {
             let occupiedRight = rightDatesDom.get(i);
             $(occupiedRight).addClass("occupied-right");
+          } else if (rightFullDate < endDate) {
+            let occupiedInRange = rightDatesDom.get(i);
+            $(occupiedInRange).addClass("occupied-in-range");
           }
-        } else if (rightFullDate > startDate && rightFullDate < endDate) {
-          let occupiedInRange = rightDatesDom.get(i);
-          $(occupiedInRange).addClass("occupied-in-range");
-        }
-      } else if (rightFullMon !== startMonth && rightFullMon === endMonth) {
-        // If date is ending date
-        //else if dates are before ending date
-        if (rightFullDate === endDate) {
-          let occupiedRight = rightDatesDom.get(i);
-          $(occupiedRight).addClass("occupied-right");
-        } else if (rightFullDate < endDate) {
-          let occupiedInRange = rightDatesDom.get(i);
-          $(occupiedInRange).addClass("occupied-in-range");
         }
       }
     }
